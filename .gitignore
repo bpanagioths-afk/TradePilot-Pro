@@ -1,0 +1,54 @@
+# ==========================
+# Python
+# ==========================
+
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+
+# ==========================
+# Node
+# ==========================
+
+frontend/node_modules/
+frontend/dist/
+
+# ==========================
+# Uploads
+# ==========================
+
+backend/uploads/
+
+# ==========================
+# IDE
+# ==========================
+
+.vscode/
+.idea/
+
+# ==========================
+# Logs
+# ==========================
+
+*.log
+
+# ==========================
+# Windows
+# ==========================
+
+Thumbs.db
+
+# Root virtual environment
+venv/
+
+# Python virtual environments
+.venv/
+env/
+
+# Backend accidental node files
+backend/node_modules/
+backend/package-lock.json
+backend/package.json
