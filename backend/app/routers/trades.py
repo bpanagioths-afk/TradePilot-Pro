@@ -171,6 +171,19 @@ def upload_screenshot(
 
     file_extension = os.path.splitext(file.filename)[1]
 
+    allowed_extensions = [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".webp"
+    ]
+
+    if file_extension.lower() not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail="Unsupported image format"
+        )
+
     new_filename = f"{trade_id}_{uuid4().hex}{file_extension}"
 
     file_path = os.path.join(

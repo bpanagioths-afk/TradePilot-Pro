@@ -1,10 +1,13 @@
 from sqlalchemy import (
     Column,
     Integer,
+    BigInteger,
     String,
     Float,
     Text,
-    DateTime
+    DateTime,
+    Boolean,
+    ForeignKey
 )
 
 from app.core.database import Base
@@ -55,3 +58,24 @@ class Trade(Base):
     screenshot_path = Column(Text)
 
     notes = Column(Text)
+
+    mt5_account_id = Column(
+        Integer,
+        ForeignKey("mt5_accounts.id"),
+        nullable=True
+    )
+
+    mt5_ticket = Column(
+        BigInteger,
+        nullable=True
+    )
+
+    imported_from_mt5 = Column(
+        Boolean,
+        default=False
+    )
+
+    is_archived = Column(
+        Boolean,
+        default=False
+    )

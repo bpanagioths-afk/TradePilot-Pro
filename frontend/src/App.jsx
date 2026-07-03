@@ -8,12 +8,14 @@ import {
 import MainLayout from "./layouts/MainLayout";
 
 import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import Trades from "./pages/Trades";
 import Analytics from "./pages/Analytics";
 import Psychology from "./pages/Psychology";
 import Reports from "./pages/Reports";
 import MT5 from "./pages/MT5";
 import Settings from "./pages/Settings";
+import TradingPlan from "./pages/TradingPlan";
 
 function App() {
 
@@ -23,11 +25,17 @@ function App() {
                 <Routes>
                     <Route
                         path="/"
-                        element={<Navigate to="/dashboard" />}
+                        element={<Navigate to="/home" />}
+
                     />
 
                     <Route
-                        path="/dashboard"
+                        path="/home"
+                        element={<Home />}
+                    />
+
+                    <Route
+                        path="/Dashboard"
                         element={<Dashboard />}
                     />
 
@@ -60,6 +68,11 @@ function App() {
                         path="/settings"
                         element={<Settings />}
                     />
+                    <Route
+                        path="/trading-plan"
+                        element={<TradingPlan />}
+                    />
+
                 </Routes>
             </MainLayout>
         </BrowserRouter>

@@ -7,7 +7,10 @@ import {
     Button,
     Stack,
     TextField,
+    Menu,
     MenuItem,
+    ListItemIcon,
+    ListItemText,
     Chip
 } from "@mui/material";
 
@@ -21,6 +24,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import DownloadIcon from "@mui/icons-material/Download";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import TableChartIcon from "@mui/icons-material/TableChart";
+import DescriptionIcon from "@mui/icons-material/Description";
+import PrintIcon from "@mui/icons-material/Print";
 
 import {
     getTrades,
@@ -44,17 +52,22 @@ export default function Trades() {
     const [directionFilter, setDirectionFilter] = useState("ALL");
     const [resultFilter, setResultFilter] = useState("ALL");
 
+    const [exportAnchor, setExportAnchor] = useState(null);
+
+    const exportMenuOpen = Boolean(exportAnchor);
+
     const loadTrades = () => {
         getTrades()
-            .then((res) => {
-                setTrades(res.data);
-            })
+             .then((res) => {
+                  
+                  setTrades(res.data);
+             })
             .catch(console.error);
     };
 
-    useEffect(() => {
-        loadTrades();
-    }, []);
+useEffect(() => {
+    loadTrades();
+}, []);
 
     const filteredTrades = useMemo(() => {
         return trades.filter((trade) => {
@@ -80,6 +93,13 @@ export default function Trades() {
         });
     }, [trades, search, directionFilter, resultFilter]);
 
+     const openExportMenu = (event) => {
+        setExportAnchor(event.currentTarget); 
+     };
+
+    const closeExportMenu = () => {
+        setExportAnchor(null);
+    };
     const openNewTrade = () => {
         setSelectedTrade(null);
         setDialogOpen(true);
@@ -302,34 +322,100 @@ export default function Trades() {
 
     return (
         <Box>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={3}
-            >
+              <Stack
+                  direction="row" 
+                  sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 3
+                  }}
+              >
                 <Typography variant="h4">
                     Trades
                 </Typography>
 
-                <Stack direction="row" spacing={2}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<RefreshIcon />}
-                        onClick={loadTrades}
-                    >
-                        Refresh
-                    </Button>
+	<Stack direction="row" spacing={2}>
+            <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={openExportMenu}
+            >
+                Export
+            </Button>
 
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={openNewTrade}
-                    >
-                        New Trade
-                    </Button>
-                </Stack>
-            </Stack>
+            <Button
+                variant="outlined"
+                startIcon={<RefreshIcon />}
+                onClick={loadTrades}
+            >
+                Refresh
+            </Button>
+
+            <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={openNewTrade}
+            >
+                New Trade
+            </Button>
+        </Stack>
+
+</Stack>
+
+<Menu    
+    anchorEl={exportAnchor}
+    open={exportMenuOpen}
+    onClose={closeExportMenu}
+>
+    <MenuItem onClick={closeExportMenu}>
+        <ListItemIcon>
+            <PictureAsPdfIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>
+            Export PDF
+        </ListItemText>
+    </MenuItem>
+
+    <MenuItem onClick={closeExportMenu}>
+        <ListItemIcon>
+            <TableChartIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>
+            Export Excel
+        </ListItemText>
+    </MenuItem>
+
+    <MenuItem
+        onClick={() => {
+            window.open(
+                "http://127.0.0.1:8000/exports/trades/csv",
+                "_blank"
+            );
+            closeExportMenu();
+        }}
+    >
+        <ListItemIcon>
+            <DescriptionIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>
+            Export CSV
+        </ListItemText>
+    </MenuItem>
+
+    <MenuItem
+        onClick={() => {
+            window.print();
+            closeExportMenu();
+        }}
+    >
+        <ListItemIcon>
+            <PrintIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>
+            Print
+        </ListItemText>
+    </MenuItem>
+</Menu>
 
             <Paper sx={{ p: 2, mb: 2 }}>
                 <Stack

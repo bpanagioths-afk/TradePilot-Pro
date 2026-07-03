@@ -19,6 +19,7 @@ import PsychologyIcon from "@mui/icons-material/Psychology";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import StorageIcon from "@mui/icons-material/Storage";
+import RuleIcon from "@mui/icons-material/Rule";
 
 const drawerWidth = 240;
 
@@ -29,7 +30,8 @@ const menu = [
     { text: "Psychology", icon: <PsychologyIcon />, path: "/psychology" },
     { text: "Reports", icon: <AssessmentIcon />, path: "/reports" },
     { text: "MT5", icon: <StorageIcon />, path: "/mt5" },
-    { text: "Settings", icon: <SettingsIcon />, path: "/settings" }
+    { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+    { text: "Trading Plan", icon: <RuleIcon />, path: "/trading-plan" }
 ];
 
 export default function Sidebar() {

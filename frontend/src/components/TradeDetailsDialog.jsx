@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
     Dialog,
@@ -20,6 +20,9 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import { evaluateTrade } from "../services/ruleEngineService";
+import TradeScoreCard from "./TradeScoreCard";
+
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
@@ -64,6 +67,21 @@ export default function TradeDetailsDialog({
     trade
 }) {
     const [zoomOpen, setZoomOpen] = useState(false);
+    const [scoreData, setScoreData] = useState(null);
+
+    useEffect(() => {
+
+        if (!trade) {
+            return;
+        }
+
+        evaluateTrade(trade.id)
+            .then((res) => {
+                setScoreData(res.data);
+            })
+            .catch(console.error);
+
+    }, [trade]);
 
     if (!trade) {
         return null;
@@ -92,11 +110,13 @@ export default function TradeDetailsDialog({
                 fullWidth
             >
                 <DialogTitle>
-                    <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
+                        <Stack
+                           direction="row"
+                           sx={{
+                               justifyContent: "space-between",
+                               alignItems: "center"
+                           }}
+                        >
                         <Box>
                             <Typography variant="h5">
                                 {trade.symbol} {trade.direction}
@@ -200,7 +220,7 @@ export default function TradeDetailsDialog({
                             />
                         </Grid>
                     </Grid>
-
+                    <TradeScoreCard scoreData={scoreData} />
                     <Divider sx={{ my: 3 }} />
 
                     <Typography variant="h6" mb={1}>

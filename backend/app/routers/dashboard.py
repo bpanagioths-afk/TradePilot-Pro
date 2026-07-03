@@ -224,6 +224,7 @@ def equity_curve():
     finally:
         db.close()
 
+
 @router.get("/full")
 def dashboard_full():
 

@@ -6,6 +6,11 @@ import {
     Paper
 } from "@mui/material";
 
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import PercentIcon from "@mui/icons-material/Percent";
+import CandlestickChartIcon from "@mui/icons-material/CandlestickChart";
+import TimelineIcon from "@mui/icons-material/Timeline";
+
 import { getFullDashboard } from "../services/dashboardService";
 
 import KPICard from "../components/KPICard";
@@ -59,6 +64,7 @@ useEffect(() => {
                     value={`${summary.total_profit} €`}
                     subtitle="All imported trades"
                     color="success.main"
+                    icon={<AccountBalanceWalletIcon />}
                 />
 
                 <KPICard
@@ -66,6 +72,7 @@ useEffect(() => {
                     value={`${summary.win_rate}%`}
                     subtitle={`${summary.wins} wins / ${summary.losses} losses`}
                     color="primary.main"
+                    icon={<PercentIcon />}
                 />
 
                 <KPICard
@@ -73,6 +80,7 @@ useEffect(() => {
                     value={summary.total_trades}
                     subtitle="Manual + MT5 trades"
                     color="warning.main"
+                    icon={<CandlestickChartIcon />}
                 />
 
                 <KPICard
@@ -80,6 +88,7 @@ useEffect(() => {
                     value={summary.total_pips}
                     subtitle={`Average: ${summary.average_pips}`}
                     color="secondary.main"
+                    icon={<TimelineIcon />}
                 />
             </Box>
 

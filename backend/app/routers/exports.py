@@ -4,8 +4,14 @@ from fastapi.responses import StreamingResponse
 from app.core.database import SessionLocal
 from app.models.trade import Trade
 
+from app.reports.pdf_report import build_trades_pdf_report
+
 import csv
 import io
+
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
 
 router = APIRouter(
     prefix="/exports",
@@ -80,3 +86,23 @@ def export_trades_csv():
             "Content-Disposition": "attachment; filename=trades_export.csv"
         }
     )
+@router.get("/trades/pdf")
+def export_trades_pdf():
+
+    db = SessionLocal()
+
+    try:
+        trades = db.query(Trade).order_by(Trade.id.desc()).all()
+
+        pdf_buffer = build_trades_pdf_report(trades)
+
+        return StreamingResponse(
+            pdf_buffer,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": "attachment; filename=tradepilot_report.pdf"
+            }
+        )
+
+    finally:
+        db.close()
