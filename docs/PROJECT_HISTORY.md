@@ -2,13 +2,13 @@
 
 > Η ιστορία του TradePilot Pro.
 >
-> Το αρχείο αυτό ΔΕΝ περιγράφει κώδικα.
+> Το αρχείο αυτό ΔΕΝ περιγράφει μόνο κώδικα.
 >
 > Περιγράφει γιατί πάρθηκαν σημαντικές αποφάσεις.
 >
 > Στόχος είναι να μη χαθεί ποτέ η γνώση του project.
 
----
+\---
 
 # Chapter 1
 
@@ -18,16 +18,16 @@
 
 Αρχικός στόχος ήταν:
 
-- αποθήκευση trades
-- βασικά στατιστικά
-- dashboard
-- αναφορές
+* αποθήκευση trades
+* βασικά στατιστικά
+* dashboard
+* αναφορές
 
 Σύντομα έγινε φανερό ότι η αγορά διαθέτει ήδη πολλά Trading Journals.
 
 Έτσι αποφασίστηκε το TradePilot Pro να εξελιχθεί σε κάτι μεγαλύτερο.
 
----
+\---
 
 # Chapter 2
 
@@ -45,18 +45,18 @@
 
 Το πρόγραμμα θα βοηθά τον trader:
 
-- πριν ανοίξει trade
-- κατά τη διάρκεια
-- μετά το κλείσιμο
-- στην ανάλυση
-- στην ψυχολογία
-- στην πειθαρχία
+* πριν ανοίξει trade
+* κατά τη διάρκεια
+* μετά το κλείσιμο
+* στην ανάλυση
+* στην ψυχολογία
+* στην πειθαρχία
 
----
+\---
 
 # Chapter 3
 
-## Η φιλοσοφία "Process over Profit"
+## Η φιλοσοφία Process over Profit
 
 Κατά την ανάπτυξη διαπιστώθηκε ότι:
 
@@ -72,7 +72,7 @@
 
 Από εδώ γεννήθηκε το Rule Engine.
 
----
+\---
 
 # Chapter 4
 
@@ -80,7 +80,7 @@
 
 Αρχικά υπήρχε η σκέψη να χρησιμοποιηθεί AI.
 
-Η ιδέα εγκαταλείφθηκε.
+Η ιδέα εγκαταλείφθηκε ως πρώτο βήμα.
 
 Αποφασίστηκε πρώτα να δημιουργηθεί deterministic Rule Engine.
 
@@ -90,7 +90,7 @@
 
 Όχι σε εικασίες.
 
----
+\---
 
 # Chapter 5
 
@@ -98,27 +98,21 @@
 
 Αρχικά υπήρχε μόνο Profit.
 
-Μετά:
+Μετά Win Rate.
 
-Win Rate.
-
-Τελικά αποφασίστηκε:
-
-Trade Score.
+Τελικά αποφασίστηκε Trade Score.
 
 Το Score βασίζεται στην ποιότητα της εκτέλεσης.
 
 Όχι στο οικονομικό αποτέλεσμα.
 
----
+\---
 
 # Chapter 6
 
 ## Discipline Index
 
-Μετά το Trade Score γεννήθηκε η ιδέα του:
-
-Discipline Index.
+Μετά το Trade Score γεννήθηκε η ιδέα του Discipline Index.
 
 Στόχος:
 
@@ -128,7 +122,7 @@ Discipline Index.
 
 Θεωρείται ένας από τους βασικούς πυλώνες του προϊόντος.
 
----
+\---
 
 # Chapter 7
 
@@ -136,19 +130,17 @@ Discipline Index.
 
 Αρχικά υπήρχε ένα μόνο Trading Plan.
 
-Αργότερα διαπιστώθηκε ότι:
+Αργότερα διαπιστώθηκε ότι ο ίδιος trader μπορεί να χρησιμοποιεί:
 
-ο ίδιος trader μπορεί να χρησιμοποιεί:
-
-- Forex
-- Gold
-- Swing
-- FTMO
-- The5ers
+* Forex
+* Gold
+* Swing
+* FTMO
+* The5ers
 
 Έτσι αποφασίστηκε η υποστήριξη πολλών Trading Plans.
 
----
+\---
 
 # Chapter 8
 
@@ -156,13 +148,7 @@ Discipline Index.
 
 Αφορμή
 
-Το ελληνικό πληκτρολόγιο χρησιμοποιεί:
-
-,
-
-ενώ η JavaScript χρησιμοποιεί:
-
-.
+Το ελληνικό πληκτρολόγιο χρησιμοποιεί `,` ενώ η JavaScript χρησιμοποιεί `.`.
 
 Απόφαση
 
@@ -172,13 +158,13 @@ Discipline Index.
 
 Όλα τα numeric inputs του project να χρησιμοποιούν το ίδιο component.
 
----
+\---
 
 # Chapter 9
 
 ## Snackbar
 
-Αρχικά χρησιμοποιούνταν alert().
+Αρχικά χρησιμοποιούνταν `alert()`.
 
 Η εμπειρία χρήσης θεωρήθηκε κακή.
 
@@ -186,34 +172,30 @@ Discipline Index.
 
 Όλα τα notifications χρησιμοποιούν Snackbar.
 
----
+\---
 
 # Chapter 10
 
 ## MT5 Multi Accounts
 
-Αρχικά ο συγχρονισμός γινόταν:
-
-Import όλα.
+Αρχικά ο συγχρονισμός γινόταν σαν Import όλα.
 
 Σύντομα διαπιστώθηκε πρόβλημα.
 
 Ο χρήστης χρησιμοποιεί πολλούς λογαριασμούς:
 
-- προσωπικό
-- FTMO
-- The5ers
-- άλλους brokers
+* προσωπικό
+* FTMO
+* The5ers
+* άλλους brokers
 
-Επιπλέον:
-
-η διαγραφή trade προκαλούσε επανεισαγωγή.
+Επιπλέον, η διαγραφή trade προκαλούσε επανεισαγωγή.
 
 Απόφαση
 
 Δημιουργία MT5 Account Manager.
 
----
+\---
 
 # Chapter 11
 
@@ -227,60 +209,52 @@ Import όλα.
 
 Δεν γίνεται Delete.
 
-Χρησιμοποιείται:
-
-is_archived
+Χρησιμοποιείται `is\_archived`.
 
 Έτσι:
 
-- δεν χάνεται ιστορικό
-- δεν γίνεται επανεισαγωγή
-- δεν χάνονται σημειώσεις
+* δεν χάνεται ιστορικό
+* δεν γίνεται επανεισαγωγή
+* δεν χάνονται σημειώσεις
 
----
+\---
 
 # Chapter 12
 
 ## Portfolio Philosophy
 
-Αποφασίστηκε ότι:
+Αποφασίστηκε ότι το πρόγραμμα θα μπορεί να εμφανίζει:
 
-το πρόγραμμα θα μπορεί να εμφανίζει:
-
-- όλους τους brokers
-- όλες τις Prop Firms
-- συνολικό αποτέλεσμα
+* όλους τους brokers
+* όλες τις Prop Firms
+* συνολικό αποτέλεσμα
 
 Το πρόγραμμα αντιμετωπίζει όλους τους λογαριασμούς σαν Portfolio.
 
----
+\---
 
 # Chapter 13
 
 ## AI Coach
 
-Η αρχική ιδέα ήταν:
-
-ένα γενικό chatbot.
+Η αρχική ιδέα ήταν ένα γενικό chatbot.
 
 Απορρίφθηκε.
 
-Η νέα φιλοσοφία είναι:
-
-Data Driven AI.
+Η νέα φιλοσοφία είναι Data Driven AI.
 
 Ο AI Coach χρησιμοποιεί:
 
-- Rule Engine
-- Trade Score
-- Trading Plan
-- Psychology
-- Statistics
-- History
+* Rule Engine
+* Trade Score
+* Trading Plan
+* Psychology
+* Statistics
+* History
 
 και όχι γενικές συμβουλές.
 
----
+\---
 
 # Chapter 14
 
@@ -290,31 +264,331 @@ Data Driven AI.
 
 Έτσι δημιουργήθηκαν:
 
-- PROJECT_MASTER.md
-- CHANGELOG.md
-- BACKLOG.md
-- DECISIONS.md
-- PROJECT_HISTORY.md
+* PROJECT\_MASTER.md
+* CHANGELOG.md
+* BACKLOG.md
+* DECISIONS.md
+* PROJECT\_HISTORY.md
 
 Στόχος
 
 Κάθε νέα συνομιλία να μπορεί να συνεχίζει την ανάπτυξη χωρίς να χάνεται γνώση.
 
----
+\---
+
+# Chapter 15
+
+## MT5 Account Manager Backend CRUD
+
+Κατά το Sprint 17.2 ολοκληρώθηκε ο backend πυρήνας του MT5 Account Manager.
+
+Μέχρι αυτό το σημείο το MT5 Sync λειτουργούσε περισσότερο σαν μηχανισμός import.
+
+Με το Sprint 17.2 μετατράπηκε σε account-aware υποδομή.
+
+Αποφασίστηκε ότι:
+
+* κάθε MT5 trade συνδέεται με συγκεκριμένο MT5 account
+* το MT5 ticket δεν είναι ποτέ internal primary key
+* duplicate detection γίνεται με `mt5\_account\_id + mt5\_ticket`
+* το delete σε MT5 account γίνεται disable και όχι φυσική διαγραφή
+
+Επιπλέον, το project άρχισε να εφαρμόζει πιο καθαρή backend αρχιτεκτονική:
+
+Model
+↓
+Schema
+↓
+Service
+↓
+Router
+↓
+React API
+↓
+React UI
+
+Αυτό θεωρήθηκε σημαντικό σημείο μετάβασης.
+
+Το TradePilot Pro δεν χτίζει πλέον απλώς λειτουργίες.
+
+Χτίζει πλατφόρμα.
+
+\---
+
+# Chapter 16
+
+## Development Standards
+
+Μετά το Sprint 17.2 αποφασίστηκε η δημιουργία ξεχωριστού αρχείου `DEVELOPMENT\_STANDARDS.md`.
+
+Ο λόγος είναι ότι το project χρειάζεται όχι μόνο αποφάσεις και ιστορικό, αλλά και σαφείς κανόνες για το πώς γράφεται ο κώδικας.
+
+Οι κανόνες αυτοί περιλαμβάνουν:
+
+* μικρά ασφαλή βήματα
+* όχι μεγάλα rewrites χωρίς λόγο
+* routers χωρίς business logic
+* services για επιχειρησιακή λογική
+* schemas για request / response
+* soft delete όπου υπάρχει ιστορικό
+* Snackbar αντί για alert
+* NumericField για numeric inputs
+
+Αυτό έγινε ώστε κάθε επόμενο Sprint να ξεκινά με κοινό τρόπο σκέψης και σταθερή τεχνική ποιότητα.
+
+\---
+
+# Chapter 17
+
+## MT5 Account Manager UI
+
+Το Sprint 17.3 ολοκλήρωσε την πρώτη πλήρη έκδοση του MT5 Account Manager UI.
+
+Αρχικά ο στόχος ήταν απλός:
+
+* λίστα MT5 accounts
+* add
+* edit
+* disable
+* sync
+
+Στην πορεία όμως έγινε σαφές ότι αυτό το module είναι πολύ σημαντικότερο.
+
+Το MT5 Account Manager είναι η βάση για:
+
+* προσωπικούς λογαριασμούς
+* prop firm accounts
+* πολλούς brokers
+* portfolio analytics
+* account-aware sync
+* μελλοντικό auto sync
+* πιθανό SaaS μοντέλο
+
+Υλοποιήθηκαν:
+
+* React API layer
+* MT5 Accounts UI στο Settings
+* Add Account Dialog
+* Edit Account Dialog
+* Disable Account
+* Activate Account
+* Sync selected account
+* Snackbar notifications
+* Sync loading state
+* Last Sync display
+* Login display
+* Actions Menu
+* Professional card Phase 1
+
+Η πρώτη έκδοση του UI δοκιμάστηκε με πραγματικό MT5 account και έγινε επιτυχές sync με εισαγωγή trades.
+
+\---
+
+# Chapter 18
+
+## Component Refactor και καθαρό Frontend
+
+Κατά την ανάπτυξη του Sprint 17.3, το `Settings.jsx` έφτασε περίπου τις 470 γραμμές.
+
+Αυτό θεωρήθηκε προειδοποιητικό σημάδι.
+
+Αν συνεχιζόταν η ίδια πορεία, το Settings θα γινόταν δύσκολο στη συντήρηση.
+
+Αποφασίστηκε refactor.
+
+Το MT5 logic βγήκε από το `Settings.jsx` και μεταφέρθηκε σε:
+
+```text
+components/settings/mt5/MT5AccountsManager.jsx
+components/settings/mt5/MT5AccountCard.jsx
+```
+
+Έτσι το Settings έγινε ξανά καθαρό.
+
+Από αυτή την εμπειρία γεννήθηκε νέα αρχιτεκτονική απόφαση:
+
+React components πρέπει ιδανικά να μένουν κάτω από περίπου 200-250 γραμμές.
+
+Όταν μεγαλώνουν, σπάνε σε μικρότερα reusable components.
+
+\---
+
+# Chapter 19
+
+## Stable UI State
+
+Κατά το Activate / Disable των MT5 accounts εμφανίστηκε ένα περίεργο UI πρόβλημα.
+
+Ο χρήστης πάταγε Activate σε έναν λογαριασμό και μετά το actions menu έδειχνε σαν να συμπεριφέρεται λάθος.
+
+Στην αρχή φάνηκε σαν bug του Material UI Menu.
+
+Μετά από παρατήρηση διαπιστώθηκε ότι το πραγματικό πρόβλημα ήταν ότι η λίστα άλλαζε σειρά μετά το refresh.
+
+Η λύση ήταν:
+
+```javascript
+const sortedAccounts = \[...data].sort((a, b) => a.id - b.id);
+```
+
+Δηλαδή stable sorting με βάση το internal database ID.
+
+Αυτό οδήγησε σε νέα αρχή:
+
+Πριν προστεθούν περισσότερα features, πρέπει να σταθεροποιείται η UI κατάσταση.
+
+\---
+
+# Chapter 20
+
+## Professional UX Philosophy
+
+Στο τέλος του Sprint 17 έγινε μια σημαντική αλλαγή νοοτροπίας.
+
+Μέχρι τότε το project επικεντρωνόταν στο:
+
+να λειτουργεί.
+
+Μετά το MT5 Account Manager UI αποφασίστηκε ότι αυτό δεν αρκεί.
+
+Το TradePilot Pro πρέπει να αναπτύσσεται σαν εμπορικό προϊόν.
+
+Κάθε νέο module θα περνάει από 3 στάδια:
+
+Functionality
+↓
+Architecture
+↓
+Professional UX
+
+Δηλαδή:
+
+1. Πρώτα να δουλεύει σωστά.
+2. Μετά να έχει καθαρή αρχιτεκτονική.
+3. Τέλος να έχει επαγγελματική εμπειρία χρήστη.
+
+Αυτή η φιλοσοφία θεωρείται κομβική για το μέλλον του project.
+
+Το TradePilot Pro δεν πρέπει να μοιάζει με απλή CRUD εφαρμογή.
+
+Πρέπει να μοιάζει με εργαλείο που ένας trader μπορεί να έχει ανοιχτό όλη μέρα.
+
+\---
+
+# Chapter 21
+
+## Future SaaS Thinking
+
+Στο τέλος του Sprint 17 συζητήθηκε ότι η μελλοντική χρήση του TradePilot Pro δεν πρέπει να περιορίζεται μόνο σε έναν τοπικό χρήστη.
+
+Υπάρχει προοπτική για μελλοντική έκδοση όπου άλλοι traders θα μπορούν να χρησιμοποιούν την υπηρεσία με:
+
+* user
+* password
+* subscription pass key
+* μηνιαία ανανέωση
+* ασφαλή αποθήκευση credentials
+* per-user MT5 accounts
+
+Η τρέχουσα έκδοση παραμένει local-first.
+
+Όμως αποφασίστηκε ότι η ανάπτυξη δεν πρέπει να κλειδώνει το project σε έναν μόνο χρήστη.
+
+Αυτό οδηγεί σε future SaaS ready αρχιτεκτονική.
+
+\---
+
+# Chapter 22
+
+## Trading Connections - αλλά όχι ακόμα
+
+Κατά τη συζήτηση του Sprint 18 εμφανίστηκε η ιδέα να μετονομαστεί το MT5 Account Manager σε Trading Connections.
+
+Ο λόγος ήταν σωστός:
+
+Στο μέλλον μπορεί να υποστηριχθούν:
+
+* MT5
+* cTrader
+* DXTrade
+* MatchTrader
+* Interactive Brokers
+* Binance
+* Bybit
+* TradingView Bridge
+
+Όμως αποφασίστηκε να μην γίνει πρόωρο rename.
+
+Ο λόγος:
+
+Αυτή τη στιγμή το backend, τα endpoints και τα models είναι καθαρά MT5.
+
+Αν γίνει τώρα rename χωρίς δεύτερη πλατφόρμα, θα δημιουργηθεί τεχνικό χρέος χωρίς άμεσο όφελος.
+
+Άρα η σωστή απόφαση είναι:
+
+MT5 now.
+
+Trading Connections later, όταν προστεθεί δεύτερη πραγματική πλατφόρμα.
+
+\---
+
+# Chapter 23
+
+## Design System Foundation
+
+Μετά το Sprint 17 αποφασίστηκε ότι το Sprint 18 πρέπει να ξεκινήσει με Design System.
+
+Ο λόγος είναι ότι το TradePilot Pro θα αποκτήσει πολλά modules:
+
+* Dashboard
+* Journal
+* Analytics
+* Psychology
+* AI Coach
+* Trading Plan
+* Reports
+* MT5 Manager
+* Economic Calendar
+* Prop Firms
+
+Αν κάθε οθόνη σχεδιάζεται ανεξάρτητα, το προϊόν θα γίνει ασυνεπές.
+
+Άρα χρειάζεται κοινό Design System με:
+
+* Cards
+* Buttons
+* Badges
+* Status colors
+* Spacing
+* Typography
+* Hover effects
+* Professional layout rules
+
+Το Sprint 18 ξεκινά από αυτό.
+
+Όχι επειδή είναι διακοσμητικό.
+
+Αλλά επειδή το Design System είναι αρχιτεκτονική απόφαση για το frontend.
+
+\---
 
 # Development Philosophy
 
 Κατά την ανάπτυξη ακολουθούνται οι παρακάτω αρχές:
 
-- μικρά ασφαλή βήματα
-- όχι μεγάλα rewrites
-- καθαρή αρχιτεκτονική
-- επαναχρησιμοποίηση κώδικα
-- σταδιακή εξέλιξη
-- πρώτα η σταθερότητα
-- μετά τα νέα χαρακτηριστικά
+* μικρά ασφαλή βήματα
+* όχι μεγάλα rewrites χωρίς λόγο
+* καθαρή αρχιτεκτονική
+* επαναχρησιμοποίηση κώδικα
+* σταδιακή εξέλιξη
+* πρώτα η σταθερότητα
+* μετά τα νέα χαρακτηριστικά
+* προστασία ιστορικών δεδομένων
+* επαγγελματική εμπειρία χρήστη
+* documentation first
 
----
+\---
 
 # Long Term Vision
 
@@ -322,31 +596,34 @@ Data Driven AI.
 
 Το πληρέστερο Windows Trading Command Center για:
 
-- Forex
-- Metals
-- Indices
-- Crypto
-- Prop Firms
+* Forex
+* Metals
+* Indices
+* Crypto
+* Prop Firms
 
 με:
 
-- Rule Engine
-- AI Coach
-- Portfolio Analytics
-- MT5 Manager
-- Economic Calendar
-- Psychology
-- Discipline Index
-- Trading Playbook
+* Rule Engine
+* AI Coach
+* Portfolio Analytics
+* MT5 Manager
+* Economic Calendar
+* Psychology
+* Discipline Index
+* Trading Playbook
+* Future SaaS capability
+* Professional UX
 
 και επαγγελματικό επίπεδο αξιοπιστίας.
 
----
+\---
 
 # Closing Note
 
-Το TradePilot Pro δεν αναπτύσσεται απλώς για να "λειτουργεί".
+Το TradePilot Pro δεν αναπτύσσεται απλώς για να λειτουργεί.
 
 Αναπτύσσεται για να γίνει ένα εργαλείο που θα χρησιμοποιείται καθημερινά από επαγγελματίες traders.
 
 Κάθε νέα απόφαση πρέπει να υπηρετεί αυτόν τον στόχο.
+
