@@ -1,163 +1,119 @@
 import {
     Box,
-    Button,
     IconButton,
     Menu,
     MenuItem,
-    ListItemIcon,
-    ListItemText,
-    Chip,
-    Paper,
     Stack,
     Typography,
-    CircularProgress,
 } from "@mui/material";
 
-import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import BlockIcon from "@mui/icons-material/Block";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SyncIcon from "@mui/icons-material/Sync";
 
-import { useState } from "react";
+import TradePilotCard from "../../common/TradePilotCard";
+import StatusBadge from "../../common/StatusBadge";
+import InfoRow from "../../common/InfoRow";
+import TradePilotButton from "../../common/TradePilotButton";
 
 export default function MT5AccountCard({
     account,
+    syncingAccountId,
+    menuAnchorEl,
+    menuAccount,
+    onOpenMenu,
+    onCloseMenu,
     onEdit,
     onDisable,
     onActivate,
     onSync,
-    syncingAccountId,
 }) {
-
-const [menuAnchor, setMenuAnchor] = useState(null);
-const menuOpen = Boolean(menuAnchor);
-
-const handleOpenMenu = (event) => {
-    setMenuAnchor(event.currentTarget);
-};
-
-const handleCloseMenu = () => {
-    setMenuAnchor(null);
-};
-
-const handleMenuAction = (action) => {
-    handleCloseMenu();
-
-    setTimeout(() => {
-        action();
-    }, 150);
-};
+    const isSyncing = syncingAccountId === account.id;
 
     return (
-        <Paper
-            variant="outlined"
-            sx={{
-                p: 2,
-                borderRadius: 3,
-                transition: "0.2s",
-                "&:hover": {
-                    boxShadow: 3,
-                },
-            }}
-        >
-            <Stack
-                direction="row"
-                sx={{
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
+        <TradePilotCard>
+            <Stack spacing={2}>
+<Stack
+    direction="row"
+    sx={{
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        gap: 2,
+    }}
+>                    <Box sx={{ minWidth: 0 }}>
+                        <Typography
+                            variant="subtitle1"
+                            sx={{
+                                fontWeight: 700,
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                            }}
+                        >
+                            {account.account_name}
+                        </Typography>
+
+                        <Typography variant="body2" color="text.secondary">
+                            MT5 Trading Account
+                        </Typography>
+                    </Box>
+
+                    <StatusBadge
+                        label={account.is_active ? "Active" : "Disabled"}
+                        status={account.is_active ? "active" : "disabled"}
+                    />
+                </Stack>
+
                 <Box>
-                    <Typography
-                        variant="h6"
-                        fontWeight={700}
-                    >
-                        {account.account_name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {account.broker} • {account.server}
-                    </Typography>
-                    <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        display="block"
-                    >
-                        Login: {account.login}
-                    </Typography>
-
-                    <Typography
-                        variant="caption" 
-                        color="text.secondary"
-                        display="block"
-                    >
-                        Last Sync:{" "}
-                        {account.last_sync
-                            ? new Date(account.last_sync).toLocaleString()
-                            : "Never"}
-                    </Typography>
-
+                    <InfoRow label="Broker" value={account.broker} />
+                    <InfoRow label="Server" value={account.server} />
+                    <InfoRow label="Login" value={account.login} />
+                    <InfoRow label="Last Sync" value={account.last_sync || "Never"} />
                 </Box>
-
-<Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-<Button
-    size="small"
-    variant="contained"
-    startIcon={
-        syncingAccountId === account.id ? (
-            <CircularProgress size={16} />
-        ) : (
-            <SyncIcon />
-        )
-    }
-    disabled={!account.is_active || syncingAccountId === account.id}
+<Stack
+    direction="row"
+    sx={{
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 1,
+    }}
+>
+<TradePilotButton
+    startIcon={<SyncIcon />}
+    loading={isSyncing}
+    disabled={!account.is_active}
     onClick={() => onSync(account.id)}
 >
-    {syncingAccountId === account.id ? "Syncing..." : "Sync"}
-</Button>
-    <Chip
-        label={account.is_active ? "Active" : "Disabled"}
-        color={account.is_active ? "success" : "default"}
-        size="small"
-    />
+    Sync
+</TradePilotButton>
 
-    <IconButton size="small" onClick={handleOpenMenu}>
-        <MoreVertIcon />
-    </IconButton>
-
-    <Menu
-        anchorEl={menuAnchor}
-        open={menuOpen}
-        onClose={handleCloseMenu}
-        disablePortal
-    >
-        <MenuItem onClick={() => handleMenuAction(() => onEdit(account))}>
-            <ListItemIcon>
-                <EditIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Edit</ListItemText>
-        </MenuItem>
-
-        {account.is_active && (
-            <MenuItem onClick={() => handleMenuAction(() => onDisable(account.id))}>
-                <ListItemIcon>
-                    <BlockIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Disable</ListItemText>
-            </MenuItem>
-        )}
-
-        {!account.is_active && (
-            <MenuItem onClick={() => handleMenuAction(() => onActivate(account))}>
-                <ListItemIcon>
-                    <CheckCircleIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Activate</ListItemText>
-            </MenuItem>
-        )}
-    </Menu>
-</Stack>
+                    <IconButton
+                        size="small"
+                        onClick={(event) => onOpenMenu(event, account)}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                </Stack>
             </Stack>
-        </Paper>
+
+            <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl) && menuAccount?.id === account.id}
+                onClose={onCloseMenu}
+            >
+                <MenuItem onClick={() => onEdit(account)}>
+                    Edit
+                </MenuItem>
+
+                {account.is_active ? (
+                    <MenuItem onClick={() => onDisable(account.id)}>
+                        Disable
+                    </MenuItem>
+                ) : (
+                    <MenuItem onClick={() => onActivate(account)}>
+                        Activate
+                    </MenuItem>
+                )}
+            </Menu>
+        </TradePilotCard>
     );
 }

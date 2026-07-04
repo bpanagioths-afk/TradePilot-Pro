@@ -376,4 +376,130 @@ Apply the Design System to MT5 Account Manager.
 Να δημιουργηθεί το καλύτερο Trading Command Center για Windows,
 με AI, Rule Engine, MT5 Manager, Portfolio Analytics, Prop Firm support,
 Psychology, Trading Plans και επαγγελματικό UX.
+---
+
+# Frontend Architecture
+
+Starting from Sprint 18, TradePilot Pro includes its own frontend architecture based on the **TradePilot UI Framework**.
+
+The frontend is organized into three layers:
+
+```
+Material UI
+        ↓
+TradePilot UI Framework
+        ↓
+Application Modules
+```
+
+Material UI is used as the rendering library.
+
+The application itself is built using reusable TradePilot components.
+
+---
+
+# TradePilot UI Framework
+
+Current reusable components:
+
+- Theme
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- SectionHeader
+- InfoRow
+
+Future planned components:
+
+- MetricCard
+- EmptyState
+- LoadingOverlay
+- ConfirmDialog
+- TradePilotDialog
+- TradePilotTable
+- WidgetHeader
+- WidgetFooter
+- PageContainer
+
+---
+
+# Design Guide
+
+Official frontend documentation:
+
+```
+docs/DESIGN_SYSTEM.md
+```
+
+The Design Guide defines:
+
+- Colors
+- Typography
+- Spacing
+- Cards
+- Buttons
+- Dialogs
+- Widgets
+- Status Badges
+- Empty States
+- Loading States
+
+Every new frontend module should follow these standards.
+
+---
+
+# Widget-Based Philosophy
+
+TradePilot Pro is designed around reusable trading widgets.
+
+Examples:
+
+- MT5 Account Widget
+- Portfolio Widget
+- Trading Plan Widget
+- AI Coach Widget
+- Dashboard Widgets
+- Market Widget
+
+Widgets provide a consistent user experience and allow faster future development.
+
+---
+
+# Product Vision
+
+TradePilot Pro is evolving into a professional **Trading Command Center**.
+
+Core product pillars include:
+
+- Portfolio Management
+- MT5 Integration
+- Trading Plans
+- Rule Engine
+- AI Coach
+- Psychology Analysis
+- Performance Analytics
+- Economic Calendar
+- Risk Management
+- Professional Dashboard
+
+The long-term objective is to provide traders with a complete desktop platform built on a consistent architecture, reusable UI framework and professional user experience.
+
+---
+
+# Documentation
+
+Project documentation is organized as follows:
+
+| File | Purpose |
+|------|---------|
+| PROJECT_MASTER.md | Overall architecture and product vision |
+| CHANGELOG.md | Sprint history and technical evolution |
+| DECISIONS.md | Accepted architectural decisions |
+| BACKLOG.md | Planned features and future ideas |
+| PROJECT_HISTORY.md | Historical context and product evolution |
+| DEVELOPMENT_STANDARDS.md | Development rules and coding standards |
+| docs/DESIGN_SYSTEM.md | Official UI / UX Design Guide |
+
+Reading these documents before starting development is strongly recommended.
+
 

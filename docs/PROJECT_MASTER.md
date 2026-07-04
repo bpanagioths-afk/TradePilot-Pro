@@ -396,3 +396,348 @@ Reason
 
 TradePilot Pro is growing into a professional Trading Command Center and needs consistent UX before the UI expands further.
 
+---
+
+# Sprint 18 - TradePilot UI Framework v1
+
+Status: Completed
+
+## Vision Update
+
+Sprint 18 marks the evolution of the frontend architecture.
+
+TradePilot Pro is no longer developed as a collection of independent React pages.
+
+The application now follows a layered frontend architecture based on the TradePilot UI Framework.
+
+---
+
+# Frontend Architecture
+
+```
+Material UI
+        ↓
+TradePilot UI Framework
+        ↓
+Application Modules
+```
+
+Material UI provides the rendering engine.
+
+TradePilot UI Framework provides the reusable application components.
+
+Business modules should use TradePilot components whenever available.
+
+---
+
+# TradePilot UI Framework
+
+Current reusable components:
+
+- Theme
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- SectionHeader
+- InfoRow
+
+Planned reusable components:
+
+- MetricCard
+- EmptyState
+- LoadingOverlay
+- ConfirmDialog
+- PageContainer
+- TradePilotDialog
+- TradePilotTable
+- WidgetHeader
+- WidgetFooter
+- StatisticCard
+- SearchToolbar
+- FilterBar
+
+---
+
+# Design System
+
+Official reference:
+
+```
+docs/DESIGN_SYSTEM.md
+```
+
+This document defines:
+
+- visual identity
+- typography
+- spacing
+- color language
+- card philosophy
+- widget philosophy
+- dialogs
+- buttons
+- badges
+- loading states
+- empty states
+
+Every new frontend module should follow this guide.
+
+---
+
+# Widget Philosophy
+
+TradePilot Pro is designed around reusable trading widgets.
+
+Examples:
+
+- MT5 Account Widget
+- Dashboard Widgets
+- Portfolio Widget
+- Trading Plan Widget
+- AI Coach Widget
+- Psychology Widget
+- Market Widget
+
+Widgets should share:
+
+- Header
+- Status
+- Body
+- Actions
+
+This guarantees a consistent user experience across the application.
+
+---
+
+# Product Identity
+
+TradePilot Pro is not intended to look like a generic Material UI application.
+
+The objective is to create a recognizable professional trading platform with its own visual identity.
+
+The desired characteristics are:
+
+- clean
+- modern
+- dark
+- consistent
+- dashboard oriented
+- widget based
+- trading terminal inspired
+
+A user should eventually recognize TradePilot Pro from a single screenshot.
+
+---
+
+# Development Philosophy
+
+Frontend development now follows:
+
+Design
+
+↓
+
+Review
+
+↓
+
+Implementation
+
+Large UI modules should not be implemented before their visual structure has been agreed.
+
+---
+
+# Future UI Direction
+
+Planned future capabilities include:
+
+- Light Theme
+- Dark Theme
+- Accent Color selection
+- Saved appearance preferences
+- Compact / Comfortable layouts
+- Per-user appearance settings (future SaaS version)
+
+---
+
+# Current Product Direction
+
+TradePilot Pro continues evolving toward a complete Trading Command Center.
+
+Major pillars are:
+
+- Portfolio Management
+- MT5 Integration
+- Trading Plans
+- Rule Engine
+- AI Coach
+- Psychology
+- Analytics
+- Economic Calendar
+- Risk Management
+- Professional Dashboard
+
+Sprint 18 establishes the frontend foundation that all future modules will follow.
+
+
+# TradePilot Pro συνέχεια
+
+Πριν απαντήσεις:
+
+1. Διάβασε πρώτα το PROJECT_MASTER.md.
+2. Διάβασε το CHANGELOG.md.
+3. Διάβασε το BACKLOG.md.
+4. Διάβασε το DECISIONS.md.
+5. Διάβασε το DEVELOPMENT_STANDARDS.md.
+6. Διάβασε το docs/DESIGN_SYSTEM.md.
+7. Ακολούθησε αυστηρά όλες τις αρχιτεκτονικές αποφάσεις.
+8. Συνέχισε από το τελευταίο ενεργό Sprint.
+
+---
+
+# Τρόπος συνεργασίας
+
+- Μιλάμε στα Ελληνικά.
+- Ο κώδικας είναι πάντα στα Αγγλικά.
+- Οι οδηγίες πρέπει να είναι εξαιρετικά συγκεκριμένες.
+
+Πάντα χρησιμοποίησε την παρακάτω μορφή:
+
+✓ Αρχείο
+
+✓ Βρες αυτό
+
+✓ Βάλε ακριβώς από κάτω αυτό
+
+✓ Αντικατάστησε μόνο αυτό
+
+Όχι γενικές οδηγίες.
+
+Προτιμώνται μικρά ασφαλή βήματα.
+
+Μεγάλα rewrites επιτρέπονται μόνο όταν συμφωνηθούν εκ των προτέρων.
+
+---
+
+# Current Project Status
+
+Sprint 18 ολοκληρώθηκε.
+
+Ολοκληρώθηκαν:
+
+## Backend
+
+- Multi-account MT5 architecture
+- MT5 Account CRUD
+- Account-aware MT5 Sync
+- Service layer architecture
+- Stable duplicate detection
+- Archive strategy
+
+## Frontend
+
+- MT5 Account Manager
+- TradePilot Theme
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- SectionHeader
+- InfoRow
+- MT5 UI migration
+- Design System foundation
+
+---
+
+# Official UI Framework
+
+Το frontend πλέον ακολουθεί:
+
+Material UI
+
+↓
+
+TradePilot UI Framework
+
+↓
+
+Application Modules
+
+Το Material UI θεωρείται rendering layer.
+
+Όλα τα modules χρησιμοποιούν πρώτα TradePilot reusable components.
+
+---
+
+# Official Design Guide
+
+Official document:
+
+docs/DESIGN_SYSTEM.md
+
+Όλα τα νέα frontend modules πρέπει να ακολουθούν το Design Guide.
+
+---
+
+# Product Philosophy
+
+TradePilot Pro ΔΕΝ είναι πλέον μόνο Trading Journal.
+
+Είναι:
+
+Professional Trading Command Center.
+
+Το UI σχεδιάζεται ως σύνολο από widgets.
+
+---
+
+# Sprint 19
+
+Ξεκινάμε από:
+
+Professional MT5 Account Widget
+
+Στόχος:
+
+Να μετατραπεί η υπάρχουσα κάρτα MT5 σε πλήρες trading widget.
+
+Planned additions:
+
+- Balance
+- Equity
+- Floating Profit
+- Open Positions
+- Connection Health
+- Demo / Live
+- Prop Firm
+- Auto Sync
+- Import Statistics
+- Relative Last Sync
+
+---
+
+# Long Term Vision
+
+TradePilot Pro στοχεύει να εξελιχθεί σε πλήρη desktop trading platform για:
+
+- Forex
+- Metals
+- Indices
+- Crypto
+- Prop Firms
+
+με:
+
+- Portfolio Management
+- MT5 Integration
+- AI Coach
+- Trading Plans
+- Rule Engine
+- Psychology
+- Analytics
+- Risk Management
+- Economic Calendar
+- Professional Dashboard
+
+---
+
+Continue development from Sprint 19.

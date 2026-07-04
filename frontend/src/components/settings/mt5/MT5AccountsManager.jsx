@@ -10,12 +10,12 @@ import {
     Snackbar,
     Stack,
     TextField,
-    Typography,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
 
 import MT5AccountCard from "./MT5AccountCard";
+import SectionHeader from "../../common/SectionHeader";
 
 import {
     createMT5Account,
@@ -40,6 +40,8 @@ export default function MT5AccountsManager() {
     const [newAccount, setNewAccount] = useState(emptyAccount);
     const [editingAccount, setEditingAccount] = useState(null);
     const [syncingAccountId, setSyncingAccountId] = useState(null);
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const [menuAccount, setMenuAccount] = useState(null);
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: "",
@@ -61,6 +63,16 @@ export default function MT5AccountsManager() {
             console.error("Failed to load MT5 accounts", error);
         }
     };
+
+const handleOpenMenu = (event, account) => {
+    setMenuAnchorEl(event.currentTarget);
+    setMenuAccount(account);
+};
+
+const handleCloseMenu = () => {
+    setMenuAnchorEl(null);
+    setMenuAccount(null);
+};
 
     const handleNewAccountChange = (event) => {
         const { name, value } = event.target;
@@ -163,6 +175,8 @@ const handleSyncAccount = async (accountId) => {
 
         const result = await syncMT5Account(accountId);
 
+        console.log("MT5 sync result:", result);
+        
         setSnackbar({
             open: true,
             message: result?.message || "MT5 account synced successfully",
@@ -203,19 +217,20 @@ const handleSyncAccount = async (accountId) => {
 
     return (
         <Paper sx={{ p: 3, mb: 3 }}>
-            <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-                <Typography variant="h6">MT5 Accounts</Typography>
-
-                <Button
-                    variant="contained"
-                    size="small"
-                    startIcon={<AddIcon />}
-                    onClick={() => setAddDialogOpen(true)}
-                >
-                    Add Account
-                </Button>
-            </Stack>
-
+<SectionHeader
+    title="MT5 Accounts"
+    subtitle={`${accounts.length} account${accounts.length !== 1 ? "s" : ""}`}
+    action={
+        <Button
+            variant="contained"
+            size="small"
+            startIcon={<AddIcon />}
+            onClick={() => setAddDialogOpen(true)}
+        >
+            Add Account
+        </Button>
+    }
+/>
             <Stack spacing={1}>
               {accounts.map((account) => (
                   <MT5AccountCard
@@ -226,6 +241,10 @@ const handleSyncAccount = async (accountId) => {
                       onActivate={handleActivateAccount}
                       onSync={handleSyncAccount}
                       syncingAccountId={syncingAccountId}
+                      menuAnchorEl={menuAnchorEl}
+                      menuAccount={menuAccount}
+                      onOpenMenu={handleOpenMenu}
+                      onCloseMenu={handleCloseMenu}
                   />
               ))}           
             </Stack>

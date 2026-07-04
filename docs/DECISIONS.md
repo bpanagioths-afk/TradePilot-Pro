@@ -590,6 +590,147 @@ Reason
 
 Το Sprint 18 θα βελτιώσει πρώτα το MT5 Account Manager UI σε επαγγελματικό επίπεδο.
 
+
+---
+
+# D-029
+
+## TradePilot UI Framework
+
+Status: ACCEPTED
+
+Decision
+
+The frontend must be built on top of the TradePilot UI Framework.
+
+Application modules should use TradePilot reusable components instead of directly styling Material UI components whenever an equivalent TradePilot component exists.
+
+Examples:
+
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- SectionHeader
+- InfoRow
+
+Material UI becomes the rendering layer, while the TradePilot UI Framework becomes the application UI layer.
+
+Reason
+
+- Consistent UI
+- Easier maintenance
+- Better reuse
+- Product identity
+- Faster frontend development
+
+---
+
+# D-030
+
+## Design Before Development
+
+Status: ACCEPTED
+
+Decision
+
+Before implementing any major frontend module:
+
+1. Design
+2. Review
+3. Implementation
+
+Large UI modules should not be implemented directly without first defining their structure and user experience.
+
+Reason
+
+This minimizes redesigns, improves consistency and produces a better user experience.
+
+---
+
+# D-031
+
+## Official Design Guide
+
+Status: ACCEPTED
+
+Decision
+
+The file:
+
+docs/DESIGN_SYSTEM.md
+
+becomes the official frontend design reference.
+
+It defines:
+
+- colors
+- typography
+- spacing
+- widgets
+- cards
+- buttons
+- dialogs
+- loading states
+- empty states
+- reusable components
+
+Future frontend development should follow this guide.
+
+Reason
+
+The project now requires a single source of truth for UI and UX decisions.
+
+---
+
+# D-032
+
+## Widgets First
+
+Status: ACCEPTED
+
+Decision
+
+TradePilot Pro is designed as a collection of professional trading widgets rather than isolated pages or CRUD forms.
+
+Examples include:
+
+- MT5 Account Widget
+- Dashboard Widgets
+- Trading Plan Widget
+- AI Coach Widget
+- Portfolio Widget
+
+Reason
+
+Widgets improve modularity, reuse, scalability and reinforce the Trading Command Center philosophy.
+
+---
+
+# D-033
+
+## Future UI Personalization
+
+Status: ACCEPTED (Future)
+
+Decision
+
+Future versions of TradePilot Pro should support per-user appearance customization.
+
+Planned features include:
+
+- Light Theme
+- Dark Theme
+- Accent Color selection
+- Card style presets
+- Compact / Comfortable layout
+- Saved appearance preferences
+- Per-user UI settings for future SaaS deployment
+
+This decision is accepted as product direction but intentionally postponed until a later version.
+
+Reason
+
+Appearance customization improves usability while maintaining a consistent product identity.
 \---
 
 # Future Decisions

@@ -208,3 +208,148 @@ Professional UX
 
 The goal is to evolve from a working application into a professional Windows Trading Command Center suitable for Forex, Metals and Prop Firm traders.
 
+---
+
+# Sprint 18 - TradePilot UI Framework v1
+
+Status: Completed
+
+## Goal
+
+Create the first official TradePilot UI Framework and establish a consistent frontend design language before expanding the application.
+
+---
+
+## Technical Changes
+
+Added
+
+- TradePilot Theme
+- ThemeProvider integration
+- CssBaseline integration
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- SectionHeader
+- InfoRow
+- docs/DESIGN_SYSTEM.md
+
+---
+
+## MT5 UI Migration
+
+Completed
+
+- MT5AccountCard migrated to TradePilotCard
+- Active / Disabled status migrated to StatusBadge
+- SectionHeader integrated into MT5AccountsManager
+- Sync action migrated to TradePilotButton
+- Information layout migrated to InfoRow
+- Shared spacing and component patterns adopted
+
+---
+
+## Architecture Evolution
+
+Frontend architecture now follows:
+
+Material UI
+
+↓
+
+TradePilot UI Framework
+
+↓
+
+Application Modules
+
+Material UI is now treated as the rendering layer.
+
+Application modules should use TradePilot reusable components whenever available.
+
+---
+
+## UI / UX Philosophy
+
+TradePilot Pro now follows the development pipeline:
+
+Functionality
+
+↓
+
+Architecture
+
+↓
+
+Professional UX
+
+↓
+
+Product Identity
+
+The application is evolving into a professional Trading Command Center rather than a collection of CRUD pages.
+
+---
+
+## Design System
+
+Created:
+
+docs/DESIGN_SYSTEM.md
+
+The Design Guide defines:
+
+- visual identity
+- typography
+- spacing
+- reusable components
+- button hierarchy
+- card philosophy
+- widget philosophy
+- status colors
+- dialog rules
+- loading states
+- empty states
+- future personalization
+
+---
+
+## Widget First Direction
+
+Major frontend modules will gradually evolve into reusable widgets.
+
+Examples:
+
+- MT5 Account Widget
+- Dashboard Widgets
+- AI Coach Widget
+- Trading Plan Widget
+- Portfolio Widget
+- Market Widget
+
+---
+
+## Future Direction
+
+Sprint 19 will continue with the first complete professional MT5 Account Widget built entirely on top of the TradePilot UI Framework.
+
+Planned additions:
+
+- Balance
+- Equity
+- Open Positions
+- Connection Health
+- Demo / Live
+- Prop Firm
+- Import Statistics
+- Auto Sync Status
+- Relative Last Sync
+
+---
+
+## Design Milestone
+
+Sprint 18 marks the creation of the first official TradePilot UI Framework and Design Guide.
+
+This milestone defines the frontend architecture and visual identity that future modules will follow.
+

@@ -262,3 +262,195 @@ Generalization should happen when a second real platform is implemented.
 * \[ ] Apply first to MT5 Account Manager
 * \[ ] Start Professional UX phase for TradePilot Pro
 
+---
+
+# TradePilot UI Framework
+
+Priority: HIGH
+
+Status: Planned
+
+Description
+
+Continue expanding the TradePilot UI Framework introduced in Sprint 18.
+
+Planned reusable components:
+
+- TradePilotCard
+- TradePilotButton
+- TradePilotTable
+- TradePilotDialog
+- TradePilotToolbar
+- MetricCard
+- EmptyState
+- LoadingOverlay
+- ConfirmDialog
+- PageContainer
+- StatisticCard
+- WidgetHeader
+- WidgetFooter
+- SearchToolbar
+- FilterBar
+
+Goal
+
+Every frontend module should be built primarily from reusable TradePilot UI components.
+
+---
+
+# Design Playground
+
+Priority: HIGH
+
+Status: Planned
+
+Description
+
+Create a dedicated internal page for developing and previewing reusable UI components.
+
+Possible location:
+
+frontend/src/design-system/
+
+The page should display:
+
+- Colors
+- Typography
+- Buttons
+- Cards
+- Badges
+- Dialogs
+- Tables
+- Widgets
+- Empty States
+- Loading States
+
+Goal
+
+Every new component is designed and verified before being used inside production modules.
+
+---
+
+# MT5 Professional Widget
+
+Priority: HIGH
+
+Status: Planned
+
+Future MT5 widget information:
+
+- Balance
+- Equity
+- Floating Profit
+- Open Positions
+- Connection Status
+- Last Import
+- Auto Sync Status
+- Broker Logo
+- Demo / Live
+- Prop Firm
+- Relative Last Sync
+- Import Statistics
+
+Goal
+
+Transform the MT5 Account Card into a complete trading account widget.
+
+---
+
+# Widget-Based Dashboard
+
+Priority: MEDIUM
+
+Status: Planned
+
+The application dashboard should evolve into a widget-based Trading Command Center.
+
+Candidate widgets:
+
+- MT5 Accounts
+- Today's Performance
+- Portfolio
+- AI Coach
+- Economic Calendar
+- Trading Plan
+- Psychology
+- Market Status
+- Risk Monitor
+
+---
+
+# UI Personalization
+
+Priority: MEDIUM
+
+Status: Future
+
+Allow users to customize the application appearance.
+
+Ideas:
+
+- Light Theme
+- Dark Theme
+- Accent Color selection
+- Compact Layout
+- Comfortable Layout
+- Card Style presets
+- Save appearance preferences
+- Restore preferences automatically
+
+Future SaaS version:
+
+- Per-user appearance settings stored in the database.
+
+---
+
+# Component Library Documentation
+
+Priority: MEDIUM
+
+Status: Planned
+
+Create:
+
+docs/COMPONENT_LIBRARY.md
+
+Include:
+
+- Component purpose
+- Props
+- Usage examples
+- Best practices
+- Screenshots
+
+Goal
+
+Provide complete developer documentation for every reusable UI component.
+
+---
+
+# Trading Command Center
+
+Priority: LONG TERM
+
+Status: Vision
+
+Continue evolving TradePilot Pro from a Trading Journal into a complete Trading Command Center.
+
+Future modules:
+
+- Portfolio Center
+- Broker Center
+- Prop Firm Center
+- AI Coach
+- Trading Playbook
+- Economic Calendar
+- Market Scanner
+- Risk Center
+- Performance Center
+- Strategy Lab
+
+Goal
+
+Create a unified professional trading platform with a consistent UI and user experience.
+
