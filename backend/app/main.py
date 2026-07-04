@@ -58,8 +58,8 @@ app.include_router(rule_engine_router)
 @app.on_event("startup")
 def startup():
 
-    start_scheduler()
-
+   # start_scheduler()
+   pass
 
 @app.get("/")
 def home():

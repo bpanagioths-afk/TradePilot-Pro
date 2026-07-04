@@ -8,7 +8,7 @@ scheduler = BackgroundScheduler()
 def start_scheduler():
 
     scheduler.add_job(
-        sync_mt5_history,
+        lambda: sync_mt5_history(1),
         "interval",
         minutes=15
     )

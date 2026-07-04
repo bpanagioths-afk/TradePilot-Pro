@@ -4,9 +4,10 @@ from datetime import datetime, timedelta
 
 from app.core.database import SessionLocal
 from app.models.trade import Trade
+from app.models.mt5_account import MT5Account
 
 
-def sync_mt5_history():
+def sync_mt5_history(account_id: int):
 
     if not mt5.initialize():
 
@@ -18,6 +19,19 @@ def sync_mt5_history():
     db = SessionLocal()
 
     try:
+
+        account = db.query(
+            MT5Account
+        ).filter(
+            MT5Account.id == account_id
+        ).first()
+
+        if account is None:
+
+            return {
+                "success": False,
+                "message": "MT5 account not found"
+            }
 
         date_to = datetime.now()
 
@@ -44,7 +58,8 @@ def sync_mt5_history():
             existing = db.query(
                 Trade
             ).filter(
-                Trade.id == deal.ticket
+                Trade.mt5_account_id == account_id,
+                Trade.mt5_ticket == deal.ticket
             ).first()
 
             if existing:
@@ -54,7 +69,13 @@ def sync_mt5_history():
 
             trade = Trade(
 
-                id=deal.ticket,
+                mt5_account_id=account_id,
+
+                mt5_ticket=deal.ticket,
+
+                imported_from_mt5=True,
+
+                is_archived=False,
 
                 symbol=deal.symbol,
 
@@ -86,6 +107,8 @@ def sync_mt5_history():
             db.add(trade)
 
             imported += 1
+
+        account.last_sync = datetime.now()
 
         db.commit()
 

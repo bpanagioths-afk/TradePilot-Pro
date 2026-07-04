@@ -1,7 +1,28 @@
-from fastapi import APIRouter
+from fastapi import (
+    APIRouter,
+    Query,
+    Depends,
+    HTTPException
+)
 
 from app.services.mt5_sync import (
     sync_mt5_history
+)
+from sqlalchemy.orm import Session
+
+from app.core.database import get_db
+
+from app.services.mt5_account_service import (
+    get_accounts,
+    create_account,
+    update_account,
+    disable_account
+)
+
+from app.schemas.mt5_account import (
+    MT5AccountCreate,
+    MT5AccountUpdate,
+    MT5AccountResponse
 )
 
 router = APIRouter(
@@ -11,10 +32,11 @@ router = APIRouter(
 
 
 @router.post("/sync")
-def sync_mt5():
+def sync_mt5(
+    account_id: int = Query(...)
+):
 
-    return sync_mt5_history()
-
+    return sync_mt5_history(account_id)
 
 @router.get("/status")
 def mt5_status():
@@ -23,3 +45,85 @@ def mt5_status():
         "service": "MT5 Sync",
         "status": "ready"
     }
+
+@router.get("/accounts", response_model=list[MT5AccountResponse])
+def get_mt5_accounts(
+    db: Session = Depends(get_db)
+):
+
+    return get_accounts(db)
+
+
+@router.post("/accounts", response_model=MT5AccountResponse)
+def create_mt5_account(
+    data: MT5AccountCreate,
+    db: Session = Depends(get_db)
+):
+
+    return create_account(
+        db,
+        data
+    )
+
+@router.put("/accounts/{account_id}", response_model=MT5AccountResponse)
+def update_mt5_account(
+
+    account_id: int,
+
+    data: MT5AccountUpdate,
+
+    db: Session = Depends(get_db)
+
+):
+
+    account = update_account(
+
+        db,
+
+        account_id,
+
+        data
+
+    )
+
+    if account is None:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="MT5 account not found"
+
+        )
+
+    return account
+
+@router.delete("/accounts/{account_id}", response_model=MT5AccountResponse)
+def disable_mt5_account(
+
+    account_id: int,
+
+    db: Session = Depends(get_db)
+
+):
+
+    account = disable_account(
+
+        db,
+
+        account_id
+
+    )
+
+    if account is None:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="MT5 account not found"
+
+        )
+
+    return account
+
