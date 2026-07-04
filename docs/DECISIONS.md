@@ -354,6 +354,27 @@ Decision
 - BACKLOG.md
 - DECISIONS.md
 
+Νέα Απόφαση (D-018)
+
+Schema First API
+
+Status: ACCEPTED
+
+Decision
+
+Όλα τα νέα CRUD endpoints χρησιμοποιούν Pydantic Schemas για request και response.
+
+Οι routers δεν δέχονται πολλά μεμονωμένα arguments όταν αυτά αποτελούν ένα λογικό αντικείμενο.
+
+Reason
+
+Καλύτερη συντήρηση
+Type safety
+Αυτόματο Swagger documentation
+Συμβατότητα με React
+Ευκολότερη επέκταση
+
+
 Reason
 
 Να μην χάνεται γνώση μεταξύ συνομιλιών και εκδόσεων.

@@ -7,13 +7,13 @@ import {
     Button,
     Switch,
     FormControlLabel,
-    Divider
+    Divider,
 } from "@mui/material";
 
 import SaveIcon from "@mui/icons-material/Save";
+import MT5AccountsManager from "../components/settings/mt5/MT5AccountsManager";
 
 export default function Settings() {
-
     return (
         <Box>
             <Typography variant="h4" mb={3}>
@@ -45,31 +45,7 @@ export default function Settings() {
                 </Stack>
             </Paper>
 
-            <Paper sx={{ p: 3, mb: 3 }}>
-                <Typography variant="h6" mb={2}>
-                    MT5 Settings
-                </Typography>
-
-                <Stack spacing={2}>
-                    <TextField
-                        label="Broker"
-                        placeholder="IC Markets / The5ers / FTMO"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="MT5 Account"
-                        placeholder="Account number"
-                        fullWidth
-                    />
-
-                    <TextField
-                        label="Server"
-                        placeholder="Broker server"
-                        fullWidth
-                    />
-                </Stack>
-            </Paper>
+            <MT5AccountsManager />
 
             <Paper sx={{ p: 3 }}>
                 <Typography variant="h6" mb={2}>
