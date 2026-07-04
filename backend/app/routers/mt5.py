@@ -16,7 +16,8 @@ from app.services.mt5_account_service import (
     get_accounts,
     create_account,
     update_account,
-    disable_account
+    disable_account,
+    get_mt5_account_summary
 )
 
 from app.schemas.mt5_account import (
@@ -126,4 +127,33 @@ def disable_mt5_account(
         )
 
     return account
+
+@router.get("/accounts/{account_id}/summary")
+def read_mt5_account_summary(
+
+    account_id: int,
+
+    db: Session = Depends(get_db)
+
+):
+
+    summary = get_mt5_account_summary(
+
+        db,
+
+        account_id
+
+    )
+
+    if summary is None:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="MT5 account not found"
+
+        )
+
+    return summary
 

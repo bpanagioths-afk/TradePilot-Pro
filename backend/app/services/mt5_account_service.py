@@ -113,3 +113,58 @@ def disable_account(
     db.refresh(account)
 
     return account
+from app.models.trade import Trade
+from app.schemas.mt5_account import MT5AccountSummary
+
+
+def get_mt5_account_summary(db: Session, account_id: int):
+    account = get_mt5_account(db, account_id)
+
+    if not account:
+        return None
+
+    imported_trades_count = (
+        db.query(Trade)
+        .filter(
+            Trade.mt5_account_id == account_id,
+            Trade.imported_from_mt5 == True,
+            Trade.is_archived == False,
+        )
+        .count()
+    )
+
+    open_positions = (
+        db.query(Trade)
+        .filter(
+            Trade.mt5_account_id == account_id,
+            Trade.imported_from_mt5 == True,
+            Trade.is_archived == False,
+            Trade.close_time == None,
+        )
+        .count()
+    )
+
+    connection_status = "disabled"
+
+    if account.is_active:
+        connection_status = "ready"
+
+    return MT5AccountSummary(
+        account_id=account.id,
+        account_name=account.account_name,
+        broker=account.broker,
+        login=account.login,
+        server=account.server,
+        is_active=account.is_active,
+        auto_sync=account.auto_sync,
+        sync_interval_minutes=account.sync_interval_minutes,
+        balance=None,
+        equity=None,
+        floating_profit_loss=None,
+        open_positions=open_positions,
+        imported_trades_count=imported_trades_count,
+        last_sync=account.last_sync,
+        connection_status=connection_status,
+        health_message="Account summary endpoint is ready. Live MT5 metrics will be connected in the next Sprint step.",
+    )
+

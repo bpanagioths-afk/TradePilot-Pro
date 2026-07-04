@@ -58,3 +58,29 @@ class MT5AccountResponse(BaseModel):
     class Config:
 
         from_attributes = True
+
+from typing import Optional
+from pydantic import BaseModel
+from datetime import datetime
+
+
+class MT5AccountSummary(BaseModel):
+    account_id: int
+    account_name: str
+    broker: Optional[str] = None
+    login: Optional[str] = None
+    server: Optional[str] = None
+
+    is_active: bool
+    auto_sync: bool
+    sync_interval_minutes: int
+
+    balance: Optional[float] = None
+    equity: Optional[float] = None
+    floating_profit_loss: Optional[float] = None
+    open_positions: int = 0
+
+    imported_trades_count: int = 0
+    last_sync: Optional[datetime] = None
+    connection_status: str = "unknown"
+    health_message: str = "MT5 live summary is not connected yet."
