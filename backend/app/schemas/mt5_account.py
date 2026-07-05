@@ -60,8 +60,8 @@ class MT5AccountResponse(BaseModel):
         from_attributes = True
 
 from typing import Optional
-from pydantic import BaseModel
-from datetime import datetime
+
+
 
 
 class MT5AccountSummary(BaseModel):

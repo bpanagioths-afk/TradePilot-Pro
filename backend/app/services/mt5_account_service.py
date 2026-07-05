@@ -1,126 +1,152 @@
 from sqlalchemy.orm import Session
 
+try:
+    import MetaTrader5 as mt5
+except ImportError:
+    mt5 = None
+
 from app.models.mt5_account import MT5Account
+from app.models.trade import Trade
 
 from app.schemas.mt5_account import (
     MT5AccountCreate,
-    MT5AccountUpdate
+    MT5AccountUpdate,
+    MT5AccountSummary,
 )
 
-def get_accounts(
-    db: Session
-):
 
-    return db.query(
-        MT5Account
-    ).all()
+def get_accounts(db: Session):
 
-def create_account(
-
-    db: Session,
-
-    data: MT5AccountCreate
-
-):
+    return db.query(MT5Account).all()
 
 
+def create_account(db: Session, data: MT5AccountCreate):
 
     account = MT5Account(
-
         user_id=data.user_id,
-
         account_name=data.account_name,
-
         broker=data.broker,
-
         login=data.login,
-
         server=data.server,
-
-        is_active=True
-
+        is_active=True,
     )
 
     db.add(account)
-
     db.commit()
-
     db.refresh(account)
 
     return account
 
-def update_account(
 
-    db: Session,
+def update_account(db: Session, account_id: int, data: MT5AccountUpdate):
 
-    account_id: int,
-
-    data
-
-):
-
-    account = db.query(
-        MT5Account
-    ).filter(
-        MT5Account.id == account_id
-    ).first()
-
-    if account is None:
-
-        return None
-
-    update_data = data.model_dump(
-        exclude_unset=True
+    account = (
+        db.query(MT5Account)
+        .filter(MT5Account.id == account_id)
+        .first()
     )
 
-    for field, value in update_data.items():
+    if account is None:
+        return None
 
-        setattr(
-            account,
-            field,
-            value
-        )
+    update_data = data.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(account, field, value)
 
     db.commit()
-
     db.refresh(account)
 
     return account
 
 
-def disable_account(
+def disable_account(db: Session, account_id: int):
 
-    db: Session,
-
-    account_id: int
-
-):
-
-    account = db.query(
-        MT5Account
-    ).filter(
-        MT5Account.id == account_id
-    ).first()
+    account = (
+        db.query(MT5Account)
+        .filter(MT5Account.id == account_id)
+        .first()
+    )
 
     if account is None:
-
         return None
 
     account.is_active = False
 
     db.commit()
-
     db.refresh(account)
 
     return account
-from app.models.trade import Trade
-from app.schemas.mt5_account import MT5AccountSummary
+
+
+def get_live_mt5_metrics():
+
+    if mt5 is None:
+        return {
+            "connected": False,
+            "balance": None,
+            "equity": None,
+            "floating_profit_loss": None,
+            "open_positions": 0,
+            "message": "MetaTrader5 Python package is not installed.",
+        }
+
+    initialized = mt5.initialize()
+
+    if not initialized:
+        return {
+            "connected": False,
+            "balance": None,
+            "equity": None,
+            "floating_profit_loss": None,
+            "open_positions": 0,
+            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+        }
+
+    try:
+        account_info = mt5.account_info()
+
+        if account_info is None:
+            return {
+                "connected": False,
+                "balance": None,
+                "equity": None,
+                "floating_profit_loss": None,
+                "open_positions": 0,
+                "message": f"MT5 account info unavailable: {mt5.last_error()}",
+            }
+
+        positions = mt5.positions_get()
+
+        open_positions = 0
+        floating_profit_loss = 0.0
+
+        if positions is not None:
+            open_positions = len(positions)
+            floating_profit_loss = sum(position.profit for position in positions)
+
+        return {
+            "connected": True,
+            "balance": float(account_info.balance),
+            "equity": float(account_info.equity),
+            "floating_profit_loss": float(floating_profit_loss),
+            "open_positions": open_positions,
+            "message": "MT5 live metrics loaded successfully.",
+        }
+
+    finally:
+        mt5.shutdown()
 
 
 def get_mt5_account_summary(db: Session, account_id: int):
-    account = get_mt5_account(db, account_id)
 
-    if not account:
+    account = (
+        db.query(MT5Account)
+        .filter(MT5Account.id == account_id)
+        .first()
+    )
+
+    if account is None:
         return None
 
     imported_trades_count = (
@@ -133,7 +159,7 @@ def get_mt5_account_summary(db: Session, account_id: int):
         .count()
     )
 
-    open_positions = (
+    stored_open_positions = (
         db.query(Trade)
         .filter(
             Trade.mt5_account_id == account_id,
@@ -144,10 +170,24 @@ def get_mt5_account_summary(db: Session, account_id: int):
         .count()
     )
 
+    live_metrics = {
+        "connected": False,
+        "balance": None,
+        "equity": None,
+        "floating_profit_loss": None,
+        "open_positions": stored_open_positions,
+        "message": "Account is disabled.",
+    }
+
     connection_status = "disabled"
 
     if account.is_active:
-        connection_status = "ready"
+        live_metrics = get_live_mt5_metrics()
+
+        if live_metrics["connected"]:
+            connection_status = "connected"
+        else:
+            connection_status = "disconnected"
 
     return MT5AccountSummary(
         account_id=account.id,
@@ -158,13 +198,12 @@ def get_mt5_account_summary(db: Session, account_id: int):
         is_active=account.is_active,
         auto_sync=account.auto_sync,
         sync_interval_minutes=account.sync_interval_minutes,
-        balance=None,
-        equity=None,
-        floating_profit_loss=None,
-        open_positions=open_positions,
+        balance=live_metrics["balance"],
+        equity=live_metrics["equity"],
+        floating_profit_loss=live_metrics["floating_profit_loss"],
+        open_positions=live_metrics["open_positions"],
         imported_trades_count=imported_trades_count,
         last_sync=account.last_sync,
         connection_status=connection_status,
-        health_message="Account summary endpoint is ready. Live MT5 metrics will be connected in the next Sprint step.",
+        health_message=live_metrics["message"],
     )
-

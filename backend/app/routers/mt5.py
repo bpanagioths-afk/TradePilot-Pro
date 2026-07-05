@@ -8,6 +8,11 @@ from fastapi import (
 from app.services.mt5_sync import (
     sync_mt5_history
 )
+
+from app.services.sync_engine import (
+    get_mt5_sync_status
+)
+
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -157,3 +162,31 @@ def read_mt5_account_summary(
 
     return summary
 
+@router.get("/accounts/{account_id}/sync-status")
+def read_mt5_sync_status(
+
+    account_id: int,
+
+    db: Session = Depends(get_db)
+
+):
+
+    sync_status = get_mt5_sync_status(
+
+        db,
+
+        account_id
+
+    )
+
+    if sync_status is None:
+
+        raise HTTPException(
+
+            status_code=404,
+
+            detail="MT5 account not found"
+
+        )
+
+    return sync_status

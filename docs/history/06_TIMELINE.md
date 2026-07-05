@@ -25,9 +25,23 @@
 - Chapter 23: Design System Foundation
 - Chapter 24: TradePilot UI Framework
 - Chapter 25: Sprint 19 - Professional MT5 Trading Widget
+- Chapter 26: Sprint 19 - MT5 Account Summary και Live Metrics
+- Chapter 27: Sprint 19 - Sync Engine Foundation
+- Chapter 28: Sprint 19 - First Professional Trading Widget
+- Chapter 29: Sprint 19 - MetricCard και KPI Layout
+- Chapter 30: Sprint 19 - Professional Widget Pattern Applied
+- Chapter 31: Sprint 20 - Professional Dashboard Foundation
+- Chapter 32: Sprint 20 - Widget Infrastructure Layer
+- Chapter 33: Sprint 20 - Source Code Structure Developer Handbook
+- Chapter 34: Sprint 20 - Feature Module Architecture Direction
+- Chapter 35: Sprint 20 - Sprint Execution Process Locked
 
 ---
 
 # Current Timeline Position
 
-Sprint 18 is completed. Sprint 19 starts from the Professional MT5 Trading Widget.
+Sprint 20 is completed.
+
+Next active work starts from Sprint 21.
+
+Sprint 21 should continue from the completed Professional Dashboard and Widget Infrastructure foundation.

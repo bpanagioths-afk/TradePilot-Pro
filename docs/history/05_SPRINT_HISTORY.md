@@ -81,14 +81,86 @@ Sprint 18 completed the first official frontend design architecture.
 
 Professional MT5 Trading Widget:
 
-- Account Summary endpoint
+## Backend
+
+- `MT5AccountSummary` schema
+- `GET /mt5/accounts/{account_id}/summary`
+- live MT5 connection check
 - Balance
 - Equity
 - Floating Profit / Loss
 - Open Positions
 - Connection Health
 - Import Statistics
-- Relative Last Sync
-- Auto Sync foundation
+- safe fallback when MT5 is unavailable
+- Sync Engine foundation
+- `GET /mt5/accounts/{account_id}/sync-status`
 
-Sprint 19 continues from the completed Design System and applies it to the first full trading widget.
+## Frontend
+
+- `getMT5AccountSummary(accountId)` API function
+- Summary integration in `MT5AccountsManager`
+- summary prop passed to `MT5AccountCard`
+- Professional MT5 Trading Widget UI
+- Balance KPI
+- Equity KPI
+- Floating P/L KPI
+- Open Positions KPI
+- Imported Trades
+- Relative Last Sync
+- Connection badge
+- reusable `MetricCard`
+- Floating P/L color rules
+- MUI Grid v2 compatibility fix
+- CORS origins updated for Vite 5173 / 5174
+
+## Architecture
+
+- MT5 import logic remains inside `mt5_sync.py`
+- Sync scheduling logic starts in separate `sync_engine.py`
+- routers remain thin
+- service layer owns business logic
+- UI uses TradePilot reusable components first
+
+Sprint 19 completed the first full professional trading widget and established the reference pattern for future widgets.
+
+---
+
+# Sprint 20
+
+Professional Dashboard Foundation and Widget Infrastructure:
+
+## Frontend
+
+- Professional Dashboard foundation
+- `DashboardLayout.jsx`
+- `WidgetGrid.jsx`
+- Dashboard feature widget folders
+- `DashboardSummaryWidget.jsx`
+- MT5 dashboard widget foundation
+- Portfolio placeholder widget
+- Risk placeholder widget
+- AI Coach placeholder widget
+- Psychology placeholder widget
+- Economic Calendar placeholder widget
+- Dashboard widget barrel exports
+
+## Widget Infrastructure
+
+- `WidgetContainer.jsx`
+- `WidgetHeader.jsx`
+- `WidgetFooter.jsx`
+- `WidgetMetric.jsx`
+- widgets barrel export
+
+## Architecture
+
+- introduced Widget Infrastructure layer
+- introduced feature-module direction
+- rebuilt `SOURCE_CODE_STRUCTURE.md` as developer handbook
+- added frontend component audit
+- locked Sprint Design / Architecture Review / Implementation / Verification / Documentation / Git Release process
+
+Sprint 20 changed TradePilot Pro from page-based UI growth into a platform-style architecture for professional widgets and future feature modules.
+
+---

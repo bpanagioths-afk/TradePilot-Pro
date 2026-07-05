@@ -21,6 +21,7 @@ import {
     createMT5Account,
     disableMT5Account,
     getMT5Accounts,
+    getMT5AccountSummary,
     updateMT5Account,
     syncMT5Account,
 } from "../../../api/mt5AccountsApi";
@@ -35,6 +36,7 @@ const emptyAccount = {
 
 export default function MT5AccountsManager() {
     const [accounts, setAccounts] = useState([]);
+    const [accountSummaries, setAccountSummaries] = useState({});
     const [addDialogOpen, setAddDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [newAccount, setNewAccount] = useState(emptyAccount);
@@ -52,17 +54,36 @@ export default function MT5AccountsManager() {
         loadAccounts();
     }, []);
 
-    const loadAccounts = async () => {
-        try {
-          const data = await getMT5Accounts();
+const loadAccounts = async () => {
+    try {
+        const data = await getMT5Accounts();
 
-          const sortedAccounts = [...data].sort((a, b) => a.id - b.id);
+        const sortedAccounts = [...data].sort((a, b) => a.id - b.id);
 
-          setAccounts(sortedAccounts);
-        } catch (error) {
-            console.error("Failed to load MT5 accounts", error);
-        }
-    };
+        setAccounts(sortedAccounts);
+
+        const summaries = {};
+
+        await Promise.all(
+            sortedAccounts.map(async (account) => {
+                try {
+                    summaries[account.id] = await getMT5AccountSummary(account.id);
+                } catch (error) {
+                    console.error(
+                        `Failed to load MT5 summary for account ${account.id}`,
+                        error
+                    );
+
+                    summaries[account.id] = null;
+                }
+            })
+        );
+
+        setAccountSummaries(summaries);
+    } catch (error) {
+        console.error("Failed to load MT5 accounts", error);
+    }
+};
 
 const handleOpenMenu = (event, account) => {
     setMenuAnchorEl(event.currentTarget);
@@ -235,6 +256,7 @@ const handleSyncAccount = async (accountId) => {
               {accounts.map((account) => (
                   <MT5AccountCard
                       key={account.id}
+                      summary={accountSummaries[account.id]}
                       account={account}
                       onEdit={handleEditClick}
                       onDisable={handleDisableAccount}

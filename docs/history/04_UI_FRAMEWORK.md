@@ -170,3 +170,81 @@ Professional MT5 Trading Widget
 Το Sprint 19 δεν είναι απλώς UI βελτίωση.
 
 Είναι το πρώτο βήμα προς ένα πραγματικό widget-based Trading Command Center.
+
+---
+
+# Chapter 29
+
+## Sprint 19 - MetricCard και KPI Layout
+
+Κατά το Sprint 19 υλοποιήθηκε το πρώτο reusable metric component:
+
+```text
+MetricCard
+```
+
+Αρχικά το MT5 widget είχε τοπικό `MetricBox`.
+
+Αποφασίστηκε όμως ότι οι KPI cards δεν πρέπει να είναι τοπικός κώδικας ενός widget.
+
+Έπρεπε να γίνουν επίσημο μέρος του TradePilot UI Framework.
+
+Το `MetricCard` χρησιμοποιείται για:
+
+- Balance
+- Equity
+- Floating Profit / Loss
+- Open Positions
+
+και σχεδιάστηκε ώστε να χρησιμοποιηθεί μελλοντικά σε:
+
+- Dashboard KPIs
+- Portfolio Metrics
+- Risk Metrics
+- AI Coach summaries
+- Statistics cards
+
+Η απόφαση αυτή ενισχύει την αρχή:
+
+```text
+TradePilot UI Framework
+        ↓
+Application Modules
+```
+
+---
+
+# Chapter 30
+
+## Sprint 19 - Professional Widget Pattern Applied
+
+Το MT5 Account Card έγινε το πρώτο πραγματικό widget που ακολουθεί πλήρη widget structure:
+
+```text
+Header
+Status
+Badges
+Main Metrics
+Information Rows
+Actions
+Footer Status
+```
+
+Χρησιμοποιεί:
+
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- InfoRow
+- MetricCard
+- Material UI Grid
+- Relative Last Sync
+- Floating P/L color rules
+
+Αυτό αποτελεί reference implementation για όλα τα μελλοντικά widgets.
+
+Το Sprint 19 απέδειξε ότι το Design System δεν είναι θεωρητικό έγγραφο.
+
+Είναι ενεργό development standard.
+
+---

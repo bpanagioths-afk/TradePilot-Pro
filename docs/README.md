@@ -233,3 +233,30 @@ with:
 - Risk Management
 - Economic Calendar
 - Professional Dashboard
+
+---
+
+## Sprint 19 Update
+
+Sprint 19 completed the first Professional Trading Widget for TradePilot Pro.
+
+New capabilities:
+
+- MT5 Account Summary API
+- Live MT5 balance and equity metrics
+- Floating Profit / Loss
+- Open Positions
+- Connection Health
+- Import Statistics
+- Sync Status endpoint
+- Sync Engine Foundation
+- Professional MT5 Trading Widget UI
+- Reusable MetricCard component
+
+The MT5 Widget is now the reference implementation for future TradePilot widgets.
+
+Next development direction:
+
+```text
+Sprint 20 - Professional Dashboard Foundation
+```

@@ -23,7 +23,7 @@
 * στην ψυχολογία
 * στην πειθαρχία
 
-\---
+---
 
 ---
 
@@ -39,7 +39,7 @@
 
 Το πρόγραμμα αντιμετωπίζει όλους τους λογαριασμούς σαν Portfolio.
 
-\---
+---
 
 ---
 
@@ -64,7 +64,7 @@
 
 και όχι γενικές συμβουλές.
 
-\---
+---
 
 ---
 
@@ -102,7 +102,7 @@ Professional UX
 
 Πρέπει να μοιάζει με εργαλείο που ένας trader μπορεί να έχει ανοιχτό όλη μέρα.
 
-\---
+---
 
 ---
 
@@ -127,7 +127,7 @@ Professional UX
 
 Αυτό οδηγεί σε future SaaS ready αρχιτεκτονική.
 
-\---
+---
 
 ---
 
@@ -169,7 +169,47 @@ Professional UX
 
 Αλλά επειδή το Design System είναι αρχιτεκτονική απόφαση για το frontend.
 
-\---
+---
+
+---
+
+# Chapter 28
+
+## Sprint 19 - First Professional Trading Widget
+
+Με το Sprint 19 το TradePilot Pro έκανε το πρώτο πρακτικό βήμα από Trading Journal προς Professional Trading Command Center.
+
+Το MT5 Account Manager μετατράπηκε σε Professional MT5 Trading Widget που εμφανίζει πλέον:
+
+* Balance
+* Equity
+* Floating Profit / Loss
+* Open Positions
+* Import Statistics
+* Connection Health
+* Relative Last Sync
+* Sync / Auto Sync status
+
+Αυτό άλλαξε τον ρόλο του module.
+
+Πριν το Sprint 19, το MT5 module ήταν κυρίως διαχείριση λογαριασμών και import trades.
+
+Μετά το Sprint 19, έγινε widget καθημερινής παρακολούθησης λογαριασμού.
+
+Αυτό το pattern θα χρησιμοποιηθεί ως πρότυπο για:
+
+* Portfolio Widget
+* Risk Widget
+* AI Coach Widget
+* Psychology Widget
+* Prop Firm Widget
+* Economic Calendar Widget
+
+Η αλλαγή αυτή ενισχύει τον στόχο:
+
+```text
+TradePilot Pro = Professional Trading Command Center
+```
 
 ---
 
@@ -188,7 +228,7 @@ Professional UX
 * επαγγελματική εμπειρία χρήστη
 * documentation first
 
-\---
+---
 
 # Long Term Vision
 
@@ -217,7 +257,7 @@ Professional UX
 
 και επαγγελματικό επίπεδο αξιοπιστίας.
 
-\---
+---
 
 # Closing Note
 

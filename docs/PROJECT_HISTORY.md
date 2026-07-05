@@ -41,3 +41,30 @@ Professional UX
 ↓
 Product Identity
 ```
+
+\---
+
+# Sprint 19 History - Professional MT5 Trading Widget
+
+Sprint 19 marked the transition from an MT5 Account Manager into the first professional widget of the TradePilot Pro Command Center.
+
+The project moved from simple account management toward live account intelligence by introducing MT5 account summaries, live balance/equity data, floating profit/loss, open position counts, connection health and import statistics.
+
+A new Sync Engine Foundation was introduced as a separate service layer so future synchronization workflows can support MT5, TradingView, Economic Calendar, Portfolio data and SaaS schedulers without overloading the existing MT5 import service.
+
+On the frontend, the MT5 account card became a Professional MT5 Trading Widget using the TradePilot UI Framework. A reusable `MetricCard` component was introduced, making this widget the first implementation of the future widget-based dashboard architecture.
+
+Sprint 19 also reinforced the project direction:
+
+```text
+Material UI
+↓
+TradePilot UI Framework
+↓
+Professional Widgets
+↓
+Trading Command Center
+```
+
+Sprint 19 completed the foundation for future widgets including Portfolio, Risk, AI Coach, Psychology, Economic Calendar and Prop Firm modules.
+

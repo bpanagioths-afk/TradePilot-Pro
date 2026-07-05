@@ -1,326 +1,297 @@
-# TradePilot Pro - Design System
+# TradePilot Pro -- DESIGN_SYSTEM v3
 
-## Purpose
-
-Το TradePilot Design System είναι η κοινή σχεδιαστική γλώσσα του TradePilot Pro.
-
-Στόχος του είναι κάθε module να μοιάζει ότι ανήκει στο ίδιο προϊόν.
-
-Το TradePilot Pro δεν πρέπει να μοιάζει με απλή Material UI εφαρμογή.
-
-Πρέπει να μοιάζει με επαγγελματικό Windows Trading Command Center.
+> UI Bible for the TradePilot UI Framework
 
 ---
 
-# Core UI Philosophy
+# 1. Product Identity
 
-## Product Identity
+TradePilot Pro is a **Professional Trading Command Center**.
 
-TradePilot Pro UI should feel:
+Keywords:
 
-- professional
-- dark
-- clean
-- focused
-- trading-terminal inspired
-- not overloaded
-- consistent across all modules
-
-The user should be able to recognize the product from a screenshot.
+- Professional
+- Fast
+- Reliable
+- Information Rich
+- Desktop First
+- Widget Based
+- Trading Terminal Inspired
 
 ---
 
-# Main Visual Direction
+# 2. Core Principles
 
-## Base Theme
+1. Functionality
+2. Architecture
+3. Professional UX
+4. Product Identity
 
-Default theme:
+Every new module must satisfy all four stages.
 
-```text
-Dark mode
+---
 
-Reason:
+# 3. Design Tokens
 
-Trading platforms are usually used for long sessions.
+## Semantic Colors
 
-Dark UI reduces visual fatigue and fits the Trading Command Center identity.
+- Primary
+- Secondary
+- Success
+- Warning
+- Error
+- Info
+- Background
+- Surface
+- Border
+- Text Primary
+- Text Secondary
 
-Color Language
-Primary Colors
-Trading Blue     Main actions / primary focus
-Success Green    Active / connected / completed / profit
-Warning Amber    Attention / risk / syncing
-Loss Red         Failed / dangerous / loss
-Prop Purple      Prop firm / challenge / funding
-Info Cyan        Information / neutral signals
-Neutral Gray     Disabled / inactive / secondary text
-Usage Rules
-Blue    = main user action
-Green   = good status
-Amber   = warning or attention
-Red     = danger or failure
-Purple  = prop firm / premium / challenge
-Gray    = inactive / disabled / secondary
-Component Philosophy
+Use semantic names instead of hardcoded colors.
 
-TradePilot Pro should use branded reusable components.
+## Radius
 
-Prefer:
+Use one border-radius scale throughout the application.
 
-TradePilotCard
-TradePilotButton
-StatusBadge
-SectionHeader
-InfoRow
-MetricCard
-ConfirmDialog
-EmptyState
-LoadingOverlay
-PageContainer
+## Elevation
 
-Avoid repeating raw Material UI styling when a TradePilot component exists.
+Three shadow levels:
 
-Cards
-Card Types
-Widget Card
-Account Card
-Metric Card
-Chart Card
-Settings Card
-Alert Card
-Card Rules
+- Low
+- Medium
+- High
 
-Cards should have:
+## Spacing
 
-dark gradient background
-soft border
-rounded corners
-subtle shadow
-hover lift when clickable
-consistent spacing
+Single spacing scale across the application.
 
-Cards should not feel flat or random.
+Never invent custom spacing.
 
-Widget Structure
+---
 
-Every major widget should follow this structure:
+# 4. Typography
 
-Header
-Status
-Body
-Actions
+Hierarchy:
 
-Example:
+- Display
+- Page Title
+- Section Title
+- Card Title
+- Body
+- Caption
 
-MT5 Account Card
+Readable over decorative.
 
-Header: account name + status
-Body: broker, server, login, last sync
-Actions: sync button + actions menu
-Typography
-Typography Roles
-Page Title       Main page name
-Section Title    Area / module title
-Widget Title     Card title
-Metric Value     Large KPI number
-Label            Small muted description
-Caption          Helper text / secondary info
-Rules
-Titles should be bold.
-Labels should use secondary text color.
-Metrics should be visually stronger than labels.
-Avoid too many font sizes.
-Buttons
-Button Types
-Primary      Main action
-Secondary    Alternative action
-Ghost        Light action
-Danger       Delete / disable / destructive
-Success      Confirm / activate
-Icon Only    Menus / quick actions
-Rules
-Primary action = contained button
-Secondary action = outlined button
-Danger action = error / warning color
-Async action = loading state
-Status Badges
-Common Statuses
-Active
-Disabled
-Connected
-Syncing
-Failed
-Demo
-Live
-Prop Firm
-Completed
-Warning
-Rules
+---
 
-Use StatusBadge instead of raw Chip.
+# 5. Desktop Grid
 
-Badges must be consistent across all modules.
+Desktop-first.
 
-Spacing
+Recommended layout:
 
-Use consistent spacing scale:
+- Left navigation
+- Top toolbar
+- Widget area
+- Detail dialogs
 
-4px
-8px
-16px
-24px
-32px
+Widgets align to a common grid.
 
-Preferred Material UI spacing:
+---
 
-0.5
-1
-2
-3
-4
+# 6. Widget Philosophy
 
-Avoid random spacing values unless needed.
+Pages are collections of widgets.
 
-Icons
+Each widget contains:
 
-Use consistent icon meaning.
+- Header
+- Status
+- Main metrics
+- Actions
+- Optional footer
 
 Examples:
 
-Broker        business / account icon
-Login         user icon
-Server        cloud / public icon
-Last Sync     time icon
-Balance       money icon
-Equity        chart icon
-Open Trades   analytics icon
-Settings      gear icon
+- MT5 Widget
+- Portfolio Widget
+- AI Coach Widget
+- Risk Widget
+- Trading Plan Widget
 
-Do not use different icons for the same meaning in different modules.
+---
 
-Tables
+# 7. Professional Widget Structure
 
-All future tables and DataGrids should follow common rules:
+Sprint 20 introduced the Widget Infrastructure layer.
 
-dark background
-clean borders
-clear hover row
-compact but readable height
-consistent header style
-action column on the right
-Dialogs
+Professional widgets should follow:
 
-Dialogs should follow common structure:
+```text
+WidgetContainer
+↓
+WidgetHeader
+↓
+WidgetMetric / InfoRow / body content
+↓
+WidgetFooter
+```
 
-Title
-Short description
-Form / content
-Cancel action
-Primary action
+Current Widget Infrastructure:
+
+- WidgetContainer
+- WidgetHeader
+- WidgetFooter
+- WidgetMetric
 
 Rules:
 
-No browser alert()
-Use Snackbar
-Use ConfirmDialog for dangerous actions
-Empty States
+- Do not duplicate widget card/header/footer layout.
+- Do not put business logic inside widget infrastructure components.
+- Use StatusBadge for widget status.
+- Use TradePilotButton for widget actions.
 
-Empty screens should not look broken.
+---
 
-Every empty state should have:
+# 8. Component Library
 
-icon
-title
-short explanation
-primary action when useful
+Core:
 
-Example:
+- TradePilotCard
+- TradePilotButton
+- StatusBadge
+- SectionHeader
+- InfoRow
+- MetricCard
+- WidgetContainer
+- WidgetHeader
+- WidgetFooter
+- WidgetMetric
+- StatisticCard
+- PageContainer
+- EmptyState
+- LoadingOverlay
+- ConfirmDialog
+- SearchToolbar
+- FilterBar
 
-No MT5 accounts yet
-Add your first MT5 account to start syncing trades.
-[Add Account]
-Loading States
+---
 
-Async actions should show loading state.
+# 9. Data Presentation
+
+Tables must support:
+
+- Sorting
+- Search
+- Filters
+- Empty State
+- Loading State
+
+KPIs should always be presented with visual hierarchy.
+
+---
+
+# 10. Interaction Rules
+
+Primary action: Contained button.
+
+Secondary action: Outlined button.
+
+Dangerous action: Warning/Error styling.
+
+Long operation: Loading state.
+
+Never use browser alerts.
+
+---
+
+# 11. States
+
+Every screen defines:
+
+- Loading
+- Empty
+- Error
+- Success
+
+No undefined states.
+
+---
+
+# 12. Accessibility
+
+- Keyboard friendly
+- Visible focus
+- Good contrast
+- Consistent navigation
+
+---
+
+# 13. Naming
+
+Reusable components start with:
+
+```text
+TradePilot*
+Widget*
+```
 
 Examples:
 
-Syncing...
-Saving...
-Loading accounts...
+- TradePilotCard
+- TradePilotButton
+- TradePilotTable
+- WidgetContainer
+- WidgetHeader
+- WidgetMetric
 
-Avoid repeated clicks during loading.
+---
 
-TradePilot UI Framework v1
+# 14. Design Review Checklist
 
-Current components:
+Before merging a UI module verify:
 
-Theme
-TradePilotCard
-TradePilotButton
-StatusBadge
-SectionHeader
-InfoRow
+- Uses reusable components
+- Uses semantic colors
+- Uses spacing system
+- Uses typography hierarchy
+- No duplicated UI
+- Stable state
+- Snackbar notifications
+- Responsive desktop layout
+- Professional widget structure when applicable
 
-Planned components:
+---
 
-MetricCard
-PageContainer
-EmptyState
-ConfirmDialog
-LoadingOverlay
-TradePilotDialog
-TradePilotTable
-DesignSystemPage
-MT5 Account Card Target Design
+# 15. Future Evolution
 
-Future target:
+Planned:
 
-┌────────────────────────────────────────────┐
- Main MT5 Account                Active
+- Theme presets
+- Accent colors
+- User personalization
+- Component documentation
+- Design Playground
+- Visual regression testing
+- Widget loading/error/empty states
 
- MT5 Trading Account
+---
 
- Broker        MetaQuotes
- Server        MetaQuotes-Demo
- Login         12345678
- Last Sync     3 minutes ago
+# 16. Related Documentation
 
- Balance       $10,254.22
- Equity        $10,281.44
- Open Trades   2
+- PROJECT_MASTER.md
+- DEVELOPMENT_STANDARDS.md
+- DECISIONS.md
+- PROJECT_HISTORY.md
+- CHANGELOG.md
+- BACKLOG.md
+- COMPONENT_LIBRARY.md
+- SOURCE_CODE_STRUCTURE.md
 
- Connection    Connected
- Auto Sync     Every 5 min
- Last Import   14 trades
+---
 
- [ Sync Now ]                  ⋮
-└────────────────────────────────────────────┘
-Future UI Personalization
+# Closing Note
 
-Future versions may support user appearance preferences.
+The Design System is the single source of truth for the visual identity of TradePilot Pro.
 
-Planned ideas:
-
-Light / Dark mode
-Accent color selection
-Card style presets
-Compact / Comfortable layout
-Save appearance preferences
-Load appearance preferences on startup
-Per-user UI settings for SaaS version
-
-This is not Sprint 18 scope.
-
-It should remain in backlog for a future version.
-
-Development Rule
-
-When a TradePilot UI component exists, use it.
-
-Do not create new custom styles for the same pattern in another module.
-
-The goal is consistency, maintainability and product identity.
-
-
-Μόλις το φτιάξεις, πες μου. Μετά πάμε να το συνδέσουμε και στα `.md` στο τέλος του Sprint 18.
+All future frontend development should follow this document.

@@ -1,26 +1,22 @@
-## Sprint 18 - Next Active Sprint
+# Sprint 18 Next Active Sprint
 
-### Sprint 18.0 - TradePilot Design System Foundation
+Historical note.
 
-Goal
+Sprint 18 pointed to Sprint 19 as the next active sprint.
 
-Create the foundation for a consistent professional UI across all TradePilot Pro modules.
+Sprint 19 is now completed.
 
-Planned
+Current next active sprint:
 
-* Shared card style
-* Shared button patterns
-* Shared badge/status patterns
-* Shared spacing rules
-* Shared typography rules
-* Shared status colors
-* Shared hover effects
-* Reusable professional UI components
+```text
+Sprint 20
+```
 
-First application
+See:
 
-Apply the new Design System to MT5 Account Manager.
+```text
+docs/project/09_Current_State/Sprint_19.md
+docs/project/09_Current_State/Current_Project_Status.md
+```
 
-Reason
-
-TradePilot Pro is growing into a professional Trading Command Center and needs consistent UX before the UI expands further.
+---

@@ -24,3 +24,13 @@ export const syncMT5Account = async (accountId) => {
     const response = await api.post(`/mt5/sync?account_id=${accountId}`);
     return response.data;
 };
+
+export const getMT5AccountSummary = async (accountId) => {
+    const response = await api.get(
+        `/mt5/accounts/${accountId}/summary`
+    );
+
+    return response.data;
+};
+
+

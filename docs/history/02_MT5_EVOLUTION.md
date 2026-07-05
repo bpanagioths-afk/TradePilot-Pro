@@ -21,7 +21,7 @@
 
 Δημιουργία MT5 Account Manager.
 
-\---
+---
 
 ---
 
@@ -37,7 +37,7 @@
 
 Δεν γίνεται Delete.
 
-Χρησιμοποιείται `is\_archived`.
+Χρησιμοποιείται `is_archived`.
 
 Έτσι:
 
@@ -45,7 +45,7 @@
 * δεν γίνεται επανεισαγωγή
 * δεν χάνονται σημειώσεις
 
-\---
+---
 
 ---
 
@@ -63,7 +63,7 @@
 
 * κάθε MT5 trade συνδέεται με συγκεκριμένο MT5 account
 * το MT5 ticket δεν είναι ποτέ internal primary key
-* duplicate detection γίνεται με `mt5\_account\_id + mt5\_ticket`
+* duplicate detection γίνεται με `mt5_account_id + mt5_ticket`
 * το delete σε MT5 account γίνεται disable και όχι φυσική διαγραφή
 
 Επιπλέον, το project άρχισε να εφαρμόζει πιο καθαρή backend αρχιτεκτονική:
@@ -86,7 +86,7 @@ React UI
 
 Χτίζει πλατφόρμα.
 
-\---
+---
 
 ---
 
@@ -134,7 +134,7 @@ React UI
 
 Η πρώτη έκδοση του UI δοκιμάστηκε με πραγματικό MT5 account και έγινε επιτυχές sync με εισαγωγή trades.
 
-\---
+---
 
 ---
 
@@ -165,7 +165,7 @@ React components πρέπει ιδανικά να μένουν κάτω από �
 
 Όταν μεγαλώνουν, σπάνε σε μικρότερα reusable components.
 
-\---
+---
 
 ---
 
@@ -184,7 +184,7 @@ React components πρέπει ιδανικά να μένουν κάτω από �
 Η λύση ήταν:
 
 ```javascript
-const sortedAccounts = \[...data].sort((a, b) => a.id - b.id);
+const sortedAccounts = [...data].sort((a, b) => a.id - b.id);
 ```
 
 Δηλαδή stable sorting με βάση το internal database ID.
@@ -193,7 +193,7 @@ const sortedAccounts = \[...data].sort((a, b) => a.id - b.id);
 
 Πριν προστεθούν περισσότερα features, πρέπει να σταθεροποιείται η UI κατάσταση.
 
-\---
+---
 
 ---
 
@@ -230,4 +230,83 @@ MT5 now.
 
 Trading Connections later, όταν προστεθεί δεύτερη πραγματική πλατφόρμα.
 
-\---
+---
+
+---
+
+# Chapter 26
+
+## Sprint 19 - MT5 Account Summary και Live Metrics
+
+Το Sprint 19 μετέτρεψε το MT5 Account Manager από απλή διαχείριση λογαριασμών σε πραγματικό trading account widget.
+
+Προστέθηκε νέο account summary flow:
+
+```text
+React Widget
+        ↓
+MT5 Router
+        ↓
+MT5 Account Service
+        ↓
+MetaTrader5 API
+```
+
+Υλοποιήθηκαν:
+
+* `MT5AccountSummary` schema
+* `GET /mt5/accounts/{account_id}/summary`
+* live MT5 connection check
+* Balance
+* Equity
+* Floating Profit / Loss
+* Open Positions
+* Import Statistics
+* Connection Status
+* Health Message
+* safe fallback όταν το MT5 είναι κλειστό ή μη διαθέσιμο
+
+Η αλλαγή αυτή είναι σημαντική γιατί το MT5 Account Manager πλέον δεν είναι μόνο CRUD module.
+
+Είναι η πρώτη πραγματική πηγή live trading context μέσα στο TradePilot Pro.
+
+---
+
+---
+
+# Chapter 27
+
+## Sprint 19 - Sync Engine Foundation
+
+Κατά το Sprint 19 αποφασίστηκε να μην μπει η Auto Sync λογική μέσα στο `mt5_sync.py`.
+
+Ο λόγος είναι ότι το `mt5_sync.py` έχει καθαρή ευθύνη:
+
+```text
+Import MT5 history
+```
+
+Η Auto Sync λογική πρέπει να είναι ανεξάρτητη, ώστε μελλοντικά να μπορεί να εξυπηρετήσει:
+
+* MT5
+* TradingView Bridge
+* Economic Calendar
+* Prop Firm APIs
+* Portfolio feeds
+* SaaS Scheduler
+
+Γι' αυτό δημιουργήθηκε η έννοια του Sync Engine.
+
+Το πρώτο foundation υλοποιήθηκε με:
+
+* νέο `sync_engine.py`
+* `GET /mt5/accounts/{account_id}/sync-status`
+* Auto Sync enabled/disabled status
+* interval minutes
+* last sync
+* next sync
+* waiting / ready / due / disabled status
+
+Αυτή η απόφαση κρατά το MT5 import service καθαρό και ανοίγει δρόμο για μελλοντικό scheduler χωρίς τεχνικό χρέος.
+
+---

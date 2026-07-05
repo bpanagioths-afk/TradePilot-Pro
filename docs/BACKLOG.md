@@ -18,3 +18,30 @@ Rules:
 - No idea is deleted.
 - Completed work is moved to history / changelog, not erased.
 - The archive preserves the original backlog content.
+
+---
+
+# Backlog Update after Sprint 19
+
+Completed / moved to history:
+
+- Professional MT5 Trading Widget foundation.
+- Account Summary endpoint.
+- Live MT5 metrics foundation.
+- Connection Health status.
+- Import Statistics display.
+- Relative Last Sync display.
+- Reusable MetricCard component.
+- Sync Engine Foundation.
+
+Next high-priority candidates:
+
+1. Sprint 20 - Professional Dashboard Foundation.
+2. Portfolio Widget foundation.
+3. Risk Widget foundation.
+4. Sync Engine scheduling implementation.
+5. Improved MT5 connection settings and account validation.
+6. Demo / Live / Prop Firm account classification fields.
+7. Dashboard grid layout for professional widgets.
+
+Long-term backlog remains unchanged and continues to include AI Coach, Rule Engine expansion, Psychology analytics, Economic Calendar, Prop Firm tools and SaaS subscription architecture.
