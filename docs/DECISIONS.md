@@ -62,3 +62,112 @@ KPI display blocks must use a reusable `MetricCard` component instead of local o
 Reason:
 
 Professional widgets will repeatedly need KPI cards for Balance, Equity, Win Rate, Profit Factor, Risk, Drawdown, Portfolio metrics and AI Coach summaries. A reusable component keeps visual consistency and reduces duplicated UI code.
+
+---
+
+# Decision - Portfolio Feature Module Reference Implementation
+
+Status: Accepted
+
+Date: 2026-07-06
+
+Decision:
+
+Sprint 22 establishes the Portfolio module as the first full reference implementation of the Feature Module pattern.
+
+The frontend Portfolio module now follows:
+
+```text
+frontend/src/features/portfolio/
+├── components/
+├── hooks/
+├── services/
+└── index.js
+```
+
+Reason:
+
+TradePilot Pro is growing beyond individual pages and widgets. Future modules such as Risk, Analytics, Psychology, AI Coach, Trading Plan, Economic Calendar and Prop Firm tools need a consistent implementation pattern.
+
+Consequence:
+
+New feature modules should prefer this structure unless a clear architectural reason exists to deviate.
+
+---
+
+# Decision - Widget Infrastructure v3
+
+Status: Accepted
+
+Date: 2026-07-06
+
+Decision:
+
+Sprint 22 extends the Widget Infrastructure layer with reusable metric layout and rendering components:
+
+- `WidgetMetricGrid`
+- `WidgetMetrics`
+
+Reason:
+
+Multiple widgets require repeated KPI grid layouts. Centralizing metric grid rendering reduces duplicated UI, improves consistency, and keeps feature components smaller.
+
+Consequence:
+
+Feature widgets should use `WidgetMetrics` / `WidgetMetricGrid` when presenting KPI groups instead of recreating grid layout manually.
+
+---
+
+# Decision - Modular Portfolio Overview API
+
+Status: Accepted
+
+Date: 2026-07-06
+
+Decision:
+
+The Portfolio API should expose a modular overview response through:
+
+```text
+GET /portfolio/overview
+```
+
+The response is grouped into:
+
+```text
+summary
+statistics
+allocation
+performance
+```
+
+The existing `/portfolio/summary` endpoint remains available for backward compatibility.
+
+Reason:
+
+A flat `PortfolioSummary` schema would grow too large as Portfolio analytics expands. A modular response keeps the API contract easier to extend and reuse across dashboard widgets and future Portfolio pages.
+
+Consequence:
+
+New Portfolio analytics should extend the modular overview response instead of adding unrelated fields to a single flat summary object.
+
+---
+
+# Decision - Source Structure Audit Before Routing Changes
+
+Status: Accepted
+
+Date: 2026-07-06
+
+Decision:
+
+Before adding pages, routes or navigation entries, TradePilot Pro development must first inspect the real frontend routing and layout files.
+
+Reason:
+
+During Sprint 22, a `pages/index.js` file was assumed but did not exist. The project uses direct page imports in the routing layer. Future routing work should be based on actual source structure, not assumptions.
+
+Consequence:
+
+Routing / navigation changes require a short source-structure audit before implementation.
+

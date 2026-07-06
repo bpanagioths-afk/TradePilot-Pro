@@ -295,3 +295,17 @@ Planned:
 The Design System is the single source of truth for the visual identity of TradePilot Pro.
 
 All future frontend development should follow this document.
+
+
+---
+
+# Widget Infrastructure v3
+
+Sprint 22 introduces:
+- WidgetMetricGrid
+- WidgetMetrics
+
+Design goals:
+- Reduce duplicated KPI layouts
+- Standardize metric presentation
+- Shared infrastructure for Portfolio, MT5, Risk, Analytics, Psychology and future modules.

@@ -1,8 +1,8 @@
-# TradePilot Pro -- COMPONENT_LIBRARY
+# TradePilot Pro -- COMPONENT\_LIBRARY
 
 > Official Component Library for the TradePilot UI Framework.
 
----
+\---
 
 # Purpose
 
@@ -10,26 +10,26 @@ This document defines every reusable UI component used across TradePilot Pro.
 
 Goals:
 
-- Consistency
-- Reusability
-- Professional UX
-- Faster development
-- Easier maintenance
+* Consistency
+* Reusability
+* Professional UX
+* Faster development
+* Easier maintenance
 
----
+\---
 
 # Component Standards
 
 Every component should:
 
-- Have a single responsibility
-- Be reusable
-- Support Material UI theming
-- Be documented
-- Be predictable
-- Avoid duplicated logic
+* Have a single responsibility
+* Be reusable
+* Support Material UI theming
+* Be documented
+* Be predictable
+* Avoid duplicated logic
 
----
+\---
 
 # TradePilotCard
 
@@ -39,19 +39,19 @@ Base container for general cards and information panels.
 
 ## Usage
 
-- MT5 Account
-- Portfolio
-- AI Coach
-- Trading Plan
-- Statistics
+* MT5 Account
+* Portfolio
+* AI Coach
+* Trading Plan
+* Statistics
 
 ## Rules
 
-- One logical entity per card
-- Consistent padding
-- Optional header/actions
+* One logical entity per card
+* Consistent padding
+* Optional header/actions
 
----
+\---
 
 # TradePilotButton
 
@@ -61,17 +61,17 @@ Standard application button.
 
 ## Variants
 
-- Primary
-- Secondary
-- Danger
-- Loading
+* Primary
+* Secondary
+* Danger
+* Loading
 
 ## Rules
 
-- Primary action per section
-- Loading state for async operations
+* Primary action per section
+* Loading state for async operations
 
----
+\---
 
 # StatusBadge
 
@@ -81,18 +81,18 @@ Persistent status indicator.
 
 ## Examples
 
-- Active
-- Disabled
-- Connected
-- Syncing
-- Failed
-- Demo
-- Live
-- Prop Firm
-- Planned
-- Foundation
+* Active
+* Disabled
+* Connected
+* Syncing
+* Failed
+* Demo
+* Live
+* Prop Firm
+* Planned
+* Foundation
 
----
+\---
 
 # SectionHeader
 
@@ -102,11 +102,11 @@ Reusable section title.
 
 Contains:
 
-- Title
-- Subtitle (optional)
-- Actions (optional)
+* Title
+* Subtitle (optional)
+* Actions (optional)
 
----
+\---
 
 # InfoRow
 
@@ -116,13 +116,13 @@ Display label/value pairs consistently.
 
 Examples:
 
-- Broker
-- Login
-- Balance
-- Equity
-- Last Sync
+* Broker
+* Login
+* Balance
+* Equity
+* Last Sync
 
----
+\---
 
 # MetricCard
 
@@ -132,12 +132,12 @@ Display one generic KPI with emphasis.
 
 Examples:
 
-- Balance
-- Equity
-- Win Rate
-- Profit Factor
+* Balance
+* Equity
+* Win Rate
+* Profit Factor
 
----
+\---
 
 # Widget Infrastructure
 
@@ -149,10 +149,24 @@ frontend/src/components/widgets/
 ├── WidgetHeader.jsx
 ├── WidgetFooter.jsx
 ├── WidgetMetric.jsx
+
+├── WidgetContainer
+
+├── WidgetHeader
+
+├── WidgetFooter
+
+├── WidgetMetric v2
+
+├── WidgetLoading
+
+├── WidgetErrorState
+
+├── WidgetEmptyState
 └── index.js
 ```
 
----
+\---
 
 # WidgetContainer
 
@@ -162,11 +176,11 @@ Base container for professional widgets.
 
 Rules:
 
-- Use for dashboard/professional widgets.
-- Should not contain feature-specific logic.
-- Provides consistent widget structure.
+* Use for dashboard/professional widgets.
+* Should not contain feature-specific logic.
+* Provides consistent widget structure.
 
----
+\---
 
 # WidgetHeader
 
@@ -176,11 +190,11 @@ Standard widget header.
 
 Contains:
 
-- Title
-- Subtitle
-- Optional action/status badge
+* Title
+* Subtitle
+* Optional action/status badge
 
----
+\---
 
 # WidgetFooter
 
@@ -190,11 +204,11 @@ Standard widget footer/action area.
 
 Contains:
 
-- Primary action
-- Secondary actions
-- Extra footer controls when needed
+* Primary action
+* Secondary actions
+* Extra footer controls when needed
 
----
+\---
 
 # WidgetMetric
 
@@ -204,26 +218,26 @@ Display metric values inside professional widgets.
 
 Examples:
 
-- Balance
-- Equity
-- Floating P/L
-- Open Positions
+* Balance
+* Equity
+* Floating P/L
+* Open Positions
 
----
+\---
 
 # KPI / Metric Naming
 
 Current metric components have different scopes:
 
-| Component | Scope |
-|---|---|
-| `KPICard` | Existing dashboard KPI component. |
-| `MetricCard` | Generic reusable metric card. |
-| `WidgetMetric` | Widget infrastructure metric component. |
+|Component|Scope|
+|-|-|
+|`KPICard`|Existing dashboard KPI component.|
+|`MetricCard`|Generic reusable metric card.|
+|`WidgetMetric`|Widget infrastructure metric component.|
 
 Do not create additional metric components unless the scope is clearly different.
 
----
+\---
 
 # StatisticCard
 
@@ -231,17 +245,17 @@ Purpose:
 
 Display statistical summaries.
 
----
+\---
 
 # PageContainer
 
 Provides:
 
-- Page spacing
-- Max width
-- Consistent layout
+* Page spacing
+* Max width
+* Consistent layout
 
----
+\---
 
 # LoadingOverlay
 
@@ -249,7 +263,7 @@ Purpose:
 
 Indicate background processing.
 
----
+\---
 
 # EmptyState
 
@@ -259,100 +273,121 @@ Friendly message when no data exists.
 
 Should include:
 
-- Icon
-- Message
-- Suggested action
+* Icon
+* Message
+* Suggested action
 
----
+\---
 
 # ConfirmDialog
 
 Used for:
 
-- Delete
-- Disable
-- Reset
-- Dangerous actions
+* Delete
+* Disable
+* Reset
+* Dangerous actions
 
----
+\---
 
 # SearchToolbar
 
 Contains:
 
-- Search
-- Filters
-- Quick actions
+* Search
+* Filters
+* Quick actions
 
----
+\---
 
 # FilterBar
 
 Supports:
 
-- Dropdowns
-- Chips
-- Date filters
-- Reset
+* Dropdowns
+* Chips
+* Date filters
+* Reset
 
----
+\---
 
 # Future Components
 
 Planned:
 
-- TradePilotTable
-- DashboardGrid
-- KPIGrid
-- NotificationCenter
-- Timeline
-- ActivityFeed
-- MarketWidget
-- RiskWidget
-- PortfolioWidget
-- WidgetToolbar
-- WidgetEmptyState
-- WidgetLoading
-- WidgetErrorState
+* TradePilotTable
+* DashboardGrid
+* KPIGrid
+* NotificationCenter
+* Timeline
+* ActivityFeed
+* MarketWidget
+* RiskWidget
+* PortfolioWidget
+* WidgetToolbar
+* WidgetEmptyState
+* WidgetLoading
+* WidgetErrorState
 
----
+\---
 
 # Naming Convention
 
 Reusable components:
 
 ```text
-TradePilot*
-Widget*
+TradePilot\*
+Widget\*
 ```
 
 Examples:
 
-- TradePilotCard
-- TradePilotButton
-- TradePilotTable
-- WidgetContainer
-- WidgetHeader
-- WidgetMetric
+* TradePilotCard
+* TradePilotButton
+* TradePilotTable
+* WidgetContainer
+* WidgetHeader
+* WidgetMetric
 
----
+\---
 
 # Review Checklist
 
 Before adding a component verify:
 
-- Is it reusable?
-- Is it documented?
-- Does it follow Design System?
-- Can another module reuse it?
-- Does it avoid duplicate UI?
+* Is it reusable?
+* Is it documented?
+* Does it follow Design System?
+* Can another module reuse it?
+* Does it avoid duplicate UI?
 
----
+\---
 
 # Related Documents
 
-- DESIGN_SYSTEM.md
-- DEVELOPMENT_STANDARDS.md
-- PROJECT_MASTER.md
-- DECISIONS.md
-- SOURCE_CODE_STRUCTURE.md
+* DESIGN\_SYSTEM.md
+* DEVELOPMENT\_STANDARDS.md
+* PROJECT\_MASTER.md
+* DECISIONS.md
+* SOURCE\_CODE\_STRUCTURE.md
+
+
+
+---
+
+# Sprint 22 Additions
+
+## Widget Infrastructure v3
+
+- WidgetMetricGrid
+- WidgetMetrics
+
+## Portfolio Feature Module
+
+- PortfolioSummaryMetrics
+- PortfolioPerformanceMetrics
+- PortfolioStatisticsCard
+- PortfolioAllocationCard
+
+The Portfolio feature now follows the standard Feature Module pattern:
+components/ • hooks/ • services/ • index.js

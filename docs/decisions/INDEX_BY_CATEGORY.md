@@ -45,3 +45,21 @@
 - D-016
 - D-027
 
+---
+
+## Feature Module Architecture
+
+- D-042 — Portfolio Feature Module Reference Implementation
+
+## Widget Infrastructure
+
+- D-043 — Widget Infrastructure v3
+
+## Portfolio Architecture
+
+- D-044 — Modular Portfolio Overview API
+
+## Sprint Process / Source Audit
+
+- D-045 — Source Structure Audit Before Routing Changes
+

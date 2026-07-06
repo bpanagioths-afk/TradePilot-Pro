@@ -164,3 +164,87 @@ Professional Dashboard Foundation and Widget Infrastructure:
 Sprint 20 changed TradePilot Pro from page-based UI growth into a platform-style architecture for professional widgets and future feature modules.
 
 ---
+
+
+
+# Sprint 21
+
+Portfolio Feature Module Foundation:
+
+## Backend
+
+- Portfolio backend router
+- Portfolio service layer
+- Portfolio response schema
+- Portfolio summary API
+
+## Frontend
+
+- Frontend portfolio service
+- Professional Portfolio Dashboard Widget
+- Real Portfolio metrics from backend
+- PortfolioWidget connected to live backend data
+
+## Widget Infrastructure v2
+
+- `WidgetMetric` upgraded to v2
+- `WidgetLoading`
+- `WidgetErrorState`
+- `WidgetEmptyState`
+- shared widget loading / error / empty state patterns
+
+Sprint 21 established Portfolio as a real backend-connected dashboard widget and prepared the ground for a full Portfolio Feature Module.
+
+---
+
+# Sprint 22
+
+Portfolio Feature Module Completion and Widget Infrastructure v3:
+
+## Backend
+
+- `/portfolio/overview` endpoint
+- modular Portfolio response structure
+- `summary`
+- `statistics`
+- `allocation`
+- `performance`
+- backward compatibility through `/portfolio/summary`
+- Portfolio statistics calculations
+- allocation by symbol
+- allocation by direction
+- performance metrics foundation
+- profit factor
+- average win / average loss
+- average RR
+- max drawdown foundation
+
+## Frontend
+
+- `frontend/src/features/portfolio/` module structure
+- `usePortfolio()` hook
+- `PortfolioSummaryMetrics`
+- `PortfolioPerformanceMetrics`
+- `PortfolioStatisticsCard`
+- `PortfolioAllocationCard`
+- PortfolioWidget migrated to Feature Module pattern
+- PortfolioWidget moved from summary endpoint to overview endpoint
+
+## Widget Infrastructure v3
+
+- `WidgetMetricGrid`
+- `WidgetMetrics`
+- reusable KPI grid pattern
+- reusable metric renderer for future widgets
+
+## Architecture
+
+- Feature Module pattern accepted as a project standard
+- Portfolio became the reference implementation for future modules
+- routing / navigation audit completed before Sidebar integration
+- Portfolio page integration postponed until production-ready
+- no architecture regression introduced
+
+Sprint 22 changed TradePilot Pro from a widget-based dashboard into a feature-module platform where future modules can be built consistently and reused across dashboard widgets and full pages.
+
+---

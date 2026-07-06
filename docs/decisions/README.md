@@ -42,3 +42,13 @@ Each decision file should describe one accepted architectural decision:
 - future notes
 
 ---
+
+## Sprint 22 Decisions
+
+Sprint 22 added the following accepted decisions:
+
+- [D-042 Portfolio Feature Module Reference Implementation](D-042_Portfolio_Feature_Module_Reference.md)
+- [D-043 Widget Infrastructure v3](D-043_Widget_Infrastructure_v3.md)
+- [D-044 Modular Portfolio Overview API](D-044_Modular_Portfolio_Overview_API.md)
+- [D-045 Source Structure Audit Before Routing Changes](D-045_Source_Structure_Audit_Before_Routing.md)
+

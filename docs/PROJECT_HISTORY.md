@@ -16,18 +16,24 @@ The full history is split into smaller files inside `docs/history/` so the proje
 
 ## Current Status
 
-Sprint 18 is completed.
+Sprint 22 is completed.
 
-Sprint 19 starts with the Professional MT5 Trading Widget.
+Sprint 23 starts with the Portfolio Analytics Dashboard foundation.
 
 The project now follows:
 
 ```text
-Material UI
+Application Pages
+↓
+Feature Modules
+↓
+Dashboard Components
+↓
+Widget Infrastructure v3
 ↓
 TradePilot UI Framework
 ↓
-Application Modules
+Material UI
 ```
 
 Core product direction:
@@ -67,4 +73,59 @@ Trading Command Center
 ```
 
 Sprint 19 completed the foundation for future widgets including Portfolio, Risk, AI Coach, Psychology, Economic Calendar and Prop Firm modules.
+
+---
+
+# Sprint 22 History - Portfolio Feature Module and Widget Infrastructure v3
+
+Sprint 22 marked the transition from reusable dashboard widgets to reusable feature modules.
+
+The Portfolio module became the first reference implementation of the Feature Module pattern:
+
+```text
+features/portfolio/
+├── components/
+├── hooks/
+├── services/
+└── index.js
+```
+
+Backend Portfolio logic evolved from a single summary endpoint into a modular overview API:
+
+```text
+GET /portfolio/overview
+
+summary
+statistics
+allocation
+performance
+```
+
+The old `/portfolio/summary` endpoint remained available for backward compatibility.
+
+On the frontend, Portfolio data loading moved into `usePortfolio()`, and Portfolio presentation was split into reusable feature components:
+
+- `PortfolioSummaryMetrics`
+- `PortfolioPerformanceMetrics`
+- `PortfolioStatisticsCard`
+- `PortfolioAllocationCard`
+
+Sprint 22 also introduced Widget Infrastructure v3 through:
+
+- `WidgetMetricGrid`
+- `WidgetMetrics`
+
+This reduced repeated KPI grid code and created a stronger foundation for future modules such as Risk, Analytics, Psychology, AI Coach, Economic Calendar and Prop Firm tools.
+
+A routing and navigation audit was also completed. Portfolio page integration was intentionally postponed until the page is fully production-ready, preventing premature navigation changes and avoiding architecture drift.
+
+Sprint 22 reinforced the product direction:
+
+```text
+Reusable Widgets
+↓
+Reusable Feature Modules
+↓
+Professional Trading Command Center
+```
 

@@ -15,6 +15,8 @@ This file is the central map for the TradePilot Pro documentation system.
 |`docs/CHANGELOG.md`|Sprint release index|
 |`docs/BACKLOG.md`|Product roadmap index|
 |`docs/DESIGN\_SYSTEM.md`|UI / UX design guide|
+|`docs/project/09_Current_State/Current_Project_Status.md`|Operational snapshot of the latest completed sprint|
+|`docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT*.md`|Handover prompt for the next development chat|
 
 \---
 
@@ -53,7 +55,7 @@ Before continuing development:
 Current active sprint:
 
 ```text
-Sprint 19 - Professional MT5 Account Widget
+Sprint 23 - Portfolio Analytics Dashboard
 ```
 
 Current product direction:
@@ -69,11 +71,17 @@ Professional Desktop Trading Platform
 Current frontend architecture:
 
 ```text
-Material UI
+Application Pages
+↓
+Feature Modules
+↓
+Dashboard Components
+↓
+Widget Infrastructure v3
 ↓
 TradePilot UI Framework
 ↓
-Application Modules
+Material UI
 ```
 
 \---
@@ -85,4 +93,40 @@ Every important change must update the correct documentation area.
 Do not put everything into one large file.
 
 Each topic must have one clear home.
+
+---
+
+## Sprint Handover Documents
+
+The current-state folder is the operational handover area for new chats.
+
+Key files:
+
+|File|Purpose|
+|-|-|
+|`docs/project/09_Current_State/Current_Project_Status.md`|Current project snapshot and latest completed sprint status|
+|`docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT*.md`|Mandatory next-chat prompt for the next sprint|
+|`docs/SOURCE_CODE_STRUCTURE.md`|Developer map for the real source-code structure|
+
+Rule:
+
+Before a new sprint begins, read the current-state files and the source-code structure document before writing code.
+
+---
+
+## Release Documentation Rule
+
+Every important sprint should close with:
+
+```text
+Code Verification
+↓
+Documentation Update
+↓
+Git Commit
+↓
+Next Chat Prompt
+```
+
+The documentation is not an afterthought. It is the project memory and the handover system between chats.
 
