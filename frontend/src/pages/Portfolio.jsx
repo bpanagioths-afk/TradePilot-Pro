@@ -1,3 +1,5 @@
+import { Box } from "@mui/material";
+
 import {
     WidgetLoading,
     WidgetErrorState,
@@ -6,6 +8,8 @@ import {
 
 import {
     usePortfolio,
+    PortfolioSummaryMetrics,
+    PortfolioPerformanceMetrics,
     PortfolioStatisticsCard,
     PortfolioAllocationCard
 } from "../features/portfolio";
@@ -43,14 +47,17 @@ export default function Portfolio() {
     }
 
     return (
-        <>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <PortfolioSummaryMetrics summary={portfolio.summary} />
+
+            <PortfolioPerformanceMetrics performance={portfolio.performance} />
+
             <PortfolioStatisticsCard
-                statistics={portfolio.statistics}
+                performance={portfolio.performance}
+                risk={portfolio.risk}
             />
 
-            <PortfolioAllocationCard
-                allocation={portfolio.allocation}
-            />
-        </>
+            <PortfolioAllocationCard allocation={portfolio.allocation} />
+        </Box>
     );
 }

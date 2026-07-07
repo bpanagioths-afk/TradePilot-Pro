@@ -8,9 +8,9 @@ from app.routers.mt5 import router as mt5_router
 from app.routers.exports import router as exports_router
 from app.routers.trading_plans import router as trading_plans_router
 from app.routers.rule_engine import router as rule_engine_router
-from app.routers.portfolio import router as portfolio_router
+from app.routers.portfolio import router as portfolio_legacy_router
 
-
+from app.features.portfolio.api import router as portfolio_router
 from app.core.database import Base, engine
 
 from app.models.trade import Trade
@@ -21,6 +21,8 @@ from app.models.mt5_account import MT5Account
 from app.services.scheduler import (
     start_scheduler
 )
+
+
 
 app = FastAPI(
     title="TradePilot Pro API",
@@ -55,8 +57,13 @@ app.include_router(mt5_router)
 app.include_router(exports_router)
 app.include_router(trading_plans_router)
 app.include_router(rule_engine_router)
-app.include_router(portfolio_router)
+app.include_router(portfolio_legacy_router)
 
+app.include_router(
+    portfolio_router,
+    prefix="/api/portfolio",
+    tags=["Portfolio"],
+)
 
 @app.on_event("startup")
 def startup():

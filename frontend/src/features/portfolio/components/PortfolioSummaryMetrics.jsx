@@ -3,27 +3,28 @@ import { WidgetMetrics } from "../../../components/widgets";
 export default function PortfolioSummaryMetrics({ summary }) {
     const metrics = [
         {
-            title: "Accounts",
-            value: summary.total_accounts,
-            helperText: `${summary.active_accounts} active / ${summary.disabled_accounts} disabled`,
+            title: "Total Trades",
+            value: summary?.total_trades ?? 0,
+            helperText: "Total closed trades",
             status: "info"
         },
         {
-            title: "Trades",
-            value: summary.total_trades,
-            helperText: `${summary.winning_trades} wins / ${summary.losing_trades} losses`
+            title: "Winning Trades",
+            value: summary?.winning_trades ?? 0,
+            helperText: "Profitable trades",
+            status: "success"
+        },
+        {
+            title: "Losing Trades",
+            value: summary?.losing_trades ?? 0,
+            helperText: "Losing trades",
+            status: "error"
         },
         {
             title: "Win Rate",
-            value: `${summary.win_rate}%`,
-            helperText: "Execution result",
-            status: summary.win_rate >= 50 ? "success" : "warning"
-        },
-        {
-            title: "Net Profit",
-            value: `$${summary.total_profit}`,
-            helperText: `${summary.total_pips} pips`,
-            status: summary.total_profit >= 0 ? "success" : "error"
+            value: `${summary?.win_rate ?? 0}%`,
+            helperText: "Winning trades percentage",
+            status: (summary?.win_rate ?? 0) >= 50 ? "success" : "warning"
         }
     ];
 

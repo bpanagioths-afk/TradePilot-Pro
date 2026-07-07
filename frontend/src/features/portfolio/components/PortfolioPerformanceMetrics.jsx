@@ -1,30 +1,34 @@
 import { WidgetMetrics } from "../../../components/widgets";
 
 export default function PortfolioPerformanceMetrics({ performance }) {
+    if (!performance) {
+        return null;
+    }
+
     const metrics = [
         {
             title: "Profit Factor",
-            value: performance.profit_factor,
+            value: performance.profit_factor ?? 0,
             helperText: "Gross profit / gross loss",
-            status: performance.profit_factor >= 1 ? "success" : "warning"
+            status: (performance.profit_factor ?? 0) >= 1 ? "success" : "warning"
         },
         {
-            title: "Average Win",
-            value: `$${performance.average_win}`,
-            helperText: "Average profitable trade",
+            title: "Total Profit",
+            value: `$${(performance.total_profit ?? 0).toFixed(2)}`,
+            helperText: "Gross profit",
             status: "success"
         },
         {
-            title: "Average Loss",
-            value: `$${performance.average_loss}`,
-            helperText: "Average losing trade",
+            title: "Total Loss",
+            value: `$${(performance.total_loss ?? 0).toFixed(2)}`,
+            helperText: "Gross loss",
             status: "error"
         },
         {
-            title: "Average RR",
-            value: performance.average_rr,
-            helperText: "Average risk / reward",
-            status: performance.average_rr >= 1 ? "success" : "warning"
+            title: "Net Profit",
+            value: `$${(performance.net_profit ?? 0).toFixed(2)}`,
+            helperText: "Net result",
+            status: (performance.net_profit ?? 0) >= 0 ? "success" : "error"
         }
     ];
 

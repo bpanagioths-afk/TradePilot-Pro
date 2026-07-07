@@ -69,3 +69,11 @@ Highlights:
 - React Feature Module pattern (`components/hooks/services/index.js`).
 - Widget Infrastructure v3 (`WidgetMetricGrid`, `WidgetMetrics`).
 - Portfolio dashboard widget refactored to use shared hooks and reusable components.
+
+
+## Sprint 23 (Completed)
+- Portfolio backend modularized (Repository/Service/Engines).
+- Added Summary, Performance, Risk, Equity and Drawdown engines.
+- Added /api/portfolio/overview compatibility endpoint.
+- Frontend portfolio migration started and aligned with new backend contract.
+- Known backlog: MT5 pips calculation, Allocation engine, Equity/Drawdown charts.

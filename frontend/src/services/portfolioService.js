@@ -1,11 +1,11 @@
 import api from "../api/api";
 
 export async function getPortfolioSummary() {
-    const response = await api.get("/portfolio/summary");
-    return response.data;
+    const response = await api.get("/api/portfolio/overview");
+    return response.data.summary;
 }
 
 export async function getPortfolioOverview() {
-    const response = await api.get("/portfolio/overview");
+    const response = await api.get("/api/portfolio/overview");
     return response.data;
 }
