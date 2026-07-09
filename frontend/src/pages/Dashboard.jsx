@@ -3,9 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 import PageLayout from "../components/layout/PageLayout";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
-import OpenPositionsWidget from "../components/dashboard/mt5/OpenPositionsWidget";
-import PendingOrdersWidget from 
-"../components/dashboard/mt5/PendingOrdersWidget";
+
 
 import { getFullDashboard } from "../services/dashboardService";
 
@@ -39,14 +37,6 @@ export default function Dashboard() {
                 summary={summary}
                 equity={equity}
             />
-
-            <Box sx={{ mt: 3 }}>
-                <OpenPositionsWidget />
-            </Box>
-
-            <Box sx={{ mt: 3 }}>
-                <PendingOrdersWidget />
-            </Box>
         </PageLayout>
     );
 }
