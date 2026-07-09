@@ -24,8 +24,8 @@ from app.services.mt5_account_service import (
     disable_account,
     get_mt5_account_summary,
     get_live_mt5_open_positions,
+    get_live_mt5_pending_orders,
 )
-
 from app.schemas.mt5_account import (
     MT5AccountCreate,
     MT5AccountUpdate,
@@ -57,6 +57,9 @@ def mt5_status():
 def read_mt5_open_positions():
     return get_live_mt5_open_positions()
 
+@router.get("/pending-orders")
+def read_mt5_pending_orders():
+    return get_live_mt5_pending_orders()
 
 @router.get("/accounts", response_model=list[MT5AccountResponse])
 def get_mt5_accounts(

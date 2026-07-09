@@ -37,3 +37,8 @@ export const getMT5OpenPositions = async () => {
     const response = await api.get("/mt5/open-positions");
     return response.data;
 };
+
+export const getMT5PendingOrders = async () => {
+    const response = await api.get("/mt5/pending-orders");
+    return response.data;
+};

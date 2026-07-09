@@ -137,7 +137,6 @@ def get_live_mt5_metrics():
     finally:
         mt5.shutdown()
 
-
 def get_live_mt5_open_positions():
 
     if mt5 is None:
@@ -206,7 +205,73 @@ def get_live_mt5_open_positions():
 
     finally:
         mt5.shutdown()
+def get_live_mt5_pending_orders():
 
+    if mt5 is None:
+        return {
+            "connected": False,
+            "orders": [],
+            "total_orders": 0,
+            "message": "MetaTrader5 Python package is not installed.",
+        }
+
+    initialized = mt5.initialize()
+
+    if not initialized:
+        return {
+            "connected": False,
+            "orders": [],
+            "total_orders": 0,
+            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+        }
+
+    try:
+        orders = mt5.orders_get()
+
+        if orders is None:
+            return {
+                "connected": False,
+                "orders": [],
+                "total_orders": 0,
+                "message": f"MT5 pending orders unavailable: {mt5.last_error()}",
+            }
+
+        pending_orders = []
+
+        for order in orders:
+            order_type_map = {
+                mt5.ORDER_TYPE_BUY_LIMIT: "BUY LIMIT",
+                mt5.ORDER_TYPE_SELL_LIMIT: "SELL LIMIT",
+                mt5.ORDER_TYPE_BUY_STOP: "BUY STOP",
+                mt5.ORDER_TYPE_SELL_STOP: "SELL STOP",
+                mt5.ORDER_TYPE_BUY_STOP_LIMIT: "BUY STOP LIMIT",
+                mt5.ORDER_TYPE_SELL_STOP_LIMIT: "SELL STOP LIMIT",
+            }
+
+            pending_orders.append(
+                {
+                    "ticket": order.ticket,
+                    "symbol": order.symbol,
+                    "type": order_type_map.get(order.type, "UNKNOWN"),
+                    "volume_initial": float(order.volume_initial),
+                    "volume_current": float(order.volume_current),
+                    "price_open": float(order.price_open),
+                    "stop_loss": float(order.sl),
+                    "take_profit": float(order.tp),
+                    "time_setup": order.time_setup,
+                    "comment": order.comment,
+                }
+            )
+
+        return {
+            "connected": True,
+            "orders": pending_orders,
+            "total_orders": len(pending_orders),
+            "message": "MT5 pending orders loaded successfully.",
+        }
+
+    finally:
+        mt5.shutdown()
 
 def get_mt5_account_summary(db: Session, account_id: int):
 
