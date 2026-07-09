@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
+import { Typography } from "@mui/material";
 
-import {
-    Box,
-    Typography,
-} from "@mui/material";
-
+import PageLayout from "../components/layout/PageLayout";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
-
 
 import { getFullDashboard } from "../services/dashboardService";
 
-
 export default function Dashboard() {
-
     const [summary, setSummary] = useState(null);
     const [equity, setEquity] = useState([]);
 
-useEffect(() => {
-
-    getFullDashboard()
-        .then((res) => {
-            setSummary(res.data.summary);
-            setEquity(res.data.equity);
-        })
-        .catch(console.error);
-
-}, []);
+    useEffect(() => {
+        getFullDashboard()
+            .then((res) => {
+                setSummary(res.data.summary);
+                setEquity(res.data.equity);
+            })
+            .catch(console.error);
+    }, []);
 
     if (!summary) {
         return (
@@ -36,16 +28,14 @@ useEffect(() => {
     }
 
     return (
-        <Box>
-
-            <Typography variant="h4" mb={3}>
-                Dashboard
-            </Typography>
-            <Typography variant="h5" mb={2}>
-                Professional Command Center
-            </Typography>
-
-            <DashboardLayout summary={summary} equity={equity} />       
-        </Box>
+        <PageLayout
+            title="Dashboard"
+            subtitle="Your trading cockpit and performance overview."
+        >
+            <DashboardLayout
+                summary={summary}
+                equity={equity}
+            />
+        </PageLayout>
     );
 }

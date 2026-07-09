@@ -16,6 +16,7 @@ import Reports from "./pages/Reports";
 import MT5 from "./pages/MT5";
 import Settings from "./pages/Settings";
 import TradingPlan from "./pages/TradingPlan";
+import Portfolio from "./pages/Portfolio";
 
 function App() {
 
@@ -35,7 +36,7 @@ function App() {
                     />
 
                     <Route
-                        path="/Dashboard"
+                        path="/dashboard"
                         element={<Dashboard />}
                     />
 
@@ -57,6 +58,11 @@ function App() {
                     <Route
                         path="/reports"
                         element={<Reports />}
+                    />
+
+                    <Route
+                        path="/portfolio"
+                        element={<Portfolio />}
                     />
 
                     <Route

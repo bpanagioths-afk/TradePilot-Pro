@@ -4,3 +4,4 @@ export { default as PortfolioSummaryMetrics } from "./components/PortfolioSummar
 export { default as PortfolioPerformanceMetrics } from "./components/PortfolioPerformanceMetrics";
 export { default as PortfolioStatisticsCard } from "./components/PortfolioStatisticsCard";
 export { default as PortfolioAllocationCard } from "./components/PortfolioAllocationCard";
+export { default as PortfolioChartsCard } from "./components/PortfolioChartsCard";

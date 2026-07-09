@@ -1,5 +1,7 @@
 import { Box } from "@mui/material";
 
+import PageLayout from "../components/layout/PageLayout";
+
 import {
     WidgetLoading,
     WidgetErrorState,
@@ -11,7 +13,8 @@ import {
     PortfolioSummaryMetrics,
     PortfolioPerformanceMetrics,
     PortfolioStatisticsCard,
-    PortfolioAllocationCard
+    PortfolioAllocationCard,
+    PortfolioChartsCard
 } from "../features/portfolio";
 
 export default function Portfolio() {
@@ -47,17 +50,47 @@ export default function Portfolio() {
     }
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <PortfolioSummaryMetrics summary={portfolio.summary} />
+        <PageLayout
+            title="Portfolio"
+            subtitle="Portfolio performance, allocation and risk overview."
+        >
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        lg: "1fr 1fr"
+                    },
+                    gap: 2
+                }}
+            >
+                <PortfolioSummaryMetrics summary={portfolio.summary} />
 
-            <PortfolioPerformanceMetrics performance={portfolio.performance} />
+                <PortfolioPerformanceMetrics performance={portfolio.performance} />
+            </Box>
 
-            <PortfolioStatisticsCard
-                performance={portfolio.performance}
-                risk={portfolio.risk}
+            <PortfolioChartsCard
+                equity={portfolio.equity}
+                drawdown={portfolio.drawdown}
             />
 
-            <PortfolioAllocationCard allocation={portfolio.allocation} />
-        </Box>
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        lg: "1fr 1fr"
+                    },
+                    gap: 2
+                }}
+            >
+                <PortfolioAllocationCard allocation={portfolio.allocation} />
+
+                <PortfolioStatisticsCard
+                    performance={portfolio.performance}
+                    risk={portfolio.risk}
+                />
+            </Box>
+        </PageLayout>
     );
 }
