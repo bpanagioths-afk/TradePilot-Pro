@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 import StatusBadge from "../../common/StatusBadge";
 import TradePilotButton from "../../common/TradePilotButton";
-import InfoRow from "../../common/InfoRow";
 
 import {
     WidgetContainer,
@@ -38,6 +37,20 @@ const formatNumber = (value) => {
 
     return new Intl.NumberFormat("en-US").format(value);
 };
+
+function DetailRow({ label, value }) {
+    return (
+        <>
+            <Box sx={{ color: "text.secondary", fontSize: 14 }}>
+                {label}
+            </Box>
+
+            <Box sx={{ fontWeight: 600, fontSize: 14 }}>
+                {value}
+            </Box>
+        </>
+    );
+}
 
 export default function MT5Widget() {
     const navigate = useNavigate();
@@ -88,19 +101,21 @@ export default function MT5Widget() {
         loadMT5Data();
     }, []);
 
-    const connectionStatus = summary?.connection_status === "connected"
-        ? "connected"
-        : account?.is_active
-            ? "active"
-            : "disabled";
-
-    const connectionLabel = loading
-        ? "Loading"
-        : summary?.connection_status === "connected"
-            ? "Connected"
+    const connectionStatus =
+        summary?.connection_status === "connected"
+            ? "connected"
             : account?.is_active
-                ? "Active"
-                : "No Active Account";
+                ? "active"
+                : "disabled";
+
+    const connectionLabel =
+        loading
+            ? "Loading"
+            : summary?.connection_status === "connected"
+                ? "Connected"
+                : account?.is_active
+                    ? "Active"
+                    : "No Active Account";
 
     return (
         <WidgetContainer>
@@ -160,28 +175,30 @@ export default function MT5Widget() {
                     display: "grid",
                     gridTemplateColumns: {
                         xs: "1fr",
-                        sm: "1fr 1fr"
+                        md: "140px 1fr"
                     },
-                    gap: 2,
-                    mb: 3
+                    rowGap: 1,
+                    columnGap: 2,
+                    mb: 3,
+                    alignItems: "center"
                 }}
             >
-                <InfoRow
+                <DetailRow
                     label="Connection"
                     value={connectionLabel}
                 />
 
-                <InfoRow
+                <DetailRow
                     label="Account"
                     value={account?.account_name || "No account selected"}
                 />
 
-                <InfoRow
+                <DetailRow
                     label="Broker"
                     value={account?.broker || "—"}
                 />
 
-                <InfoRow
+                <DetailRow
                     label="Server"
                     value={account?.server || "—"}
                 />
