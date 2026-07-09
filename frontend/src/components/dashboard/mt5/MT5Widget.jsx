@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Box, Divider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import StatusBadge from "../../common/StatusBadge";
 import TradePilotButton from "../../common/TradePilotButton";
@@ -11,13 +13,106 @@ import {
     WidgetMetric
 } from "../../widgets";
 
+import {
+    getMT5Accounts,
+    getMT5AccountSummary,
+    syncMT5Account
+} from "../../../api/mt5AccountsApi";
+
+const formatMoney = (value) => {
+    if (value === null || value === undefined) {
+        return "—";
+    }
+
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2
+    }).format(value);
+};
+
+const formatNumber = (value) => {
+    if (value === null || value === undefined) {
+        return "—";
+    }
+
+    return new Intl.NumberFormat("en-US").format(value);
+};
+
 export default function MT5Widget() {
+    const navigate = useNavigate();
+
+    const [account, setAccount] = useState(null);
+    const [summary, setSummary] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
+
+    const loadMT5Data = async () => {
+        try {
+            setLoading(true);
+
+            const accounts = await getMT5Accounts();
+            const activeAccount =
+                accounts.find((item) => item.is_active) || accounts[0] || null;
+
+            setAccount(activeAccount);
+
+            if (activeAccount) {
+                const accountSummary = await getMT5AccountSummary(activeAccount.id);
+                setSummary(accountSummary);
+            }
+        } catch (error) {
+            console.error("Failed to load MT5 dashboard widget", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSync = async () => {
+        if (!account) {
+            return;
+        }
+
+        try {
+            setSyncing(true);
+            await syncMT5Account(account.id);
+            await loadMT5Data();
+        } catch (error) {
+            console.error("Failed to sync MT5 account from dashboard", error);
+        } finally {
+            setSyncing(false);
+        }
+    };
+
+    useEffect(() => {
+        loadMT5Data();
+    }, []);
+
+    const connectionStatus = summary?.connection_status === "connected"
+        ? "connected"
+        : account?.is_active
+            ? "active"
+            : "disabled";
+
+    const connectionLabel = loading
+        ? "Loading"
+        : summary?.connection_status === "connected"
+            ? "Connected"
+            : account?.is_active
+                ? "Active"
+                : "No Active Account";
+
     return (
         <WidgetContainer>
             <WidgetHeader
                 title="MT5 Trading Widget"
-                subtitle="Professional account status and sync overview."
-                action={<StatusBadge label="Foundation" color="info" />}
+                subtitle="Live account status and sync overview."
+                action={
+                    <StatusBadge
+                        label={connectionLabel}
+                        status={connectionStatus}
+                    />
+                }
             />
 
             <Divider sx={{ mb: 2 }} />
@@ -34,10 +129,30 @@ export default function MT5Widget() {
                     mb: 3
                 }}
             >
-                <WidgetMetric title="Balance" value="—" />
-                <WidgetMetric title="Equity" value="—" />
-                <WidgetMetric title="Floating P/L" value="—" />
-                <WidgetMetric title="Open Positions" value="—" />
+                <WidgetMetric
+                    title="Balance"
+                    value={formatMoney(summary?.balance)}
+                />
+
+                <WidgetMetric
+                    title="Equity"
+                    value={formatMoney(summary?.equity)}
+                />
+
+                <WidgetMetric
+                    title="Floating P/L"
+                    value={formatMoney(summary?.floating_profit_loss)}
+                    status={
+                        (summary?.floating_profit_loss ?? 0) >= 0
+                            ? "success"
+                            : "error"
+                    }
+                />
+
+                <WidgetMetric
+                    title="Open Positions"
+                    value={formatNumber(summary?.open_positions)}
+                />
             </Box>
 
             <Box
@@ -51,16 +166,40 @@ export default function MT5Widget() {
                     mb: 3
                 }}
             >
-                <InfoRow label="Connection" value="Pending integration" />
-                <InfoRow label="Account" value="No account selected" />
+                <InfoRow
+                    label="Connection"
+                    value={connectionLabel}
+                />
+
+                <InfoRow
+                    label="Account"
+                    value={account?.account_name || "No account selected"}
+                />
+
+                <InfoRow
+                    label="Broker"
+                    value={account?.broker || "—"}
+                />
+
+                <InfoRow
+                    label="Server"
+                    value={account?.server || "—"}
+                />
             </Box>
 
             <WidgetFooter>
-                <TradePilotButton variant="secondary">
+                <TradePilotButton
+                    variant="secondary"
+                    onClick={() => navigate("/mt5")}
+                >
                     View MT5
                 </TradePilotButton>
 
-                <TradePilotButton>
+                <TradePilotButton
+                    loading={syncing}
+                    disabled={!account}
+                    onClick={handleSync}
+                >
                     Sync Now
                 </TradePilotButton>
             </WidgetFooter>
