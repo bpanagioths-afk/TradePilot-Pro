@@ -138,6 +138,76 @@ def get_live_mt5_metrics():
         mt5.shutdown()
 
 
+def get_live_mt5_open_positions():
+
+    if mt5 is None:
+        return {
+            "connected": False,
+            "positions": [],
+            "total_positions": 0,
+            "floating_profit_loss": 0.0,
+            "message": "MetaTrader5 Python package is not installed.",
+        }
+
+    initialized = mt5.initialize()
+
+    if not initialized:
+        return {
+            "connected": False,
+            "positions": [],
+            "total_positions": 0,
+            "floating_profit_loss": 0.0,
+            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+        }
+
+    try:
+        positions = mt5.positions_get()
+
+        if positions is None:
+            return {
+                "connected": False,
+                "positions": [],
+                "total_positions": 0,
+                "floating_profit_loss": 0.0,
+                "message": f"MT5 open positions unavailable: {mt5.last_error()}",
+            }
+
+        open_positions = []
+
+        for position in positions:
+            position_type = "BUY" if position.type == mt5.POSITION_TYPE_BUY else "SELL"
+
+            open_positions.append(
+                {
+                    "ticket": position.ticket,
+                    "symbol": position.symbol,
+                    "type": position_type,
+                    "volume": float(position.volume),
+                    "price_open": float(position.price_open),
+                    "price_current": float(position.price_current),
+                    "stop_loss": float(position.sl),
+                    "take_profit": float(position.tp),
+                    "profit": float(position.profit),
+                    "swap": float(position.swap),
+                    "time": position.time,
+                    "comment": position.comment,
+                }
+            )
+
+        floating_profit_loss = sum(position["profit"] for position in open_positions)
+
+        return {
+            "connected": True,
+            "positions": open_positions,
+            "total_positions": len(open_positions),
+            "floating_profit_loss": float(floating_profit_loss),
+            "message": "MT5 open positions loaded successfully.",
+        }
+
+    finally:
+        mt5.shutdown()
+
+
 def get_mt5_account_summary(db: Session, account_id: int):
 
     account = (

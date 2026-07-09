@@ -33,4 +33,7 @@ export const getMT5AccountSummary = async (accountId) => {
     return response.data;
 };
 
-
+export const getMT5OpenPositions = async () => {
+    const response = await api.get("/mt5/open-positions");
+    return response.data;
+};
