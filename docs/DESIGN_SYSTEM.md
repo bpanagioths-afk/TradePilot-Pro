@@ -309,3 +309,67 @@ Design goals:
 - Reduce duplicated KPI layouts
 - Standardize metric presentation
 - Shared infrastructure for Portfolio, MT5, Risk, Analytics, Psychology and future modules.
+
+# Sprint 24 UI Guardrails
+
+Sprint 24 established an important UI stability rule.
+
+## Do Not Refactor Global Widgets For Page-Specific Problems
+
+Global widgets are shared by Dashboard, Portfolio, MT5 and future pages. A visual change in one global widget can affect many screens.
+
+Protected visual infrastructure:
+
+```text
+WidgetContainer
+WidgetMetric
+WidgetMetricGrid
+WidgetMetrics
+WidgetHeader
+WidgetFooter
+PageLayout
+PageHeader
+Sidebar
+```
+
+Rules:
+
+1. If only one page looks wrong, fix that page or feature component.
+2. Do not change global widgets unless the issue is truly global.
+3. Before global visual changes, test Dashboard, Portfolio and MT5.
+4. Prefer feature-specific polish over system-wide refactor.
+
+---
+
+## Page Structure Standard
+
+Major pages should follow:
+
+```text
+PageLayout
+↓
+PageHeader
+↓
+Feature widgets / page sections
+```
+
+Current implemented pages:
+
+- Dashboard
+- Portfolio
+
+Future pages should follow this pattern when they are touched for feature work.
+
+---
+
+## Reuse Before Build
+
+Before creating a new component, check whether an existing component already solves the same problem.
+
+Examples from Sprint 24:
+
+- MT5 account summary API already existed.
+- Dashboard MT5 widget reused existing MT5 API functions.
+- Portfolio charts were added as feature-specific because they did not exist elsewhere.
+
+This prevents duplicate components and reduces future maintenance.

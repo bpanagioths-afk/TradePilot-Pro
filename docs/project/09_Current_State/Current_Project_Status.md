@@ -1,465 +1,164 @@
 # Current Project Status
 
-Sprint 20 ολοκληρώθηκε.
-
-\---
-
-## Completed Through Sprint 18
-
-### Backend
-
-* Multi-account MT5 architecture
-
-MT5 AcCurrent Project Status
-
-Sprint 20 ολοκληρώθηκε.
-
-\---
-
-## Completed Through Sprint 18
-
-### Backend
-
-* Multi-account MT5 architecture
-* MT5 Account CRUD
-* Account-aware MT5 Sync
-* Service layer architecture
-* Stable duplicate detection
-* Archive strategy
-
-### Frontend
-
-* MT5 Account Manager
-* TradePilot Theme
-* TradePilotCard
-* TradePilotButton
-* StatusBadge
-* SectionHeader
-* InfoRow
-* MT5 UI migration
-* Design System foundation
-
-\---
-
-## Completed In Sprint 19
-
-### Backend
-
-* MT5 Account Summary endpoint
-* `MT5AccountSummary` schema
-* Live MT5 Balance
-* Live MT5 Equity
-* Live Floating Profit / Loss
-* Live Open Positions
-* Connection Health
-* Import Statistics
-* Safe fallback when MT5 is unavailable
-* Sync Engine Foundation
-* Sync Status endpoint
-
-### Frontend
-
-* `getMT5AccountSummary(accountId)` API function
-* Summary loading per MT5 account
-* Professional MT5 Trading Widget
-* KPI layout
-* Balance Metric
-* Equity Metric
-* Floating P/L Metric
-* Open Positions Metric
-* Imported Trades display
-* Relative Last Sync
-* Connection Status badge
-* Floating P/L color handling
-* `MetricCard` reusable component
-
-\---
-
-## Completed In Sprint 20
-
-### Frontend Architecture
-
-* Professional Dashboard foundation
-* `DashboardLayout`
-* `WidgetGrid`
-* Dashboard widget folders
-* Dashboard summary extraction
-* MT5 dashboard widget foundation
-* Portfolio / Risk / AI / Psychology / Calendar placeholders
-* Barrel exports for dashboard widget folders
-
-### Widget Infrastructure
-
-* `WidgetContainer`
-* `WidgetHeader`
-* `WidgetFooter`
-* `WidgetMetric`
-* widgets barrel export through `frontend/src/components/widgets/index.js`
-
-### Documentation / Architecture
-
-* Rebuilt `SOURCE\\\\\\\\\\\\\\\_CODE\\\\\\\\\\\\\\\_STRUCTURE.md`
-* Added frontend component audit
-* Locked Widget Infrastructure layer
-* Established feature-module direction
-* Added Sprint 20 architecture documentation
-
-\---
-
-## Current Architecture Status
-
-TradePilot Pro now follows:
-
-```text
-Application Pages
-↓
-Feature Modules
-↓
-Dashboard Components
-↓
-Widget Infrastructure
-↓
-TradePilot UI Framework
-↓
-Material UI
-```
-
-Backend continues to follow:
-
-```text
-Routers
-↓
-Services
-↓
-Models / Schemas
-↓
-Database
-```
-
-\---
-
-## Current Active Product Direction
-
-TradePilot Pro is moving from:
-
-```text
-Trading Journal
-```
-
-toward:
-
-```text
-Professional Trading Command Center
-```
-
-The MT5 Widget is the first command-center style widget.
-
-The Sprint 20 Dashboard foundation is now the host layer for future professional modules.
-
-\---
-
-## Completed In Sprint 21
-
-### Portfolio Module Foundation
-
-* Portfolio backend router
-* Portfolio backend service
-* Portfolio response schema
-* Portfolio summary API
-* Frontend portfolio service
-* Professional Portfolio Dashboard Widget
-* Real Portfolio metrics from backend
-* PortfolioWidget connected to live backend data
-
-### Widget Infrastructure v2
-
-* `WidgetMetric` upgraded to v2
-* `WidgetLoading` added
-* `WidgetErrorState` added
-* `WidgetEmptyState` added
-* Widget barrel exports updated
-* PortfolioWidget migrated to shared widget loading / error / empty states
-
-### Architecture / Design Freeze
-
-* Portfolio now follows the Sprint 21 data flow:
-
-```text
-Dashboard
-↓
-PortfolioWidget
-↓
-portfolioService.js
-↓
-FastAPI Portfolio Router
-↓
-Portfolio Service
-↓
-Database
-```
-
-* Widget Infrastructure v2 is now the shared base for future professional widgets.
-* Future widgets should reuse the same loading, error, empty and metric patterns.
-* No architecture regression introduced.
-
-\---
-
-## Next Sprint
-
-Sprint 22 should continue from the completed Sprint 21 Portfolio and Widget Infrastructure foundation.
-
-Recommended Sprint 22 direction:
-
-```text
-Portfolio Page / Portfolio Analytics Foundation
-```
-
-Potential Sprint 22 work:
-
-* Portfolio page route
-* Portfolio feature module folder structure
-* Portfolio allocation metrics
-* Portfolio charts
-* Account distribution view
-* Drawdown / profit factor foundation
-* Dashboard Portfolio Widget refinement
-* Documentation update
-* count CRUD
-* Account-aware MT5 Sync
-* Service layer architecture
-* Stable duplicate detection
-* Archive strategy
-
-### Frontend
-
-* MT5 Account Manager
-* TradePilot Theme
-* TradePilotCard
-* TradePilotButton
-* StatusBadge
-* SectionHeader
-* InfoRow
-* MT5 UI migration
-* Design System foundation
-
-\---
-
-## Completed In Sprint 19
-
-### Backend
-
-* MT5 Account Summary endpoint
-* `MT5AccountSummary` schema
-* Live MT5 Balance
-* Live MT5 Equity
-* Live Floating Profit / Loss
-* Live Open Positions
-* Connection Health
-* Import Statistics
-* Safe fallback when MT5 is unavailable
-* Sync Engine Foundation
-* Sync Status endpoint
-
-### Frontend
-
-* `getMT5AccountSummary(accountId)` API function
-* Summary loading per MT5 account
-* Professional MT5 Trading Widget
-* KPI layout
-* Balance Metric
-* Equity Metric
-* Floating P/L Metric
-* Open Positions Metric
-* Imported Trades display
-* Relative Last Sync
-* Connection Status badge
-* Floating P/L color handling
-* `MetricCard` reusable component
-
-\---
-
-## Completed In Sprint 20
-
-### Frontend Architecture
-
-* Professional Dashboard foundation
-* `DashboardLayout`
-* `WidgetGrid`
-* Dashboard widget folders
-* Dashboard summary extraction
-* MT5 dashboard widget foundation
-* Portfolio / Risk / AI / Psychology / Calendar placeholders
-* Barrel exports for dashboard widget folders
-
-### Widget Infrastructure
-
-* `WidgetContainer`
-* `WidgetHeader`
-* `WidgetFooter`
-* `WidgetMetric`
-* widgets barrel export through `frontend/src/components/widgets/index.js`
-
-### Documentation / Architecture
-
-* Rebuilt `SOURCE\\\\\\\_CODE\\\\\\\_STRUCTURE.md`
-* Added frontend component audit
-* Locked Widget Infrastructure layer
-* Established feature-module direction
-* Added Sprint 20 architecture documentation
-
-\---
-
-## Current Architecture Status
-
-TradePilot Pro now follows:
-
-```text
-Application Pages
-↓
-Feature Modules
-↓
-Dashboard Components
-↓
-Widget Infrastructure
-↓
-TradePilot UI Framework
-↓
-Material UI
-```
-
-Backend continues to follow:
-
-```text
-Routers
-↓
-Services
-↓
-Models / Schemas
-↓
-Database
-```
-
-\---
-
-## Current Active Product Direction
-
-TradePilot Pro is moving from:
-
-```text
-Trading Journal
-```
-
-toward:
-
-```text
-Professional Trading Command Center
-```
-
-The MT5 Widget is the first command-center style widget.
-
-The Sprint 20 Dashboard foundation is now the host layer for future professional modules.
-
-\---
-
-\---
-
-## Completed In Sprint 22
-
-### Portfolio Feature Module Completion
-
-### Backend
-
-* Expanded Portfolio API to modular `/portfolio/overview`
-* Added `summary`, `statistics`, `allocation` and `performance` response sections
-* Preserved `/portfolio/summary` for backward compatibility
-* Added portfolio statistics calculations
-* Added allocation by symbol and trade direction
-* Added performance metrics foundation (Profit Factor, Average Win/Loss, Average RR)
-
-### Frontend
-
-* Introduced `frontend/src/features/portfolio/`
-* Added `usePortfolio` feature hook
-* Refactored `PortfolioWidget` to Feature Module architecture
-* Added `PortfolioSummaryMetrics`
-* Added `PortfolioPerformanceMetrics`
-* Added `PortfolioStatisticsCard`
-* Added `PortfolioAllocationCard`
-
-### Widget Infrastructure v3
-
-* Added `WidgetMetricGrid`
-* Added reusable `WidgetMetrics`
-* Reduced duplicated KPI rendering logic
-* Standardized metric rendering for future feature modules
-
-### Architecture
-
-* Established Feature Module pattern:
-
-  * `components/`
-  * `hooks/`
-  * `services/`
-  * `index.js`
-* Completed Routing \& Navigation audit
-* Portfolio page implementation intentionally postponed until full integration is ready.
-* No architecture regression introduced.
-
-\---
-
-## Next Sprint
-
-Sprint 23 should continue from the completed Sprint 22 foundation.
-
-Recommended Sprint 23 direction:
-
-```text
-Portfolio Analytics Dashboard
-```
-
-Potential Sprint 23 work:
-
-* Portfolio page integration
-* Portfolio routing
-* Sidebar Portfolio navigation
-* Equity Curve
-* Allocation charts
-* Monthly performance
-* Drawdown visualization
-* Portfolio analytics dashboard
-* Documentation synchronization
-
-
-
-
+Status updated after Sprint 24.
 
 ---
 
-## Completed In Sprint 22
+## Completed Through Sprint 24
 
 ### Backend
-* Modular Portfolio Overview API
-* Portfolio statistics
-* Portfolio allocation
-* Portfolio performance metrics
+
+- FastAPI backend foundation.
+- PostgreSQL + SQLAlchemy foundation.
+- MT5 multi-account architecture.
+- MT5 Account CRUD.
+- Account-aware MT5 sync.
+- MT5 account summary endpoint:
+  - `GET /mt5/accounts/{account_id}/summary`
+- MT5 sync status endpoint.
+- Portfolio backend modularization.
+- Portfolio overview / analytics API foundation.
+- Portfolio engines for summary, performance, risk, equity and drawdown.
 
 ### Frontend
-* Portfolio Feature Module
-* usePortfolio hook
-* PortfolioSummaryMetrics
-* PortfolioPerformanceMetrics
-* PortfolioStatisticsCard
-* PortfolioAllocationCard
 
-### Widget Infrastructure v3
-* WidgetMetricGrid
-* WidgetMetrics
+- React + Vite + Material UI foundation.
+- TradePilot Theme foundation.
+- Sidebar navigation.
+- Dashboard layout and widget grid.
+- Widget Infrastructure:
+  - `WidgetContainer`
+  - `WidgetHeader`
+  - `WidgetFooter`
+  - `WidgetMetric`
+  - `WidgetMetricGrid`
+  - `WidgetMetrics`
+  - `WidgetLoading`
+  - `WidgetErrorState`
+  - `WidgetEmptyState`
+- Shared layout foundation:
+  - `PageHeader`
+  - `PageLayout`
+- Portfolio Feature Module:
+  - `usePortfolio`
+  - `PortfolioSummaryMetrics`
+  - `PortfolioPerformanceMetrics`
+  - `PortfolioStatisticsCard`
+  - `PortfolioAllocationCard`
+  - `PortfolioChartsCard`
+- Full Portfolio page route:
+  - `/portfolio`
+- Dashboard MT5 Widget connected to live MT5 account summary data.
 
-## Next Sprint
+---
 
-Sprint 23
+## Sprint 24 Completed
 
-Focus:
-- Portfolio Analytics Dashboard
-- Portfolio Page integration
-- Charts and visual analytics
+Sprint 24 completed:
+
+- Portfolio page integration.
+- Sidebar v2 grouped navigation.
+- Page layout foundation.
+- Dashboard and Portfolio migration to `PageLayout`.
+- Portfolio charts component.
+- MT5 Dashboard Widget live account summary integration.
+- Frontend workflow correction after global widget regression.
+
+---
+
+## Current Architecture Status
+
+Frontend now follows:
+
+```text
+App / Routes
+↓
+MainLayout
+↓
+Sidebar
+↓
+PageLayout
+↓
+Pages / Feature Modules
+↓
+Dashboard Widgets / Feature Components
+↓
+Widget Infrastructure
+↓
+TradePilot UI Framework
+↓
+Material UI
+```
+
+Backend continues to follow:
+
+```text
+Routers
+↓
+Services / Engines
+↓
+Models / Schemas
+↓
+Database
+```
+
+---
+
+## Protected Components
+
+The following components are considered shared infrastructure and must not be changed for a single page-specific visual issue:
+
+```text
+frontend/src/components/widgets/WidgetContainer.jsx
+frontend/src/components/widgets/WidgetHeader.jsx
+frontend/src/components/widgets/WidgetFooter.jsx
+frontend/src/components/widgets/WidgetMetric.jsx
+frontend/src/components/widgets/WidgetMetricGrid.jsx
+frontend/src/components/widgets/WidgetMetrics.jsx
+frontend/src/components/layout/PageHeader.jsx
+frontend/src/components/layout/PageLayout.jsx
+frontend/src/components/Sidebar.jsx
+frontend/src/components/dashboard/DashboardLayout.jsx
+```
+
+Change these only when the change is intentionally system-wide and after checking Dashboard, Portfolio and MT5.
+
+---
+
+## Current Product Direction
+
+TradePilot Pro continues moving from:
+
+```text
+Trading Journal
+```
+
+toward:
+
+```text
+Professional Trading Command Center
+```
+
+The Dashboard now acts as the command center host. Portfolio is now a full analytics page. MT5 data is now visible in the Dashboard using existing live account summary infrastructure.
+
+---
+
+## Next Sprint Direction
+
+Sprint 25 should focus on real trading features and avoid unnecessary UI refactoring.
+
+Recommended direction:
+
+1. Continue MT5 live account intelligence.
+2. Add Open Positions / Daily P&L when backend data is available.
+3. Improve Analytics using existing Portfolio/Dashboard patterns.
+4. Keep UI changes feature-specific unless a true global bug exists.
+
+Sprint 25 must start with a small audit before coding:
+
+```text
+Does this already exist?
+Can we reuse it?
+Is it global or feature-specific?
+What is the smallest safe change?
+```

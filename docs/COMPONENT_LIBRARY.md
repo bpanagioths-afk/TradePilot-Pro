@@ -391,3 +391,151 @@ Before adding a component verify:
 
 The Portfolio feature now follows the standard Feature Module pattern:
 components/ • hooks/ • services/ • index.js
+
+# Sprint 24 Additions - Layout and Reuse Rules
+
+## PageHeader
+
+Path:
+
+```text
+frontend/src/components/layout/PageHeader.jsx
+```
+
+Purpose:
+
+Reusable page title/subtitle/action header for main application pages.
+
+Usage:
+
+- Dashboard
+- Portfolio
+- Future Analytics
+- Future Reports
+- Future MT5 pages
+
+Rules:
+
+- Do not duplicate page title/subtitle layout inside pages.
+- Use `PageHeader` through `PageLayout` unless there is a special reason.
+
+---
+
+## PageLayout
+
+Path:
+
+```text
+frontend/src/components/layout/PageLayout.jsx
+```
+
+Purpose:
+
+Shared layout wrapper for major pages.
+
+Provides:
+
+- Common page width.
+- Common vertical padding.
+- Common header area.
+- Common content spacing.
+
+Usage:
+
+```jsx
+<PageLayout
+    title="Portfolio"
+    subtitle="Portfolio performance, allocation and risk overview."
+>
+    ...page content...
+</PageLayout>
+```
+
+Rules:
+
+- Main pages should use `PageLayout`.
+- Do not create custom page spacing unless the page has a clear special purpose.
+- Do not modify `PageLayout` for one page only.
+
+---
+
+## PortfolioChartsCard
+
+Path:
+
+```text
+frontend/src/features/portfolio/components/PortfolioChartsCard.jsx
+```
+
+Purpose:
+
+Feature-specific Portfolio chart widget.
+
+Displays:
+
+- Equity Curve
+- Drawdown
+
+Rules:
+
+- This component belongs to the Portfolio feature.
+- Do not move it to global widgets unless another feature needs the exact same chart behaviour.
+
+---
+
+## MT5Widget - Dashboard Live Summary
+
+Path:
+
+```text
+frontend/src/components/dashboard/mt5/MT5Widget.jsx
+```
+
+Purpose:
+
+Dashboard-level MT5 live summary widget.
+
+Uses existing API functions:
+
+- `getMT5Accounts()`
+- `getMT5AccountSummary(accountId)`
+- `syncMT5Account(accountId)`
+
+Displays:
+
+- Balance
+- Equity
+- Floating P/L
+- Open Positions
+- Connection
+- Account
+- Broker
+- Server
+
+Rule:
+
+Do not create a second MT5 dashboard summary component unless the existing widget cannot be extended safely.
+
+---
+
+## Protected Global Widgets
+
+The following are shared infrastructure:
+
+```text
+WidgetContainer
+WidgetHeader
+WidgetFooter
+WidgetMetric
+WidgetMetricGrid
+WidgetMetrics
+WidgetLoading
+WidgetErrorState
+WidgetEmptyState
+```
+
+Rules:
+
+- Do not change these for a single page-specific visual issue.
+- If a page needs a special layout, create a feature-specific component instead.
+- Change global widgets only for true global design or bug fixes.

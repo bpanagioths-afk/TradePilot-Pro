@@ -40,3 +40,15 @@
 - `docs/project/09_Current_State/Sprint_19.md`
 - `docs/project/99_Original/PROJECT_MASTER_ORIGINAL.md`
 - `docs/project/README.md`
+
+## Sprint 24 Documentation Update
+
+Added / updated documentation for:
+
+- Sprint 24 changelog.
+- Current project status after Sprint 24.
+- Sprint 25 next chat prompt.
+- Frontend component audit after Sprint 24.
+- Protected global widget rules.
+- Reuse-before-new-code rule.
+- One-feature-one-commit workflow.

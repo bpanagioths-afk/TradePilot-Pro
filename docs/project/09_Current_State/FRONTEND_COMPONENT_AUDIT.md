@@ -180,3 +180,109 @@ frontend/src/components/widgets/
 ```
 
 This layer should remain stable and reusable.
+
+# Sprint 24 Audit Update
+
+Status: Updated after Sprint 24.
+
+---
+
+## New Layout Components
+
+```text
+frontend/src/components/layout/
+├── PageHeader.jsx
+└── PageLayout.jsx
+```
+
+These are shared layout components and should be used by major pages.
+
+Current pages using `PageLayout`:
+
+- `frontend/src/pages/Dashboard.jsx`
+- `frontend/src/pages/Portfolio.jsx`
+
+---
+
+## Portfolio Feature Components
+
+Current Portfolio feature module:
+
+```text
+frontend/src/features/portfolio/
+├── components/
+│   ├── PortfolioSummaryMetrics.jsx
+│   ├── PortfolioPerformanceMetrics.jsx
+│   ├── PortfolioStatisticsCard.jsx
+│   ├── PortfolioAllocationCard.jsx
+│   └── PortfolioChartsCard.jsx
+├── hooks/
+│   └── usePortfolio.js
+├── services/
+└── index.js
+```
+
+`PortfolioChartsCard` was added in Sprint 24 and is feature-specific.
+
+---
+
+## MT5 Dashboard Reuse Finding
+
+Sprint 24 identified that MT5 live summary data already existed through:
+
+```text
+frontend/src/api/mt5AccountsApi.js
+```
+
+Existing functions:
+
+- `getMT5Accounts()`
+- `getMT5AccountSummary(accountId)`
+- `syncMT5Account(accountId)`
+
+The Dashboard MT5 widget now reuses these functions instead of creating a new service or endpoint.
+
+---
+
+## Duplicate Avoidance Rule
+
+Before creating any new component:
+
+1. Search existing pages/features.
+2. Search `components/common`.
+3. Search `components/widgets`.
+4. Search `features/<feature>/components`.
+5. Reuse existing services/API functions when possible.
+
+---
+
+## Protected Components
+
+Do not change these for page-specific visual polish:
+
+```text
+frontend/src/components/widgets/WidgetContainer.jsx
+frontend/src/components/widgets/WidgetMetric.jsx
+frontend/src/components/widgets/WidgetMetricGrid.jsx
+frontend/src/components/widgets/WidgetMetrics.jsx
+frontend/src/components/layout/PageLayout.jsx
+frontend/src/components/layout/PageHeader.jsx
+frontend/src/components/Sidebar.jsx
+frontend/src/components/dashboard/DashboardLayout.jsx
+```
+
+If a feature needs a different visual arrangement, create a feature-specific component instead.
+
+---
+
+## Sprint 24 Regression Lesson
+
+Global widget changes caused unintended Dashboard and Portfolio visual regressions.
+
+New rule:
+
+```text
+Global widgets are infrastructure. Feature pages must not drive global widget changes.
+```
+
+Use global widget changes only when the change is intentionally system-wide.

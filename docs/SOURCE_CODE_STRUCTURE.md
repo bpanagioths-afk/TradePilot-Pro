@@ -1176,3 +1176,86 @@ frontend/src/features/
 ```
 
 This structure becomes the recommended template for future feature modules.
+
+# Sprint 24 Source Structure Update
+
+Sprint 24 added the first shared layout folder:
+
+```text
+frontend/src/components/layout/
+├── PageHeader.jsx
+└── PageLayout.jsx
+```
+
+## Layout Layer Responsibility
+
+The layout layer is responsible for application/page structure only:
+
+- Page title.
+- Page subtitle.
+- Page actions area.
+- Page content spacing.
+- Page width.
+
+It must not contain business logic.
+
+## Current Frontend Page Flow
+
+```text
+App.jsx
+↓
+MainLayout
+↓
+Sidebar
+↓
+PageLayout
+↓
+Page content / feature widgets
+```
+
+## Portfolio Feature Module Update
+
+Sprint 24 added:
+
+```text
+frontend/src/features/portfolio/components/PortfolioChartsCard.jsx
+```
+
+and exported it through:
+
+```text
+frontend/src/features/portfolio/index.js
+```
+
+Portfolio page now consumes the Portfolio Feature Module through the feature barrel export.
+
+## Dashboard MT5 Widget Update
+
+Sprint 24 connected:
+
+```text
+frontend/src/components/dashboard/mt5/MT5Widget.jsx
+```
+
+to existing MT5 API functions:
+
+```text
+frontend/src/api/mt5AccountsApi.js
+```
+
+No new MT5 endpoint was required.
+
+## Protected Infrastructure Rule
+
+Do not modify shared widget infrastructure for a single feature-specific issue.
+
+Protected examples:
+
+```text
+frontend/src/components/widgets/
+frontend/src/components/layout/
+frontend/src/components/Sidebar.jsx
+frontend/src/components/dashboard/DashboardLayout.jsx
+```
+
+Feature-specific UI should be handled inside the feature or page component.

@@ -248,3 +248,23 @@ Portfolio Feature Module Completion and Widget Infrastructure v3:
 Sprint 22 changed TradePilot Pro from a widget-based dashboard into a feature-module platform where future modules can be built consistently and reused across dashboard widgets and full pages.
 
 ---
+
+# Sprint 24 - UI Foundation, Portfolio Page and MT5 Dashboard Integration
+
+Sprint 24 completed:
+
+- Portfolio page routing and navigation.
+- Shared `PageHeader` and `PageLayout` components.
+- Dashboard and Portfolio migration to `PageLayout`.
+- Portfolio charts component for Equity Curve and Drawdown.
+- Sidebar v2 grouped navigation.
+- Dashboard MT5 widget live summary integration.
+- Workflow correction: avoid global widget refactors for page-specific UI.
+
+Key lesson:
+
+```text
+Reuse existing infrastructure before creating new components or endpoints.
+```
+
+Protected component rule was introduced after global widget changes caused unwanted visual side effects.

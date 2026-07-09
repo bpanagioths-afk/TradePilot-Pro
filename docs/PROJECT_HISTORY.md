@@ -133,3 +133,31 @@ Professional Trading Command Center
 
 ## Sprint 23
 Sprint 23 established the portfolio analytics foundation and completed backend analytics integration with frontend migration. Remaining visualization work moved to Sprint 24.
+
+## Sprint 24 History - UI Foundation, Portfolio Page and MT5 Dashboard Integration
+
+Sprint 24 completed the first application-level layout foundation and closed the Portfolio page integration gap.
+
+The project added `PageHeader` and `PageLayout` so main pages can share a consistent structure. Dashboard and Portfolio were migrated to this shared page layout pattern.
+
+The Portfolio feature became accessible as a full page through `/portfolio`, with Sidebar navigation and a new `PortfolioChartsCard` for Equity Curve and Drawdown visualisation.
+
+Sprint 24 also connected the Dashboard MT5 widget to real account data by reusing existing MT5 account API functions and the already available `/mt5/accounts/{account_id}/summary` backend endpoint. This avoided duplicate endpoint creation and reinforced the rule that existing infrastructure must be checked before new code is written.
+
+A critical workflow lesson was established: global widgets must not be refactored for a single page-specific visual problem. Shared infrastructure is now considered protected unless a change is intentionally system-wide.
+
+Sprint 24 shifted the development workflow toward:
+
+```text
+Audit
+↓
+Reuse
+↓
+Small feature
+↓
+Build/Test
+↓
+Commit
+↓
+Clean working tree
+```

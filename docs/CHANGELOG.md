@@ -77,3 +77,20 @@ Highlights:
 - Added /api/portfolio/overview compatibility endpoint.
 - Frontend portfolio migration started and aligned with new backend contract.
 - Known backlog: MT5 pips calculation, Allocation engine, Equity/Drawdown charts.
+
+## Sprint 24 (Completed)
+
+Status: Completed
+
+Highlights:
+
+- Added Portfolio page route and Sidebar navigation entry.
+- Added `PageHeader` and `PageLayout` as shared layout foundation.
+- Migrated Dashboard and Portfolio pages to `PageLayout`.
+- Added `PortfolioChartsCard` for Equity Curve and Drawdown charts.
+- Connected Dashboard MT5 widget to existing live MT5 account summary data.
+- Reused existing MT5 API functions instead of creating duplicate endpoints.
+- Established protected global widget rule after Sprint 24 UI regression.
+- Established one-feature-one-commit workflow.
+
+See: `docs/changelog/08_SPRINT_24.md`.
