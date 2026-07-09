@@ -1,4 +1,5 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import {
     WidgetContainer,
@@ -6,19 +7,31 @@ import {
     WidgetFooter,
     WidgetLoading,
     WidgetErrorState,
-    WidgetEmptyState
+    WidgetEmptyState,
+    WidgetMetric
 } from "../../widgets";
 
 import StatusBadge from "../../common/StatusBadge";
 import TradePilotButton from "../../common/TradePilotButton";
 
 import {
-    usePortfolio,
-    PortfolioSummaryMetrics,
-    PortfolioPerformanceMetrics
+    usePortfolio
 } from "../../../features/portfolio";
 
+const formatMoney = (value) => {
+    if (value === null || value === undefined) {
+        return "—";
+    }
+
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2
+    }).format(value);
+};
+
 export default function PortfolioWidget() {
+    const navigate = useNavigate();
     const { portfolio, loading, error } = usePortfolio();
 
     if (loading) {
@@ -50,23 +63,53 @@ export default function PortfolioWidget() {
         );
     }
 
-    const { summary, performance } = portfolio;
+    const { summary } = portfolio;
+    const netProfit = portfolio?.performance?.net_profit ?? 0;
 
     return (
         <WidgetContainer>
             <WidgetHeader
                 title="Portfolio"
-                subtitle="Account and trade performance overview"
+                subtitle="Quick portfolio overview."
                 action={<StatusBadge label="Live" status="connected" />}
             />
 
-            <Box sx={{ mt: 1 }}>
-                <PortfolioSummaryMetrics summary={summary} />
-                <PortfolioPerformanceMetrics performance={performance} />
+            <Box
+                sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        sm: "1fr 1fr"
+                    },
+                    gap: 2,
+                    mt: 1
+                }}
+            >
+                <WidgetMetric
+                    title="Total Trades"
+                    value={summary?.total_trades ?? 0}
+                />
+
+                <WidgetMetric
+                    title="Net Profit"
+                    value={formatMoney(netProfit)}
+                    status={netProfit >= 0 ? "success" : "error"}
+                />
             </Box>
 
+            <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 2 }}
+            >
+                Full allocation, risk and performance analysis is available in the Portfolio page.
+            </Typography>
+
             <WidgetFooter>
-                <TradePilotButton variant="secondary">
+                <TradePilotButton
+                    variant="secondary"
+                    onClick={() => navigate("/portfolio")}
+                >
                     View Portfolio
                 </TradePilotButton>
             </WidgetFooter>
