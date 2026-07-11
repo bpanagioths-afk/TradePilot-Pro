@@ -1,10 +1,10 @@
 # Current Project Status
 
-Status updated after Sprint 24.
+Status updated after Sprint 26.
 
 ---
 
-## Completed Through Sprint 24
+## Completed Through Sprint 26
 
 ### Backend
 
@@ -19,6 +19,13 @@ Status updated after Sprint 24.
 - Portfolio backend modularization.
 - Portfolio overview / analytics API foundation.
 - Portfolio engines for summary, performance, risk, equity and drawdown.
+- Live MT5 Open Positions endpoint.
+- Live MT5 Pending Orders endpoint.
+- Live MT5 Account Health endpoint.
+- Live MT5 Today's Performance endpoint.
+- Live MT5 Connection Health endpoint.
+
+---
 
 ### Frontend
 
@@ -49,20 +56,44 @@ Status updated after Sprint 24.
 - Full Portfolio page route:
   - `/portfolio`
 - Dashboard MT5 Widget connected to live MT5 account summary data.
+- MT5 Trading Center completed.
+- Open Positions widget.
+- Pending Orders widget.
+- Account Health widget.
+- Today's Performance widget.
+- Connection Health widget.
+- Dashboard cleanup completed.
+- Portfolio Dashboard widget converted to summary view.
+- Home page converted into Welcome / Command Center.
 
 ---
 
-## Sprint 24 Completed
+## Sprint 25 Completed
 
-Sprint 24 completed:
+Sprint 25 completed:
 
-- Portfolio page integration.
-- Sidebar v2 grouped navigation.
-- Page layout foundation.
-- Dashboard and Portfolio migration to `PageLayout`.
-- Portfolio charts component.
-- MT5 Dashboard Widget live account summary integration.
-- Frontend workflow correction after global widget regression.
+- Live MT5 Open Positions.
+- Backend MT5 Open Positions API.
+- Frontend Open Positions widget.
+- Automatic refresh support.
+- Professional MT5 position presentation.
+
+---
+
+## Sprint 26 Completed
+
+Sprint 26 completed:
+
+- MT5 Trading Center.
+- Pending Orders.
+- Account Health.
+- Today's Performance.
+- Connection Health.
+- Dashboard cleanup.
+- Portfolio summary widget redesign.
+- Home page cleanup.
+- Removal of duplicated MT5 information.
+- Clear workspace responsibility model.
 
 ---
 
@@ -81,7 +112,7 @@ PageLayout
 ↓
 Pages / Feature Modules
 ↓
-Dashboard Widgets / Feature Components
+Dashboard Widgets / Workspace Widgets
 ↓
 Widget Infrastructure
 ↓
@@ -95,11 +126,13 @@ Backend continues to follow:
 ```text
 Routers
 ↓
-Services / Engines
+Services / Feature Modules
 ↓
 Models / Schemas
 ↓
 Database
+↓
+MetaTrader 5
 ```
 
 ---
@@ -119,9 +152,10 @@ frontend/src/components/layout/PageHeader.jsx
 frontend/src/components/layout/PageLayout.jsx
 frontend/src/components/Sidebar.jsx
 frontend/src/components/dashboard/DashboardLayout.jsx
+frontend/src/components/dashboard/WidgetGrid.jsx
 ```
 
-Change these only when the change is intentionally system-wide and after checking Dashboard, Portfolio and MT5.
+Change these only when the change is intentionally system-wide and after auditing all dependent pages.
 
 ---
 
@@ -136,29 +170,71 @@ Trading Journal
 toward:
 
 ```text
-Professional Trading Command Center
+Professional Multi-Workspace Trading Platform
 ```
 
-The Dashboard now acts as the command center host. Portfolio is now a full analytics page. MT5 data is now visible in the Dashboard using existing live account summary infrastructure.
+Current workspace responsibilities:
+
+```text
+Home
+↓
+Welcome / Command Center
+
+Dashboard
+↓
+Executive Overview
+
+MT5
+↓
+Live Trading Center
+
+Portfolio
+↓
+Portfolio Analysis
+
+Analytics
+↓
+Historical Analysis
+
+Psychology
+↓
+Trader Journal
+
+Reports
+↓
+Reports & Export
+```
 
 ---
 
 ## Next Sprint Direction
 
-Sprint 25 should focus on real trading features and avoid unnecessary UI refactoring.
+Sprint 27 will focus on the Analytics Center.
 
 Recommended direction:
 
-1. Continue MT5 live account intelligence.
-2. Add Open Positions / Daily P&L when backend data is available.
-3. Improve Analytics using existing Portfolio/Dashboard patterns.
-4. Keep UI changes feature-specific unless a true global bug exists.
+1. Build Analytics workspace.
+2. Reuse Portfolio calculations where possible.
+3. Reuse Dashboard widget infrastructure.
+4. Avoid unnecessary UI refactoring.
+5. Continue following the Audit → Reuse → Build workflow.
 
-Sprint 25 must start with a small audit before coding:
+Sprint 27 must always begin with:
 
 ```text
-Does this already exist?
-Can we reuse it?
-Is it global or feature-specific?
-What is the smallest safe change?
+Audit
+↓
+Reuse Existing Code
+↓
+Small Safe Change
+↓
+Build
+↓
+Test
+↓
+Commit
+↓
+Push
+↓
+Documentation
 ```

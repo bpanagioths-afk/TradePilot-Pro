@@ -14,6 +14,8 @@ from app.schemas.mt5_account import (
     MT5AccountSummary,
 )
 
+from datetime import datetime
+
 
 def get_accounts(db: Session):
 
@@ -132,6 +134,283 @@ def get_live_mt5_metrics():
             "floating_profit_loss": float(floating_profit_loss),
             "open_positions": open_positions,
             "message": "MT5 live metrics loaded successfully.",
+        }
+
+    finally:
+        mt5.shutdown()
+
+def get_live_mt5_account_health():
+
+    if mt5 is None:
+        return {
+            "connected": False,
+            "balance": None,
+            "equity": None,
+            "margin": None,
+            "free_margin": None,
+            "margin_level": None,
+            "leverage": None,
+            "currency": None,
+            "server": None,
+            "company": None,
+            "login": None,
+            "message": "MetaTrader5 Python package is not installed.",
+        }
+
+    initialized = mt5.initialize()
+
+    if not initialized:
+        return {
+            "connected": False,
+            "balance": None,
+            "equity": None,
+            "margin": None,
+            "free_margin": None,
+            "margin_level": None,
+            "leverage": None,
+            "currency": None,
+            "server": None,
+            "company": None,
+            "login": None,
+            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+        }
+
+    try:
+        account_info = mt5.account_info()
+
+        if account_info is None:
+            return {
+                "connected": False,
+                "balance": None,
+                "equity": None,
+                "margin": None,
+                "free_margin": None,
+                "margin_level": None,
+                "leverage": None,
+                "currency": None,
+                "server": None,
+                "company": None,
+                "login": None,
+                "message": f"MT5 account info unavailable: {mt5.last_error()}",
+            }
+
+        return {
+            "connected": True,
+            "balance": float(account_info.balance),
+            "equity": float(account_info.equity),
+            "margin": float(account_info.margin),
+            "free_margin": float(account_info.margin_free),
+            "margin_level": float(account_info.margin_level),
+            "leverage": int(account_info.leverage),
+            "currency": account_info.currency,
+            "server": account_info.server,
+            "company": account_info.company,
+            "login": account_info.login,
+            "message": "MT5 account health loaded successfully.",
+        }
+
+    finally:
+        mt5.shutdown()
+
+
+def get_live_mt5_today_performance():
+
+    if mt5 is None:
+        return {
+            "connected": False,
+            "profit_today": 0.0,
+            "trades_today": 0,
+            "winning_trades_today": 0,
+            "losing_trades_today": 0,
+            "win_rate_today": 0.0,
+            "lots_today": 0.0,
+            "commission_today": 0.0,
+            "swap_today": 0.0,
+            "message": "MetaTrader5 Python package is not installed.",
+        }
+
+    initialized = mt5.initialize()
+
+    if not initialized:
+        return {
+            "connected": False,
+            "profit_today": 0.0,
+            "trades_today": 0,
+            "winning_trades_today": 0,
+            "losing_trades_today": 0,
+            "win_rate_today": 0.0,
+            "lots_today": 0.0,
+            "commission_today": 0.0,
+            "swap_today": 0.0,
+            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+        }
+
+    try:
+        now = datetime.now()
+        start_of_day = datetime(
+            now.year,
+            now.month,
+            now.day,
+            0,
+            0,
+            0,
+        )
+
+        deals = mt5.history_deals_get(
+            start_of_day,
+            now,
+        )
+
+        if deals is None:
+            return {
+                "connected": False,
+                "profit_today": 0.0,
+                "trades_today": 0,
+                "winning_trades_today": 0,
+                "losing_trades_today": 0,
+                "win_rate_today": 0.0,
+                "lots_today": 0.0,
+                "commission_today": 0.0,
+                "swap_today": 0.0,
+                "message": f"MT5 today performance unavailable: {mt5.last_error()}",
+            }
+
+        closed_deals = [
+            deal for deal in deals
+            if deal.entry == mt5.DEAL_ENTRY_OUT
+        ]
+
+        trades_today = len(closed_deals)
+        winning_trades_today = len(
+            [deal for deal in closed_deals if deal.profit > 0]
+        )
+        losing_trades_today = len(
+            [deal for deal in closed_deals if deal.profit < 0]
+        )
+
+        profit_today = sum(deal.profit for deal in closed_deals)
+        lots_today = sum(deal.volume for deal in closed_deals)
+        commission_today = sum(deal.commission for deal in closed_deals)
+        swap_today = sum(deal.swap for deal in closed_deals)
+
+        win_rate_today = 0.0
+
+        if trades_today > 0:
+            win_rate_today = (
+                winning_trades_today / trades_today
+            ) * 100
+
+        return {
+            "connected": True,
+            "profit_today": float(profit_today),
+            "trades_today": trades_today,
+            "winning_trades_today": winning_trades_today,
+            "losing_trades_today": losing_trades_today,
+            "win_rate_today": float(win_rate_today),
+            "lots_today": float(lots_today),
+            "commission_today": float(commission_today),
+            "swap_today": float(swap_today),
+            "message": "MT5 today performance loaded successfully.",
+        }
+
+    finally:
+        mt5.shutdown()
+
+def get_live_mt5_connection_health():
+
+    if mt5 is None:
+        return {
+            "connected": False,
+            "terminal_connected": False,
+            "trade_allowed": False,
+            "trade_api_disabled": None,
+            "terminal_name": None,
+            "terminal_company": None,
+            "terminal_build": None,
+            "terminal_version": None,
+            "account_login": None,
+            "account_server": None,
+            "account_company": None,
+            "message": "MetaTrader5 Python package is not installed.",
+        }
+
+    initialized = mt5.initialize()
+
+    if not initialized:
+        return {
+            "connected": False,
+            "terminal_connected": False,
+            "trade_allowed": False,
+            "trade_api_disabled": None,
+            "terminal_name": None,
+            "terminal_company": None,
+            "terminal_build": None,
+            "terminal_version": None,
+            "account_login": None,
+            "account_server": None,
+            "account_company": None,
+            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+        }
+
+    try:
+        terminal_info = mt5.terminal_info()
+        account_info = mt5.account_info()
+        version_info = mt5.version()
+
+        if terminal_info is None:
+            return {
+                "connected": False,
+                "terminal_connected": False,
+                "trade_allowed": False,
+                "trade_api_disabled": None,
+                "terminal_name": None,
+                "terminal_company": None,
+                "terminal_build": None,
+                "terminal_version": None,
+                "account_login": None,
+                "account_server": None,
+                "account_company": None,
+                "message": f"MT5 terminal information unavailable: {mt5.last_error()}",
+            }
+
+        terminal_version = None
+
+        if version_info:
+            terminal_version = ".".join(
+                str(value) for value in version_info
+            )
+
+        account_connected = account_info is not None
+
+        return {
+            "connected": account_connected,
+            "terminal_connected": bool(terminal_info.connected),
+            "trade_allowed": bool(terminal_info.trade_allowed),
+            "trade_api_disabled": bool(terminal_info.tradeapi_disabled),
+            "terminal_name": terminal_info.name,
+            "terminal_company": terminal_info.company,
+            "terminal_build": terminal_info.build,
+            "terminal_version": terminal_version,
+            "account_login": (
+                account_info.login
+                if account_info is not None
+                else None
+            ),
+            "account_server": (
+                account_info.server
+                if account_info is not None
+                else None
+            ),
+            "account_company": (
+                account_info.company
+                if account_info is not None
+                else None
+            ),
+            "message": (
+                "MT5 connection health loaded successfully."
+                if account_connected
+                else "MT5 terminal is running, but no account information is available."
+            ),
         }
 
     finally:

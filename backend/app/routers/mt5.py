@@ -25,6 +25,9 @@ from app.services.mt5_account_service import (
     get_mt5_account_summary,
     get_live_mt5_open_positions,
     get_live_mt5_pending_orders,
+    get_live_mt5_account_health,
+    get_live_mt5_today_performance,
+    get_live_mt5_connection_health,
 )
 from app.schemas.mt5_account import (
     MT5AccountCreate,
@@ -60,6 +63,18 @@ def read_mt5_open_positions():
 @router.get("/pending-orders")
 def read_mt5_pending_orders():
     return get_live_mt5_pending_orders()
+
+@router.get("/account-health")
+def read_mt5_account_health():
+    return get_live_mt5_account_health()
+
+@router.get("/today-performance")
+def read_mt5_today_performance():
+    return get_live_mt5_today_performance()
+
+@router.get("/connection-health")
+def read_mt5_connection_health():
+    return get_live_mt5_connection_health()
 
 @router.get("/accounts", response_model=list[MT5AccountResponse])
 def get_mt5_accounts(

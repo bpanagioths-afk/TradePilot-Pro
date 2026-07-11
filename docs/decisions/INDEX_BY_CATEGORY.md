@@ -10,6 +10,7 @@
 - D-024
 - D-025
 - D-028
+- D-049
 
 ## Frontend
 - D-015
@@ -36,6 +37,7 @@
 ## Development
 - D-012
 - D-013
+- D-050
 
 ## UX
 - D-007
@@ -68,3 +70,5 @@
 - [D-046 - Protected Global Widgets](D-046_Protected_Global_Widgets.md)
 - [D-047 - Reuse Before New Code](D-047_Reuse_Before_New_Code.md)
 - [D-048 - One Feature, One Commit](D-048_One_Feature_One_Commit.md)
+- [D-049 - Single Source of Information](D-049_Single_Source_of_Information.md)
+- [D-050 - Audit Before Creating New Code](D-050_Audit_Before_New_Code.md)

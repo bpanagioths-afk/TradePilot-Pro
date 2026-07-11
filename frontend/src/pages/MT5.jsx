@@ -5,7 +5,6 @@ import {
     Box,
     Button,
     Chip,
-    Divider,
     Paper,
     Stack,
     Typography
@@ -15,7 +14,10 @@ import SyncIcon from "@mui/icons-material/Sync";
 import StorageIcon from "@mui/icons-material/Storage";
 
 import OpenPositionsWidget from "../components/dashboard/mt5/OpenPositionsWidget";
+import TodayPerformanceWidget from "../components/dashboard/mt5/TodayPerformanceWidget";
+import ConnectionHealthWidget from "../components/dashboard/mt5/ConnectionHealthWidget";
 import PendingOrdersWidget from "../components/dashboard/mt5/PendingOrdersWidget";
+import AccountHealthWidget from "../components/dashboard/mt5/AccountHealthWidget";
 
 import {
     getMT5Accounts,
@@ -78,47 +80,87 @@ export default function MT5() {
                 Live MetaTrader 5 trading overview, open positions, pending orders and account sync.
             </Typography>
 
-            <Paper sx={{ p: 3, mb: 3 }}>
-                <Stack spacing={2}>
-                    <Stack
-                        direction="row"
-                        spacing={2}
-                        sx={{ alignItems: "center", flexWrap: "wrap" }}
-                    >
-                        <StorageIcon color="primary" />
+<Box
+    sx={{
+        display: "grid",
+        gridTemplateColumns: {
+            xs: "1fr",
+            lg: "1.15fr 1fr"
+        },
+        gap: 3,
+        mb: 3,
+        alignItems: "stretch"
+    }}
+>
+    <Paper
+        sx={{
+            p: 2,
+            height: "100%"
+        }}
+    >
+        <Stack spacing={1.5}>
+            <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                    alignItems: "center",
+                    flexWrap: "wrap"
+                }}
+            >
+                <StorageIcon color="primary" />
 
-                        <Typography variant="h6">
-                            MetaTrader 5 Connection
-                        </Typography>
+                <Typography variant="h6">
+                    MetaTrader 5 Connection
+                </Typography>
 
-                        <Chip
-                            label={activeAccount ? "Active Account Ready" : "No Active Account"}
-                            color={activeAccount ? "success" : "warning"}
-                        />
-                    </Stack>
+                <Chip
+                    label={
+                        activeAccount
+                            ? "Active Account Ready"
+                            : "No Active Account"
+                    }
+                    color={
+                        activeAccount
+                            ? "success"
+                            : "warning"
+                    }
+                />
+            </Stack>
 
-                    <Typography color="text.secondary">
-                        Keep MetaTrader 5 open and logged in. Use Sync Now to import closed trades from the active MT5 account history.
-                    </Typography>
+            <Typography color="text.secondary">
+                Keep MetaTrader 5 open and logged in. Use Sync Now
+                to import closed trades from the active MT5 account
+                history.
+            </Typography>
 
-                    {activeAccount && (
-                        <Typography variant="body2" color="text.secondary">
-                            Active account: {activeAccount.account_name} / {activeAccount.broker}
-                        </Typography>
-                    )}
+            {activeAccount && (
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                >
+                    Active account: {activeAccount.account_name} /{" "}
+                    {activeAccount.broker}
+                </Typography>
+            )}
 
-                    <Button
-                        variant="contained"
-                        startIcon={<SyncIcon />}
-                        onClick={syncMt5}
-                        disabled={syncing || loadingAccounts || !activeAccount}
-                        sx={{ width: 180 }}
-                    >
-                        {syncing ? "Syncing..." : "Sync Now"}
-                    </Button>
-                </Stack>
-            </Paper>
+            <Button
+                variant="contained"
+                startIcon={<SyncIcon />}
+                onClick={syncMt5}
+                disabled={
+                    syncing ||
+                    loadingAccounts ||
+                    !activeAccount
+                }
+                sx={{ width: 180 }}
+            >
+                {syncing ? "Syncing..." : "Sync Now"}
+            </Button>
+        </Stack>
+    </Paper>
 
+    <ConnectionHealthWidget />
+</Box>
             {result && (
                 <Alert severity={result.success ? "success" : "warning"} sx={{ mb: 3 }}>
                     Sync result: imported {result.imported ?? 0}, skipped {result.skipped ?? 0}
@@ -127,9 +169,25 @@ export default function MT5() {
 
             {error && (
                 <Alert severity="error" sx={{ mb: 3 }}>
-                    {error}
+                   {error}
                 </Alert>
             )}
+
+            <Box sx={{ mb: 3 }}>
+                <AccountHealthWidget />
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+                <OpenPositionsWidget /> 
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+                <AccountHealthWidget />
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+                <TodayPerformanceWidget />
+            </Box>
 
             <Box sx={{ mb: 3 }}>
                 <OpenPositionsWidget />
@@ -139,31 +197,6 @@ export default function MT5() {
                 <PendingOrdersWidget />
             </Box>
 
-            <Paper sx={{ p: 3 }}>
-                <Typography variant="h6" mb={2}>
-                    MT5 Trading Center Guide
-                </Typography>
-
-                <Divider sx={{ mb: 2 }} />
-
-                <Stack spacing={1}>
-                    <Typography color="text.secondary">
-                        1. Open MetaTrader 5.
-                    </Typography>
-
-                    <Typography color="text.secondary">
-                        2. Login to your trading account.
-                    </Typography>
-
-                    <Typography color="text.secondary">
-                        3. Keep MT5 open for live positions and pending orders.
-                    </Typography>
-
-                    <Typography color="text.secondary">
-                        4. Press Sync Now to import closed trades from account history.
-                    </Typography>
-                </Stack>
-            </Paper>
         </Box>
     );
 }

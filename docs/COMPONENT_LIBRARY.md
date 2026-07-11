@@ -1,8 +1,8 @@
-# TradePilot Pro -- COMPONENT\_LIBRARY
+# TradePilot Pro -- COMPONENT_LIBRARY
 
 > Official Component Library for the TradePilot UI Framework.
 
-\---
+---
 
 # Purpose
 
@@ -10,26 +10,36 @@ This document defines every reusable UI component used across TradePilot Pro.
 
 Goals:
 
-* Consistency
-* Reusability
-* Professional UX
-* Faster development
-* Easier maintenance
+- Consistency
+- Reusability
+- Professional UX
+- Faster development
+- Easier maintenance
+- Stable reusable infrastructure
+- Single source of UI patterns
 
-\---
+---
 
 # Component Standards
 
 Every component should:
 
-* Have a single responsibility
-* Be reusable
-* Support Material UI theming
-* Be documented
-* Be predictable
-* Avoid duplicated logic
+- Have a single responsibility.
+- Be reusable.
+- Support Material UI theming.
+- Be documented.
+- Be predictable.
+- Avoid duplicated logic.
+- Avoid duplicated business responsibility.
+- Prefer composition over duplication.
 
-\---
+Before creating a new component always verify:
+
+- Does a similar component already exist?
+- Can an existing component be extended safely?
+- Is the change feature-specific or global?
+
+---
 
 # TradePilotCard
 
@@ -39,19 +49,22 @@ Base container for general cards and information panels.
 
 ## Usage
 
-* MT5 Account
-* Portfolio
-* AI Coach
-* Trading Plan
-* Statistics
+- MT5
+- Portfolio
+- Dashboard
+- AI Coach
+- Trading Plan
+- Statistics
+- Reports
 
 ## Rules
 
-* One logical entity per card
-* Consistent padding
-* Optional header/actions
+- One logical entity per card.
+- Consistent spacing.
+- Optional header/actions.
+- No feature-specific business logic.
 
-\---
+---
 
 # TradePilotButton
 
@@ -61,17 +74,18 @@ Standard application button.
 
 ## Variants
 
-* Primary
-* Secondary
-* Danger
-* Loading
+- Primary
+- Secondary
+- Danger
+- Loading
 
 ## Rules
 
-* Primary action per section
-* Loading state for async operations
+- One primary action per section.
+- Loading state for async operations.
+- Consistent styling across the application.
 
-\---
+---
 
 # StatusBadge
 
@@ -79,20 +93,28 @@ Standard application button.
 
 Persistent status indicator.
 
-## Examples
+## Current Uses
 
-* Active
-* Disabled
-* Connected
-* Syncing
-* Failed
-* Demo
-* Live
-* Prop Firm
-* Planned
-* Foundation
+- Active
+- Disabled
+- Connected
+- Disconnected
+- Syncing
+- Failed
+- Demo
+- Live
+- Prop Firm
+- Planned
+- Foundation
+- Healthy
+- Warning
 
-\---
+## Rules
+
+- Status colors must remain consistent.
+- Feature pages should reuse StatusBadge before creating custom status chips.
+
+---
 
 # SectionHeader
 
@@ -102,11 +124,18 @@ Reusable section title.
 
 Contains:
 
-* Title
-* Subtitle (optional)
-* Actions (optional)
+- Title
+- Subtitle (optional)
+- Actions (optional)
 
-\---
+Usage:
+
+- Dashboard sections
+- Portfolio sections
+- Settings sections
+- Future Analytics sections
+
+---
 
 # InfoRow
 
@@ -116,32 +145,49 @@ Display label/value pairs consistently.
 
 Examples:
 
-* Broker
-* Login
-* Balance
-* Equity
-* Last Sync
+- Broker
+- Login
+- Balance
+- Equity
+- Margin
+- Server
+- Last Sync
 
-\---
+Rules:
+
+- Keep presentation consistent.
+- Avoid local label/value layouts when InfoRow already fits.
+
+---
 
 # MetricCard
 
 Purpose:
 
-Display one generic KPI with emphasis.
+Display one reusable KPI with emphasis.
 
 Examples:
 
-* Balance
-* Equity
-* Win Rate
-* Profit Factor
+- Balance
+- Equity
+- Win Rate
+- Profit Factor
+- Net Profit
+- Trades
 
-\---
+Rules:
+
+- One KPI per card.
+- Keep styling reusable.
+- Business calculations remain outside the component.
+
+---
 
 # Widget Infrastructure
 
-Sprint 20 introduced a dedicated widget infrastructure layer:
+Sprint 20 introduced the dedicated Widget Infrastructure layer.
+
+Current structure:
 
 ```text
 frontend/src/components/widgets/
@@ -149,24 +195,35 @@ frontend/src/components/widgets/
 ├── WidgetHeader.jsx
 ├── WidgetFooter.jsx
 ├── WidgetMetric.jsx
-
-├── WidgetContainer
-
-├── WidgetHeader
-
-├── WidgetFooter
-
-├── WidgetMetric v2
-
-├── WidgetLoading
-
-├── WidgetErrorState
-
-├── WidgetEmptyState
+├── WidgetMetricGrid.jsx
+├── WidgetMetrics.jsx
+├── WidgetLoading.jsx
+├── WidgetErrorState.jsx
+├── WidgetEmptyState.jsx
 └── index.js
 ```
 
-\---
+Purpose:
+
+Provide one reusable infrastructure for every professional widget inside TradePilot Pro.
+
+The infrastructure is shared by:
+
+- Dashboard
+- MT5 Trading Center
+- Portfolio
+- Future Analytics
+- Future Reports
+
+Rules:
+
+- Infrastructure contains presentation only.
+- No backend calls.
+- No feature business logic.
+- No MT5-specific code.
+- No Portfolio-specific code.
+
+---
 
 # WidgetContainer
 
@@ -174,13 +231,18 @@ Purpose:
 
 Base container for professional widgets.
 
+Responsibilities:
+
+- Consistent spacing.
+- Consistent elevation.
+- Common widget appearance.
+
 Rules:
 
-* Use for dashboard/professional widgets.
-* Should not contain feature-specific logic.
-* Provides consistent widget structure.
+- Used by professional widgets.
+- Never contains feature-specific logic.
 
-\---
+---
 
 # WidgetHeader
 
@@ -190,54 +252,108 @@ Standard widget header.
 
 Contains:
 
-* Title
-* Subtitle
-* Optional action/status badge
+- Title
+- Subtitle
+- Optional action
+- Optional StatusBadge
 
-\---
+Rules:
+
+- All professional widgets should use WidgetHeader.
+
+---
 
 # WidgetFooter
 
 Purpose:
 
-Standard widget footer/action area.
+Standard widget footer.
 
 Contains:
 
-* Primary action
-* Secondary actions
-* Extra footer controls when needed
+- Primary action.
+- Secondary actions.
+- Footer controls.
 
-\---
+Rules:
+
+- Footer actions remain lightweight.
+- Business logic belongs outside the footer.
+
+---
 
 # WidgetMetric
 
 Purpose:
 
-Display metric values inside professional widgets.
+Display a single metric inside a professional widget.
 
 Examples:
 
-* Balance
-* Equity
-* Floating P/L
-* Open Positions
+- Balance
+- Equity
+- Margin
+- Net Profit
+- Trades
+- Floating Profit
+- Today's Profit
 
-\---
+Rules:
+
+- Display only.
+- No calculations.
+- Receives prepared values.
+
+---
+
+# WidgetMetricGrid
+
+Purpose:
+
+Responsive grid for multiple WidgetMetric components.
+
+Usage:
+
+- Portfolio
+- MT5 Trading Center
+- Future Analytics widgets
+
+Rules:
+
+- Layout only.
+- No business logic.
+
+---
+
+# WidgetMetrics
+
+Purpose:
+
+Reusable collection wrapper for WidgetMetric groups.
+
+Rules:
+
+- Used when several metrics belong together.
+- Avoid repeating layout code.
+
+---
 
 # KPI / Metric Naming
 
-Current metric components have different scopes:
+Current metric components have different responsibilities:
 
-|Component|Scope|
-|-|-|
-|`KPICard`|Existing dashboard KPI component.|
-|`MetricCard`|Generic reusable metric card.|
-|`WidgetMetric`|Widget infrastructure metric component.|
+| Component | Responsibility |
+|-----------|----------------|
+| `KPICard` | Existing dashboard KPI card. |
+| `MetricCard` | Generic reusable metric card. |
+| `WidgetMetric` | Metric presentation inside professional widgets. |
 
-Do not create additional metric components unless the scope is clearly different.
+Rules:
 
-\---
+- Do not introduce additional KPI components without a clearly different responsibility.
+- Reuse the existing metric hierarchy whenever possible.
+
+---
 
 # StatisticCard
 
@@ -245,25 +361,46 @@ Purpose:
 
 Display statistical summaries.
 
-\---
+Examples:
+
+- Win Rate
+- Profit Factor
+- Average Win
+- Average Loss
+- Average RR
+
+Rules:
+
+- Presentation only.
+- Receives prepared data.
+
+---
 
 # PageContainer
 
+Purpose:
+
 Provides:
 
-* Page spacing
-* Max width
-* Consistent layout
+- Standard page spacing.
+- Consistent maximum width.
+- Shared layout behavior.
 
-\---
+---
 
 # LoadingOverlay
 
 Purpose:
 
-Indicate background processing.
+Display background processing without blocking the application unexpectedly.
 
-\---
+Examples:
+
+- Long imports.
+- Report generation.
+- Future scheduled operations.
+
+---
 
 # EmptyState
 
@@ -273,233 +410,90 @@ Friendly message when no data exists.
 
 Should include:
 
-* Icon
-* Message
-* Suggested action
+- Icon
+- Message
+- Suggested action
 
-\---
+Used by:
+
+- Dashboard widgets
+- MT5 widgets
+- Portfolio widgets
+
+---
 
 # ConfirmDialog
 
+Purpose:
+
+Reusable confirmation dialog.
+
 Used for:
 
-* Delete
-* Disable
-* Reset
-* Dangerous actions
+- Delete
+- Disable
+- Reset
+- Dangerous actions
 
-\---
+---
 
 # SearchToolbar
 
+Purpose:
+
+Reusable search and action toolbar.
+
 Contains:
 
-* Search
-* Filters
-* Quick actions
+- Search
+- Filters
+- Quick actions
 
-\---
+---
 
 # FilterBar
 
+Purpose:
+
+Reusable filtering component.
+
 Supports:
 
-* Dropdowns
-* Chips
-* Date filters
-* Reset
-
-\---
-
-# Future Components
-
-Planned:
-
-* TradePilotTable
-* DashboardGrid
-* KPIGrid
-* NotificationCenter
-* Timeline
-* ActivityFeed
-* MarketWidget
-* RiskWidget
-* PortfolioWidget
-* WidgetToolbar
-* WidgetEmptyState
-* WidgetLoading
-* WidgetErrorState
-
-\---
-
-# Naming Convention
-
-Reusable components:
-
-```text
-TradePilot\*
-Widget\*
-```
-
-Examples:
-
-* TradePilotCard
-* TradePilotButton
-* TradePilotTable
-* WidgetContainer
-* WidgetHeader
-* WidgetMetric
-
-\---
-
-# Review Checklist
-
-Before adding a component verify:
-
-* Is it reusable?
-* Is it documented?
-* Does it follow Design System?
-* Can another module reuse it?
-* Does it avoid duplicate UI?
-
-\---
-
-# Related Documents
-
-* DESIGN\_SYSTEM.md
-* DEVELOPMENT\_STANDARDS.md
-* PROJECT\_MASTER.md
-* DECISIONS.md
-* SOURCE\_CODE\_STRUCTURE.md
-
-
+- Dropdowns
+- Chips
+- Date filters
+- Reset
 
 ---
 
-# Sprint 22 Additions
+# MT5 Trading Center Components
 
-## Widget Infrastructure v3
+Sprint 25 and Sprint 26 introduced the first complete MT5 Trading Center component family.
 
-- WidgetMetricGrid
-- WidgetMetrics
-
-## Portfolio Feature Module
-
-- PortfolioSummaryMetrics
-- PortfolioPerformanceMetrics
-- PortfolioStatisticsCard
-- PortfolioAllocationCard
-
-The Portfolio feature now follows the standard Feature Module pattern:
-components/ • hooks/ • services/ • index.js
-
-# Sprint 24 Additions - Layout and Reuse Rules
-
-## PageHeader
-
-Path:
+Current location:
 
 ```text
-frontend/src/components/layout/PageHeader.jsx
+frontend/src/components/dashboard/mt5/
 ```
 
-Purpose:
+Current components:
 
-Reusable page title/subtitle/action header for main application pages.
-
-Usage:
-
-- Dashboard
-- Portfolio
-- Future Analytics
-- Future Reports
-- Future MT5 pages
-
-Rules:
-
-- Do not duplicate page title/subtitle layout inside pages.
-- Use `PageHeader` through `PageLayout` unless there is a special reason.
+```text
+MT5Widget.jsx
+AccountHealthWidget.jsx
+TodayPerformanceWidget.jsx
+ConnectionHealthWidget.jsx
+OpenPositionsWidget.jsx
+PendingOrdersWidget.jsx
+```
 
 ---
 
-## PageLayout
-
-Path:
-
-```text
-frontend/src/components/layout/PageLayout.jsx
-```
+## MT5Widget
 
 Purpose:
 
-Shared layout wrapper for major pages.
-
-Provides:
-
-- Common page width.
-- Common vertical padding.
-- Common header area.
-- Common content spacing.
-
-Usage:
-
-```jsx
-<PageLayout
-    title="Portfolio"
-    subtitle="Portfolio performance, allocation and risk overview."
->
-    ...page content...
-</PageLayout>
-```
-
-Rules:
-
-- Main pages should use `PageLayout`.
-- Do not create custom page spacing unless the page has a clear special purpose.
-- Do not modify `PageLayout` for one page only.
-
----
-
-## PortfolioChartsCard
-
-Path:
-
-```text
-frontend/src/features/portfolio/components/PortfolioChartsCard.jsx
-```
-
-Purpose:
-
-Feature-specific Portfolio chart widget.
-
-Displays:
-
-- Equity Curve
-- Drawdown
-
-Rules:
-
-- This component belongs to the Portfolio feature.
-- Do not move it to global widgets unless another feature needs the exact same chart behaviour.
-
----
-
-## MT5Widget - Dashboard Live Summary
-
-Path:
-
-```text
-frontend/src/components/dashboard/mt5/MT5Widget.jsx
-```
-
-Purpose:
-
-Dashboard-level MT5 live summary widget.
-
-Uses existing API functions:
-
-- `getMT5Accounts()`
-- `getMT5AccountSummary(accountId)`
-- `syncMT5Account(accountId)`
+Compact Dashboard summary widget.
 
 Displays:
 
@@ -510,17 +504,219 @@ Displays:
 - Connection
 - Account
 - Broker
-- Server
 
-Rule:
+Rules:
 
-Do not create a second MT5 dashboard summary component unless the existing widget cannot be extended safely.
+- Dashboard overview only.
+- Must not become a detailed trading workspace.
+- Uses existing MT5 summary APIs.
 
 ---
 
-## Protected Global Widgets
+## AccountHealthWidget
 
-The following are shared infrastructure:
+Purpose:
+
+Displays live MT5 account financial health.
+
+Current metrics:
+
+- Balance
+- Equity
+- Margin
+- Free Margin
+- Margin Level
+- Leverage
+- Currency
+
+Rules:
+
+- Live data only.
+- Uses Widget Infrastructure.
+- Uses standard loading/error/empty states.
+
+---
+
+## TodayPerformanceWidget
+
+Purpose:
+
+Displays today's MT5 trading activity.
+
+Current metrics:
+
+- Profit Today
+- Trades Today
+- Win Rate Today
+- Lots
+- Commission
+- Swap
+
+Rules:
+
+- Uses live MT5 data.
+- Auto-refresh support.
+- Standard widget states.
+
+---
+
+## ConnectionHealthWidget
+
+Purpose:
+
+Displays MT5 connection status.
+
+Current metrics:
+
+- Terminal status
+- Trading allowed
+- Terminal build
+- Terminal version
+- Server
+- Company
+
+Rules:
+
+- Connection information only.
+- No account statistics.
+- Uses StatusBadge.
+
+---
+
+## OpenPositionsWidget
+
+Purpose:
+
+Displays live MT5 open positions.
+
+Current information:
+
+- Ticket
+- Symbol
+- Direction
+- Volume
+- Open Price
+- Current Price
+- Stop Loss
+- Take Profit
+- Floating Profit
+- Swap
+
+Rules:
+
+- Detailed MT5 workspace component.
+- Automatic refresh.
+- No duplicated Dashboard version.
+
+---
+
+## PendingOrdersWidget
+
+Purpose:
+
+Displays MT5 pending orders.
+
+Current information:
+
+- Ticket
+- Symbol
+- Order Type
+- Volume
+- Entry Price
+- Stop Loss
+- Take Profit
+- Setup Time
+- Comment
+
+Rules:
+
+- Detailed MT5 workspace component.
+- Automatic refresh.
+- Live MT5 data only.
+
+---
+
+# Portfolio Components
+
+## PortfolioWidget
+
+Purpose:
+
+Compact Dashboard Portfolio summary.
+
+Displays:
+
+- Total Trades
+- Net Profit
+- Navigation to Portfolio
+
+Rules:
+
+- Summary only.
+- Detailed Portfolio analysis belongs to the Portfolio workspace.
+- Uses the existing Portfolio feature module.
+
+---
+
+## PortfolioChartsCard
+
+Purpose:
+
+Feature-specific Portfolio chart component.
+
+Displays:
+
+- Equity Curve
+- Drawdown
+
+Rules:
+
+- Portfolio feature component.
+- Not a global widget.
+
+---
+
+# Layout Components
+
+## PageHeader
+
+Purpose:
+
+Reusable page title and subtitle.
+
+Used by:
+
+- Dashboard
+- Portfolio
+- MT5
+- Future Analytics
+- Future Reports
+
+---
+
+## PageLayout
+
+Purpose:
+
+Reusable page wrapper.
+
+Provides:
+
+- Common width.
+- Common spacing.
+- Standard page composition.
+
+Rules:
+
+- No business logic.
+- No API calls.
+- No feature-specific behavior.
+
+---
+
+# Protected Components
+
+The following components are considered protected infrastructure:
 
 ```text
 WidgetContainer
@@ -532,10 +728,170 @@ WidgetMetrics
 WidgetLoading
 WidgetErrorState
 WidgetEmptyState
+
+PageHeader
+PageLayout
+
+Sidebar
+DashboardLayout
+WidgetGrid
 ```
 
 Rules:
 
-- Do not change these for a single page-specific visual issue.
-- If a page needs a special layout, create a feature-specific component instead.
-- Change global widgets only for true global design or bug fixes.
+- Do not modify these for a page-specific issue.
+- Feature-specific requirements should be solved inside the feature.
+- Global changes require an architecture review.
+
+---
+
+# Future Components
+
+Planned:
+
+- TradePilotTable
+- DashboardGrid
+- KPIGrid
+- NotificationCenter
+- Timeline
+- ActivityFeed
+- MarketWidget
+- RiskWidget
+- WidgetToolbar
+
+These remain part of the roadmap and are intentionally kept for future development.
+
+---
+
+# Naming Convention
+
+Reusable components:
+
+```text
+TradePilot*
+Widget*
+```
+
+Feature components:
+
+```text
+AccountHealthWidget
+TodayPerformanceWidget
+ConnectionHealthWidget
+OpenPositionsWidget
+PendingOrdersWidget
+PortfolioChartsCard
+```
+
+Rules:
+
+- Component names should clearly describe responsibility.
+- Avoid generic names such as `Card2` or `Panel`.
+
+---
+
+# Review Checklist
+
+Before adding a component verify:
+
+- Is it reusable?
+- Is it documented?
+- Does it follow the Design System?
+- Can another module reuse it?
+- Does it duplicate an existing component?
+- Can an existing component be extended safely?
+- Does it belong to a feature or to the global UI framework?
+
+---
+
+# Related Documents
+
+- DESIGN_SYSTEM.md
+- DEVELOPMENT_STANDARDS.md
+- PROJECT_MASTER.md
+- DECISIONS.md
+- SOURCE_CODE_STRUCTURE.md
+
+---
+
+# Sprint 22 Additions
+
+## Widget Infrastructure v3
+
+Added:
+
+- WidgetMetricGrid
+- WidgetMetrics
+
+## Portfolio Feature Module
+
+Added:
+
+- PortfolioSummaryMetrics
+- PortfolioPerformanceMetrics
+- PortfolioStatisticsCard
+- PortfolioAllocationCard
+
+Portfolio became the reference implementation for frontend Feature Modules.
+
+---
+
+# Sprint 24 Additions
+
+Added:
+
+- PageHeader
+- PageLayout
+- PortfolioChartsCard
+
+MT5Widget became connected to the real MT5 account summary instead of placeholder data.
+
+Protected Global Widgets rule introduced.
+
+---
+
+# Sprint 25 Additions
+
+Added:
+
+- OpenPositionsWidget
+
+Introduced:
+
+- Live MT5 open position presentation.
+- Standard loading/error/empty widget behavior.
+- Automatic refresh.
+
+---
+
+# Sprint 26 Additions
+
+Added:
+
+- AccountHealthWidget
+- TodayPerformanceWidget
+- ConnectionHealthWidget
+- PendingOrdersWidget
+
+Updated:
+
+- MT5Widget now acts as Dashboard summary only.
+- PortfolioWidget now acts as Dashboard summary only.
+
+Established responsibilities:
+
+```text
+Dashboard
+    ↓
+Summary Widgets
+
+MT5
+    ↓
+Detailed Trading Widgets
+
+Portfolio
+    ↓
+Detailed Portfolio Widgets
+```
+
+These responsibilities remain active for the remainder of Version 0.8.

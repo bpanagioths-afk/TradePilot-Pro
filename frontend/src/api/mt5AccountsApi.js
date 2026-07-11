@@ -42,3 +42,18 @@ export const getMT5PendingOrders = async () => {
     const response = await api.get("/mt5/pending-orders");
     return response.data;
 };
+
+export const getMT5AccountHealth = async () => {
+    const response = await api.get("/mt5/account-health");
+    return response.data;
+};
+
+export const getMT5TodayPerformance = async () => {
+    const response = await api.get("/mt5/today-performance");
+    return response.data;
+};
+
+export const getMT5ConnectionHealth = async () => {
+    const response = await api.get("/mt5/connection-health");
+    return response.data;
+};

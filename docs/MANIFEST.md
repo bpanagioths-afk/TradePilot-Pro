@@ -1,45 +1,45 @@
-# PROJECT_MASTER v2 Full - Manifest
+# PROJECT\_MASTER v2 Full - Manifest
 
-- `README_INSTALL.md`
-- `docs/PROJECT_MASTER.md`
-- `docs/project/01_Vision.md`
-- `docs/project/02_Tech_Stack.md`
-- `docs/project/03_Project_Master_Map.md`
-- `docs/project/04_Modules/Dashboard.md`
-- `docs/project/04_Modules/Home_Command_Center.md`
-- `docs/project/04_Modules/README.md`
-- `docs/project/04_Modules/Rule_Engine.md`
-- `docs/project/04_Modules/Trading_Journal_Engine.md`
-- `docs/project/04_Modules/Trading_Plan_Engine.md`
-- `docs/project/05_MT5_Account_Manager/Backend_Completed.md`
-- `docs/project/05_MT5_Account_Manager/Frontend_Completed.md`
-- `docs/project/05_MT5_Account_Manager/README.md`
-- `docs/project/06_Frontend/Current_Frontend_Architecture_Standard.md`
-- `docs/project/06_Frontend/Design_System.md`
-- `docs/project/06_Frontend/Frontend_Architecture.md`
-- `docs/project/06_Frontend/Frontend_Development_Philosophy.md`
-- `docs/project/06_Frontend/Future_UI_Direction.md`
-- `docs/project/06_Frontend/Official_Design_Guide.md`
-- `docs/project/06_Frontend/Official_UI_Framework.md`
-- `docs/project/06_Frontend/Product_Identity.md`
-- `docs/project/06_Frontend/README.md`
-- `docs/project/06_Frontend/Sprint_18_UI_Framework_Vision.md`
-- `docs/project/06_Frontend/TradePilot_UI_Framework.md`
-- `docs/project/06_Frontend/Widget_Philosophy.md`
-- `docs/project/07_Backend/Backend_Architecture_Standard.md`
-- `docs/project/08_Future/Current_Product_Direction.md`
-- `docs/project/08_Future/Long_Term_Vision.md`
-- `docs/project/08_Future/Product_Philosophy.md`
-- `docs/project/08_Future/README.md`
-- `docs/project/08_Future/SaaS_Subscription_Direction.md`
-- `docs/project/08_Future/Trading_Connections_Direction.md`
-- `docs/project/09_Current_State/Continuation_Instructions.md`
-- `docs/project/09_Current_State/Current_Project_Status.md`
-- `docs/project/09_Current_State/README.md`
-- `docs/project/09_Current_State/Sprint_18_Next_Active_Sprint.md`
-- `docs/project/09_Current_State/Sprint_19.md`
-- `docs/project/99_Original/PROJECT_MASTER_ORIGINAL.md`
-- `docs/project/README.md`
+* `README\_INSTALL.md`
+* `docs/PROJECT\_MASTER.md`
+* `docs/project/01\_Vision.md`
+* `docs/project/02\_Tech\_Stack.md`
+* `docs/project/03\_Project\_Master\_Map.md`
+* `docs/project/04\_Modules/Dashboard.md`
+* `docs/project/04\_Modules/Home\_Command\_Center.md`
+* `docs/project/04\_Modules/README.md`
+* `docs/project/04\_Modules/Rule\_Engine.md`
+* `docs/project/04\_Modules/Trading\_Journal\_Engine.md`
+* `docs/project/04\_Modules/Trading\_Plan\_Engine.md`
+* `docs/project/05\_MT5\_Account\_Manager/Backend\_Completed.md`
+* `docs/project/05\_MT5\_Account\_Manager/Frontend\_Completed.md`
+* `docs/project/05\_MT5\_Account\_Manager/README.md`
+* `docs/project/06\_Frontend/Current\_Frontend\_Architecture\_Standard.md`
+* `docs/project/06\_Frontend/Design\_System.md`
+* `docs/project/06\_Frontend/Frontend\_Architecture.md`
+* `docs/project/06\_Frontend/Frontend\_Development\_Philosophy.md`
+* `docs/project/06\_Frontend/Future\_UI\_Direction.md`
+* `docs/project/06\_Frontend/Official\_Design\_Guide.md`
+* `docs/project/06\_Frontend/Official\_UI\_Framework.md`
+* `docs/project/06\_Frontend/Product\_Identity.md`
+* `docs/project/06\_Frontend/README.md`
+* `docs/project/06\_Frontend/Sprint\_18\_UI\_Framework\_Vision.md`
+* `docs/project/06\_Frontend/TradePilot\_UI\_Framework.md`
+* `docs/project/06\_Frontend/Widget\_Philosophy.md`
+* `docs/project/07\_Backend/Backend\_Architecture\_Standard.md`
+* `docs/project/08\_Future/Current\_Product\_Direction.md`
+* `docs/project/08\_Future/Long\_Term\_Vision.md`
+* `docs/project/08\_Future/Product\_Philosophy.md`
+* `docs/project/08\_Future/README.md`
+* `docs/project/08\_Future/SaaS\_Subscription\_Direction.md`
+* `docs/project/08\_Future/Trading\_Connections\_Direction.md`
+* `docs/project/09\_Current\_State/Continuation\_Instructions.md`
+* `docs/project/09\_Current\_State/Current\_Project\_Status.md`
+* `docs/project/09\_Current\_State/README.md`
+* `docs/project/09\_Current\_State/Sprint\_18\_Next\_Active\_Sprint.md`
+* `docs/project/09\_Current\_State/Sprint\_19.md`
+* `docs/project/99\_Original/PROJECT\_MASTER\_ORIGINAL.md`
+* `docs/project/README.md`
 
 ## Sprint 24 Documentation Update
 
@@ -52,3 +52,29 @@ Added / updated documentation for:
 - Protected global widget rules.
 - Reuse-before-new-code rule.
 - One-feature-one-commit workflow.
+
+---
+
+## Sprint 25-26 Documentation Update
+
+Added / updated documentation for:
+
+- Sprint 25 changelog.
+- Sprint 26 changelog.
+- MT5 Trading Center implementation.
+- MT5 Account Health widget.
+- MT5 Today's Performance widget.
+- MT5 Connection Health widget.
+- Open Positions integration.
+- Pending Orders integration.
+- Dashboard cleanup.
+- Portfolio summary widget update.
+- Home page cleanup.
+- Updated PROJECT_HISTORY.md.
+- Updated SOURCE_CODE_STRUCTURE.md.
+- Updated COMPONENT_LIBRARY.md.
+- Current project status after Sprint 26.
+- Sprint 27 next chat prompt.
+- Decision D-049 (Single Source of Information).
+- Decision D-050 (Reuse Existing Implementation Before Creating New One).
+
