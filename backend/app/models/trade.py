@@ -70,6 +70,12 @@ class Trade(Base):
         nullable=True
     )
 
+    mt5_position_id = Column(
+        BigInteger,
+        nullable=True,
+        index=True
+    )
+
     imported_from_mt5 = Column(
         Boolean,
         default=False

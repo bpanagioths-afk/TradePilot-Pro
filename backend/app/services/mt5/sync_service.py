@@ -134,7 +134,6 @@ def _apply_position_to_trade(
     trade.lot_size = calculate_entry_volume(
         position,
     )
-
     trade.open_time = position.open_time
 
     trade.risk_reward = _calculate_risk_reward(
@@ -355,10 +354,3 @@ def sync(account_id: int):
     finally:
         db.close()
         mt5.shutdown()
-
-
-from app.services.mt5.sync_service import sync
-
-
-def sync_mt5_history(account_id: int):
-    return sync(account_id)
