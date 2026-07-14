@@ -12,6 +12,8 @@ Sections:
 * [Sprint 17](changelog/04_SPRINT_17.md)
 * [Sprint 18](changelog/05_SPRINT_18.md)
 * [Sprint 19](changelog/06_SPRINT_19.md)
+* [Sprint 24](changelog/08_SPRINT_24.md)
+* [Sprint 27-28](changelog/09_SPRINT_27_28.md)
 * [Full Changelog Archive](changelog/99_FULL_CHANGELOG_ARCHIVE.md)
 
 Rule:
@@ -330,3 +332,22 @@ Product result:
 
 TradePilot Pro Version 0.8 now includes a complete live MT5 Trading Center with account health, connection status, daily performance, open positions and pending orders.
 
+
+
+---
+
+# Sprint 27-28 — Analytics Center and MT5 Synchronization Engine v2
+
+Status: Completed
+
+Highlights:
+
+- Analytics Center implemented using existing Portfolio and Dashboard data sources.
+- Analytics migrated to shared Widget Infrastructure and PageLayout.
+- MT5 Synchronization Engine v2 introduced with position aggregation and idempotent upsert.
+- Open, partially closed and closed MT5 positions now follow one Trade lifecycle.
+- Recent closing deals are reconciled safely.
+- Dashboard, Portfolio and Analytics now share one Design System.
+- Trade lifecycle and synchronization architecture documented.
+
+See: `docs/changelog/09_SPRINT_27_28.md`.

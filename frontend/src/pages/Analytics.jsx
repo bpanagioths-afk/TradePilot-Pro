@@ -1,16 +1,10 @@
-import {
-    Alert,
-    Box,
-    Button,
-    CircularProgress,
-    Paper,
-    Typography
-} from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 
 import {
     Bar,
     BarChart,
     CartesianGrid,
+    Cell,
     Line,
     LineChart,
     ResponsiveContainer,
@@ -19,67 +13,204 @@ import {
     YAxis
 } from "recharts";
 
+import PageLayout from "../components/layout/PageLayout";
+
+import {
+    WidgetContainer,
+    WidgetHeader,
+    WidgetMetric,
+    WidgetLoading,
+    WidgetErrorState,
+    WidgetEmptyState
+} from "../components/widgets";
+
 import useAnalytics from "../features/analytics/hooks/useAnalytics";
 
-function BarChartCard({ title, data, xKey, barKey }) {
-    return (
-        <Paper sx={{ p: 3, height: 380 }}>
-            <Typography variant="h6" mb={2}>
-                {title}
-            </Typography>
 
-            <ResponsiveContainer width="100%" height="85%">
-                <BarChart data={data}>
-                    <CartesianGrid />
-                    <XAxis dataKey={xKey} />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey={barKey} />
-                </BarChart>
-            </ResponsiveContainer>
-        </Paper>
+function getPerformanceStatus(value) {
+    const numericValue = Number(value);
+
+    if (numericValue > 0) {
+        return "success";
+    }
+
+    if (numericValue < 0) {
+        return "error";
+    }
+
+    return "default";
+}
+
+
+function getPerformanceColor(theme, value) {
+    const status = getPerformanceStatus(value);
+
+    const colorMap = {
+        success: theme.palette.success.main,
+        error: theme.palette.error.main,
+        default: theme.palette.text.secondary
+    };
+
+    return colorMap[status];
+}
+
+
+function formatNumber(value, decimals = 2) {
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue)) {
+        return "—";
+    }
+
+    return numericValue.toFixed(decimals);
+}
+
+
+function MetricGrid({ children }) {
+    return (
+        <Box
+            sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "repeat(2, minmax(0, 1fr))",
+                    lg: "repeat(4, minmax(0, 1fr))"
+                },
+                gap: 2
+            }}
+        >
+            {children}
+        </Box>
     );
 }
 
-function LineChartCard({ title, data, xKey, lineKey }) {
-    return (
-        <Paper sx={{ p: 3, height: 380 }}>
-            <Typography variant="h6" mb={2}>
-                {title}
-            </Typography>
 
-            <ResponsiveContainer width="100%" height="85%">
-                <LineChart data={data}>
-                    <CartesianGrid />
-                    <XAxis dataKey={xKey} />
-                    <YAxis />
-                    <Tooltip />
-                    <Line
-                        type="monotone"
-                        dataKey={lineKey}
-                        strokeWidth={2}
-                        dot={false}
-                    />
-                </LineChart>
-            </ResponsiveContainer>
-        </Paper>
+function BarChartWidget({
+    title,
+    subtitle,
+    data,
+    xKey,
+    valueKey
+}) {
+    const theme = useTheme();
+
+    return (
+        <WidgetContainer>
+            <WidgetHeader
+                title={title}
+                subtitle={subtitle}
+            />
+
+            <Box sx={{ width: "100%", height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={data}>
+                        <CartesianGrid
+                            stroke={theme.palette.divider}
+                            strokeDasharray="3 3"
+                        />
+
+                        <XAxis
+                            dataKey={xKey}
+                            stroke={theme.palette.text.secondary}
+                        />
+
+                        <YAxis
+                            stroke={theme.palette.text.secondary}
+                        />
+
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: theme.palette.background.paper,
+                                borderColor: theme.palette.divider,
+                                color: theme.palette.text.primary
+                            }}
+                        />
+
+                        <Bar dataKey={valueKey}>
+                            {data.map((item, index) => (
+                                <Cell
+                                    key={`${title}-${index}`}
+                                    fill={getPerformanceColor(
+                                        theme,
+                                        item[valueKey]
+                                    )}
+                                />
+                            ))}
+                        </Bar>
+                    </BarChart>
+                </ResponsiveContainer>
+            </Box>
+        </WidgetContainer>
     );
 }
 
-function MetricCard({ title, value, suffix = "" }) {
-    return (
-        <Paper sx={{ p: 2 }}>
-            <Typography variant="subtitle2">
-                {title}
-            </Typography>
 
-            <Typography variant="h5">
-                {value ?? "—"}
-                {value !== null && value !== undefined ? suffix : ""}
-            </Typography>
-        </Paper>
+function LineChartWidget({
+    title,
+    subtitle,
+    data,
+    xKey,
+    valueKey,
+    status
+}) {
+    const theme = useTheme();
+
+    const colorMap = {
+        success: theme.palette.success.main,
+        error: theme.palette.error.main,
+        warning: theme.palette.warning.main,
+        info: theme.palette.info.main
+    };
+
+    return (
+        <WidgetContainer>
+            <WidgetHeader
+                title={title}
+                subtitle={subtitle}
+            />
+
+            <Box sx={{ width: "100%", height: 300 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={data}>
+                        <CartesianGrid
+                            stroke={theme.palette.divider}
+                            strokeDasharray="3 3"
+                        />
+
+                        <XAxis
+                            dataKey={xKey}
+                            stroke={theme.palette.text.secondary}
+                        />
+
+                        <YAxis
+                            stroke={theme.palette.text.secondary}
+                        />
+
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: theme.palette.background.paper,
+                                borderColor: theme.palette.divider,
+                                color: theme.palette.text.primary
+                            }}
+                        />
+
+                        <Line
+                            type="monotone"
+                            dataKey={valueKey}
+                            stroke={
+                                colorMap[status]
+                                || theme.palette.primary.main
+                            }
+                            strokeWidth={2}
+                            dot={false}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            </Box>
+        </WidgetContainer>
     );
 }
+
 
 export default function Analytics() {
     const {
@@ -88,6 +219,25 @@ export default function Analytics() {
         error,
         refresh
     } = useAnalytics();
+
+    if (loading) {
+        return (
+            <WidgetLoading
+                title="Analytics"
+                subtitle="Loading historical analysis..."
+            />
+        );
+    }
+
+    if (error) {
+        return (
+            <WidgetErrorState
+                title="Analytics"
+                subtitle="Unable to load analytics."
+                message="Check the backend connection and try again."
+            />
+        );
+    }
 
     const {
         pairs,
@@ -104,239 +254,254 @@ export default function Analytics() {
     } = analytics;
 
     const hasData =
-        pairs.length > 0 ||
-        hours.length > 0 ||
-        systems.length > 0 ||
-        psychology.length > 0 ||
-        equityCurve.length > 0 ||
-        drawdownCurve.length > 0 ||
-        summary ||
-        performance ||
-        risk ||
-        equity ||
-        drawdown;
-
-    if (loading) {
-        return (
-            <Box
-                sx={{
-                    minHeight: 300,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}
-            >
-                <CircularProgress />
-            </Box>
-        );
-    }
-
-    if (error) {
-        return (
-            <Box>
-                <Typography variant="h4" mb={3}>
-                    Analytics
-                </Typography>
-
-                <Alert
-                    severity="error"
-                    action={
-                        <Button
-                            color="inherit"
-                            size="small"
-                            onClick={refresh}
-                        >
-                            Retry
-                        </Button>
-                    }
-                >
-                    Unable to load analytics data.
-                </Alert>
-            </Box>
-        );
-    }
+        pairs.length > 0
+        || hours.length > 0
+        || systems.length > 0
+        || psychology.length > 0
+        || equityCurve.length > 0
+        || drawdownCurve.length > 0
+        || summary
+        || performance
+        || risk
+        || equity
+        || drawdown;
 
     if (!hasData) {
         return (
-            <Box>
-                <Typography variant="h4" mb={3}>
-                    Analytics
-                </Typography>
-
-                <Alert severity="info">
-                    No analytics data is available yet.
-                </Alert>
-            </Box>
+            <WidgetEmptyState
+                title="Analytics"
+                subtitle="No analytics data available."
+                message="Analytics will appear after completed trades are synchronized."
+            />
         );
     }
 
+    const systemData = systems.map((item) => ({
+        ...item,
+        system_label:
+            item.trading_system_id ?? "Unassigned"
+    }));
+
+    const psychologyData = psychology.map((item) => ({
+        ...item,
+        psychology_label:
+            item.psychology_state_id ?? "Unassigned"
+    }));
+
     return (
-        <Box>
-            <Typography variant="h4" mb={3}>
-                Analytics
-            </Typography>
+        <PageLayout
+            title="Analytics"
+            subtitle="Historical trading performance and behavior analysis."
+        >
+            <WidgetContainer>
+                <WidgetHeader
+                    title="Summary"
+                    subtitle="Core trading activity metrics."
+                />
 
-            <Typography variant="h6" mb={2}>
-                Summary
-            </Typography>
+                <MetricGrid>
+                    <WidgetMetric
+                        title="Total Trades"
+                        value={summary?.total_trades ?? 0}
+                        status="info"
+                    />
+
+                    <WidgetMetric
+                        title="Winning Trades"
+                        value={summary?.winning_trades ?? 0}
+                        status="success"
+                    />
+
+                    <WidgetMetric
+                        title="Losing Trades"
+                        value={summary?.losing_trades ?? 0}
+                        status="error"
+                    />
+
+                    <WidgetMetric
+                        title="Win Rate"
+                        value={`${formatNumber(summary?.win_rate)}%`}
+                        status="warning"
+                    />
+                </MetricGrid>
+            </WidgetContainer>
+
+            <WidgetContainer>
+                <WidgetHeader
+                    title="Performance"
+                    subtitle="Profitability and efficiency metrics."
+                />
+
+                <MetricGrid>
+                    <WidgetMetric
+                        title="Total Profit"
+                        value={formatNumber(
+                            performance?.total_profit
+                        )}
+                        status="success"
+                    />
+
+                    <WidgetMetric
+                        title="Total Loss"
+                        value={formatNumber(
+                            performance?.total_loss
+                        )}
+                        status="error"
+                    />
+
+                    <WidgetMetric
+                        title="Net Profit"
+                        value={formatNumber(
+                            performance?.net_profit
+                        )}
+                        status={getPerformanceStatus(
+                            performance?.net_profit
+                        )}
+                    />
+
+                    <WidgetMetric
+                        title="Profit Factor"
+                        value={formatNumber(
+                            performance?.profit_factor
+                        )}
+                        status={
+                            Number(performance?.profit_factor) >= 1
+                                ? "success"
+                                : "error"
+                        }
+                    />
+                </MetricGrid>
+            </WidgetContainer>
+
+            <WidgetContainer>
+                <WidgetHeader
+                    title="Risk"
+                    subtitle="Risk, reward and trade quality metrics."
+                />
+
+                <MetricGrid>
+                    <WidgetMetric
+                        title="Average Win"
+                        value={formatNumber(risk?.average_win)}
+                        status="success"
+                    />
+
+                    <WidgetMetric
+                        title="Average Loss"
+                        value={formatNumber(risk?.average_loss)}
+                        status="error"
+                    />
+
+                    <WidgetMetric
+                        title="Average RR"
+                        value={formatNumber(risk?.average_rr)}
+                        status="info"
+                    />
+
+                    <WidgetMetric
+                        title="Average Pips"
+                        value={formatNumber(risk?.average_pips)}
+                        status={getPerformanceStatus(
+                            risk?.average_pips
+                        )}
+                    />
+
+                    <WidgetMetric
+                        title="Average Duration"
+                        value={formatNumber(
+                            risk?.average_duration
+                        )}
+                        helperText="Minutes"
+                        status="info"
+                    />
+
+                    <WidgetMetric
+                        title="Largest Win"
+                        value={formatNumber(risk?.largest_win)}
+                        status="success"
+                    />
+
+                    <WidgetMetric
+                        title="Largest Loss"
+                        value={formatNumber(risk?.largest_loss)}
+                        status="error"
+                    />
+                </MetricGrid>
+            </WidgetContainer>
+
+            <WidgetContainer>
+                <WidgetHeader
+                    title="Equity & Drawdown"
+                    subtitle="Account growth and downside exposure."
+                />
+
+                <MetricGrid>
+                    <WidgetMetric
+                        title="Current Equity"
+                        value={formatNumber(
+                            equity?.current_equity
+                        )}
+                        status={getPerformanceStatus(
+                            equity?.current_equity
+                        )}
+                    />
+
+                    <WidgetMetric
+                        title="Peak Equity"
+                        value={formatNumber(
+                            equity?.peak_equity
+                        )}
+                        status="success"
+                    />
+
+                    <WidgetMetric
+                        title="Maximum Drawdown"
+                        value={formatNumber(
+                            drawdown?.max_drawdown
+                        )}
+                        status="error"
+                    />
+
+                    <WidgetMetric
+                        title="Current Drawdown"
+                        value={formatNumber(
+                            drawdown?.current_drawdown
+                        )}
+                        status={
+                            Number(drawdown?.current_drawdown) > 0
+                                ? "warning"
+                                : "success"
+                        }
+                    />
+                </MetricGrid>
+            </WidgetContainer>
 
             <Box
                 sx={{
                     display: "grid",
                     gridTemplateColumns: {
                         xs: "1fr",
-                        sm: "1fr 1fr",
-                        lg: "repeat(4, 1fr)"
+                        lg: "1fr 1fr"
                     },
-                    gap: 2,
-                    mb: 4
+                    gap: 2
                 }}
             >
-                <MetricCard
-                    title="Total Trades"
-                    value={summary?.total_trades}
+                <LineChartWidget
+                    title="Equity Curve"
+                    subtitle="Cumulative closed-trade performance."
+                    data={equityCurve}
+                    xKey="trade"
+                    valueKey="equity"
+                    status="success"
                 />
 
-                <MetricCard
-                    title="Winning Trades"
-                    value={summary?.winning_trades}
-                />
-
-                <MetricCard
-                    title="Losing Trades"
-                    value={summary?.losing_trades}
-                />
-
-                <MetricCard
-                    title="Win Rate"
-                    value={summary?.win_rate}
-                    suffix="%"
-                />
-            </Box>
-
-            <Typography variant="h6" mb={2}>
-                Performance
-            </Typography>
-
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                        xs: "1fr",
-                        sm: "1fr 1fr",
-                        lg: "repeat(4, 1fr)"
-                    },
-                    gap: 2,
-                    mb: 4
-                }}
-            >
-                <MetricCard
-                    title="Total Profit"
-                    value={performance?.total_profit}
-                />
-
-                <MetricCard
-                    title="Total Loss"
-                    value={performance?.total_loss}
-                />
-
-                <MetricCard
-                    title="Net Profit"
-                    value={performance?.net_profit}
-                />
-
-                <MetricCard
-                    title="Profit Factor"
-                    value={performance?.profit_factor}
-                />
-            </Box>
-
-            <Typography variant="h6" mb={2}>
-                Risk
-            </Typography>
-
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                        xs: "1fr",
-                        sm: "1fr 1fr",
-                        lg: "repeat(4, 1fr)"
-                    },
-                    gap: 2,
-                    mb: 4
-                }}
-            >
-                <MetricCard
-                    title="Average Win"
-                    value={risk?.average_win}
-                />
-
-                <MetricCard
-                    title="Average Loss"
-                    value={risk?.average_loss}
-                />
-
-                <MetricCard
-                    title="Average RR"
-                    value={risk?.average_rr}
-                />
-
-                <MetricCard
-                    title="Average Pips"
-                    value={risk?.average_pips}
-                />
-
-                <MetricCard
-                    title="Average Duration"
-                    value={risk?.average_duration}
-                />
-
-                <MetricCard
-                    title="Largest Win"
-                    value={risk?.largest_win}
-                />
-
-                <MetricCard
-                    title="Largest Loss"
-                    value={risk?.largest_loss}
-                />
-            </Box>
-
-            <Typography variant="h6" mb={2}>
-                Equity & Drawdown
-            </Typography>
-
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                        xs: "1fr",
-                        sm: "1fr 1fr",
-                        lg: "repeat(4, 1fr)"
-                    },
-                    gap: 2,
-                    mb: 4
-                }}
-            >
-                <MetricCard
-                    title="Current Equity"
-                    value={equity?.current_equity}
-                />
-
-                <MetricCard
-                    title="Peak Equity"
-                    value={equity?.peak_equity}
-                />
-
-                <MetricCard
-                    title="Maximum Drawdown"
-                    value={drawdown?.max_drawdown}
-                />
-
-                <MetricCard
-                    title="Current Drawdown"
-                    value={drawdown?.current_drawdown}
+                <LineChartWidget
+                    title="Drawdown Curve"
+                    subtitle="Drawdown after each completed trade."
+                    data={drawdownCurve}
+                    xKey="trade"
+                    valueKey="drawdown"
+                    status="error"
                 />
             </Box>
 
@@ -347,67 +512,41 @@ export default function Analytics() {
                         xs: "1fr",
                         lg: "1fr 1fr"
                     },
-                    gap: 3,
-                    mb: 4
+                    gap: 2
                 }}
             >
-                <LineChartCard
-                    title="Equity Curve"
-                    data={equityCurve}
-                    xKey="trade"
-                    lineKey="equity"
-                />
-
-                <LineChartCard
-                    title="Drawdown Curve"
-                    data={drawdownCurve}
-                    xKey="trade"
-                    lineKey="drawdown"
-                />
-            </Box>
-
-            <Typography variant="h6" mb={2}>
-                Performance Charts
-            </Typography>
-
-            <Box
-                sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                        xs: "1fr",
-                        md: "1fr 1fr"
-                    },
-                    gap: 3
-                }}
-            >
-                <BarChartCard
+                <BarChartWidget
                     title="Pair Performance"
+                    subtitle="Performance grouped by trading symbol."
                     data={pairs}
                     xKey="symbol"
-                    barKey="total_pips"
+                    valueKey="total_pips"
                 />
 
-                <BarChartCard
+                <BarChartWidget
                     title="Hourly Performance"
+                    subtitle="Average performance by entry hour."
                     data={hours}
                     xKey="hour"
-                    barKey="avg_pips"
+                    valueKey="avg_pips"
                 />
 
-                <BarChartCard
+                <BarChartWidget
                     title="System Performance"
-                    data={systems}
-                    xKey="trading_system_id"
-                    barKey="total_pips"
+                    subtitle="Performance grouped by trading system."
+                    data={systemData}
+                    xKey="system_label"
+                    valueKey="total_pips"
                 />
 
-                <BarChartCard
+                <BarChartWidget
                     title="Psychology Performance"
-                    data={psychology}
-                    xKey="psychology_state_id"
-                    barKey="total_pips"
+                    subtitle="Performance grouped by psychology state."
+                    data={psychologyData}
+                    xKey="psychology_label"
+                    valueKey="total_pips"
                 />
             </Box>
-        </Box>
+        </PageLayout>
     );
 }

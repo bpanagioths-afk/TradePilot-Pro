@@ -171,3 +171,25 @@ Consequence:
 
 Routing / navigation changes require a short source-structure audit before implementation.
 
+
+---
+
+# Decision - Single Touch Rule
+
+See: `docs/decisions/D-051_Single_Touch_Rule.md`
+
+# Decision - Package First Development
+
+See: `docs/decisions/D-052_Package_First_Development.md`
+
+# Decision - Shared Widget System
+
+See: `docs/decisions/D-053_Shared_Widget_System.md`
+
+# Decision - Portfolio Reference UI
+
+See: `docs/decisions/D-054_Portfolio_Reference_UI.md`
+
+# Decision - Multi-Asset MT5 Engine
+
+See: `docs/decisions/D-055_Multi_Asset_MT5_Engine.md`

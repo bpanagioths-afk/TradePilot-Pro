@@ -1,145 +1,56 @@
-# 11 - Active Sprint
+# 11 — Active Sprint
 
-# Sprint 27
+# Sprint 29 — Multi-Asset Metrics and Shared Chart Infrastructure
 
-Starting point:
+## Starting Point
 
-```text
-Sprint 25 completed:
-- Live MT5 Open Positions
+Sprint 27 completed the Analytics Center.
 
-Sprint 26 completed:
-- MT5 Trading Center
-- Pending Orders
-- Account Health
-- Today's Performance
-- Connection Health
-- Dashboard cleanup
-- Portfolio summary redesign
-- Home Command Center
-```
+Sprint 28 completed:
 
----
+- MT5 Synchronization Engine v2.
+- Position-level aggregation.
+- Idempotent Trade upsert.
+- Open/closed lifecycle reconciliation.
+- Dashboard and Analytics migration to the shared Widget System.
+- Portfolio confirmation as the reference UI.
 
-## Sprint 27 Goal
-
-Primary focus:
+## Primary Goal
 
 ```text
-Analytics Center
+Reliable Multi-Asset Movement Metrics
++
+Shared Chart Infrastructure
 ```
 
-The objective is to begin building the first complete historical analysis workspace while reusing the existing Portfolio calculations, Dashboard infrastructure and MT5 data already available.
+## Priority Order
 
----
+1. Audit current `profit_pips` values and affected symbols.
+2. Define a canonical movement model for Forex and non-Forex assets.
+3. Implement broker-metadata-based calculations.
+4. Update Dashboard and Analytics contracts only after backend metrics are verified.
+5. Create/reuse a shared chart wrapper consistent with the Widget System.
+6. Improve System and Psychology empty states.
+7. Build, test, document, commit and push.
 
-## Recommended Sprint 27 Work
+## Mandatory Rules
 
-Priority order:
+- D-049 through D-055 are binding.
+- Audit the real source tree before requesting files or proposing paths.
+- Reuse existing APIs, services, feature modules and widgets.
+- Do not create a second Design System.
+- Portfolio is the reference UI.
+- One planned change per file per package.
+- A second touch requires Architecture Review.
+- `οκ ετοιμο` means the previous action and test succeeded; continue without requesting the same confirmation.
+- Documentation and clean Git status are required before sprint closure.
 
-- Analytics Center foundation.
-- Equity Curve analysis.
-- Drawdown analysis.
-- Monthly performance.
-- Trading pair statistics.
-- Session statistics.
-- Performance charts.
-- Continue using existing reusable components whenever possible.
+## Success Criteria
 
----
-
-## Required Sprint 27 Rules
-
-1. Audit before coding.
-2. Read the documentation before assuming project structure.
-3. Reuse existing services, API functions and components.
-4. Do not duplicate business logic.
-5. Do not change protected infrastructure without a valid reason.
-6. Keep Dashboard as Executive Overview.
-7. Keep MT5 as the only live trading workspace.
-8. Keep Portfolio as the only portfolio analysis workspace.
-9. One feature at a time.
-10. Commit after every completed feature.
-11. Push after every stable commit.
-12. Keep `git status` clean before moving to another feature.
-13. Update documentation after every completed sprint.
-
----
-
-## Development Workflow
-
-```text
-Audit
-↓
-Reuse Existing Code
-↓
-Implementation
-↓
-Build
-↓
-Test
-↓
-Commit
-↓
-Push
-↓
-Documentation
-```
-
----
-
-## Continue Development From
-
-```text
-Continue development from Sprint 27 using:
-
-docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT27.md
-```
-
----
-
-## Current Product Status
-
-```text
-Home
-↓
-Welcome / Command Center
-
-Dashboard
-↓
-Executive Overview
-
-MT5
-↓
-Live Trading Center
-
-Portfolio
-↓
-Portfolio Analysis
-
-Analytics
-↓
-Current Active Sprint
-
-Psychology
-↓
-Future Workspace
-
-Reports
-↓
-Future Workspace
-```
-
----
-
-## Sprint Success Criteria
-
-Sprint 27 is considered complete when:
-
-- Analytics Center foundation is operational.
-- Historical analysis widgets are working.
-- Existing Portfolio calculations are reused where appropriate.
-- No duplicated UI or business logic is introduced.
-- Build succeeds.
-- Git status is clean.
-- Documentation is fully updated.
+- Forex pip calculations verified.
+- Indices, metals, stocks, crypto and CFDs no longer report misleading Forex pips.
+- Dashboard and Analytics show semantically correct units.
+- Shared charts follow the common Widget System.
+- Build and backend compile succeed.
+- Sync remains idempotent.
+- Documentation is updated and Git status is clean.

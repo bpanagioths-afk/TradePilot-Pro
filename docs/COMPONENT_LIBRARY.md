@@ -895,3 +895,51 @@ Detailed Portfolio Widgets
 ```
 
 These responsibilities remain active for the remainder of Version 0.8.
+
+---
+
+# Sprint 27-28 Additions
+
+## Shared Widget System — Mandatory UI Foundation
+
+The following components are the canonical metric and widget infrastructure:
+
+- `WidgetContainer`
+- `WidgetHeader`
+- `WidgetFooter`
+- `WidgetMetric`
+- `WidgetMetricGrid`
+- `WidgetMetrics`
+- `WidgetLoading`
+- `WidgetErrorState`
+- `WidgetEmptyState`
+
+Usage rules:
+
+- Dashboard, Portfolio, Analytics, Reports and future workspaces must reuse these components.
+- Page-specific KPI card implementations are not allowed when `WidgetMetric` can satisfy the requirement.
+- Positive, negative, warning and informational colors must be expressed through widget `status` values.
+- Components must use theme tokens rather than hard-coded colors.
+- Global widget changes require an impact audit of all dependent pages.
+
+## Analytics Feature Components
+
+Analytics uses:
+
+- `useAnalytics`
+- `analyticsService`
+- shared Widget System components
+- `PageLayout`
+- Recharts visualizations wrapped in shared widget containers
+
+## Portfolio Reference UI
+
+Portfolio remains the reference implementation for:
+
+- feature-module structure
+- shared widget usage
+- loading/error/empty states
+- metrics and charts composition
+- responsive page layout
+
+New feature pages should follow Portfolio unless an Architecture Review approves a deviation.

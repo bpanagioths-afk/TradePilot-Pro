@@ -72,3 +72,19 @@
 - [D-048 - One Feature, One Commit](D-048_One_Feature_One_Commit.md)
 - [D-049 - Single Source of Information](D-049_Single_Source_of_Information.md)
 - [D-050 - Audit Before Creating New Code](D-050_Audit_Before_New_Code.md)
+
+## Sprint 27-28 Architecture
+
+### Development Process
+
+- [D-051 - Single Touch Rule](D-051_Single_Touch_Rule.md)
+- [D-052 - Package First Development](D-052_Package_First_Development.md)
+
+### Widget and UI Architecture
+
+- [D-053 - Shared Widget System](D-053_Shared_Widget_System.md)
+- [D-054 - Portfolio Reference UI](D-054_Portfolio_Reference_UI.md)
+
+### MT5 Architecture
+
+- [D-055 - Multi-Asset MT5 Engine](D-055_Multi_Asset_MT5_Engine.md)

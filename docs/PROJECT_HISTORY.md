@@ -406,3 +406,37 @@
 
 # This milestone represents the completion of the first fully operational workspace inside TradePilot Pro and establishes the architectural foundation for Analytics Center (Sprint 27) and Version 0.8 completion (Sprint 28).
 
+
+---
+
+# Sprint 27 History — Analytics Center
+
+Sprint 27 transformed Analytics from a page with direct API calls into a structured historical-analysis workspace.
+
+The implementation reused existing Dashboard statistics and Portfolio engines instead of creating duplicate business logic. Analytics adopted the shared loading, error, empty-state and metric components from the TradePilot Widget System.
+
+The workspace now includes summary, profitability, risk, equity, drawdown, symbol, hourly, system and psychology analysis.
+
+---
+
+# Sprint 28 History — MT5 Synchronization Engine v2
+
+Sprint 28 replaced deal-per-trade importing with a position-oriented synchronization architecture.
+
+The canonical model is now:
+
+```text
+Multiple MT5 Deals
+        ↓
+One MT5 Position
+        ↓
+One Trade Record
+```
+
+A modular synchronization package was introduced under `backend/app/services/mt5/`. It builds normalized MT5 objects, aggregates deals by `position_id`, validates lifecycle consistency and performs idempotent database upserts.
+
+The engine supports open positions, partial closes, final closes and recently closed-position reconciliation. Repeated synchronization updates existing Trade records rather than creating duplicates.
+
+Sprint 28 also consolidated Dashboard, Portfolio and Analytics around the shared Widget System. Portfolio was confirmed as the reference UI implementation for feature pages.
+
+The next major technical direction is a canonical multi-asset movement model for Forex, indices, metals, stocks, crypto and CFDs.

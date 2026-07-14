@@ -37,7 +37,11 @@ def _calculate_profit_pips(
     entry_price: float | None,
     exit_price: float | None,
 ) -> float | None:
-    if entry_price is None or exit_price is None:
+
+    if (
+        entry_price is None
+        or exit_price is None
+    ):
         return None
 
     symbol_info = mt5.symbol_info(symbol)
@@ -45,28 +49,48 @@ def _calculate_profit_pips(
     if symbol_info is None:
         return None
 
-    point = float(symbol_info.point)
-
-    if point <= 0:
-        return None
-
-    pip_size = (
-        point * 10
-        if symbol_info.digits in (3, 5)
-        else point
-    )
-
     price_difference = (
         exit_price - entry_price
         if direction == "BUY"
         else entry_price - exit_price
     )
 
-    return round(
-        price_difference / pip_size,
-        1,
+    path = (
+        symbol_info.path or ""
+    ).lower()
+
+    # ---------- FOREX ----------
+    if "forex" in path:
+
+        if symbol_info.digits in (3, 5):
+            pip_size = 0.0001
+
+            # JPY pairs
+            if "jpy" in symbol.lower():
+                pip_size = 0.01
+
+        else:
+            pip_size = symbol_info.point
+
+        return round(
+            price_difference / pip_size,
+            1,
+        )
+
+    # ---------- NON FOREX ----------
+    # Indices, Stocks, Metals, Crypto, CFDs
+    tick_size = (
+        symbol_info.trade_tick_size
+        or symbol_info.point
     )
 
+    if tick_size <= 0:
+        return None
+
+    return round(
+        price_difference / tick_size,
+        2,
+    )
 
 def _calculate_risk_reward(
     entry_price: float | None,
@@ -287,6 +311,70 @@ def sync(account_id: int):
             orders=orders,
             open_positions=open_positions,
         )
+
+        open_position_ids = {
+            position.position_id
+            for position in open_positions
+        }
+
+        known_deal_tickets = {
+            deal.ticket
+            for deal in deals
+        }
+
+        missing_exit_position_ids = [
+            position.position_id
+            for position in positions
+            if (
+                position.position_id not in open_position_ids
+                and position.entry_deals
+                and not position.exit_deals
+            )
+        ]
+
+        additional_deals = []
+
+        for position_id in missing_exit_position_ids:
+            raw_position_deals = mt5.history_deals_get(
+                position=position_id,
+            )
+
+            if raw_position_deals is None:
+                continue
+
+            for raw_deal in raw_position_deals:
+                if (
+                    raw_deal.ticket in known_deal_tickets
+                    or not getattr(raw_deal, "symbol", "")
+                    or raw_deal.type not in (
+                        mt5.DEAL_TYPE_BUY,
+                        mt5.DEAL_TYPE_SELL,
+                    )
+                    or raw_deal.entry not in (
+                        mt5.DEAL_ENTRY_IN,
+                        mt5.DEAL_ENTRY_OUT,
+                        mt5.DEAL_ENTRY_OUT_BY,
+                    )
+                ):
+                    continue
+
+                additional_deals.append(
+                    build_deal(raw_deal)
+                )
+
+                known_deal_tickets.add(
+                    raw_deal.ticket
+                )
+
+        if additional_deals:
+            deals.extend(additional_deals)
+
+            positions = aggregate_positions(
+                account_id=account_id,
+                deals=deals,
+                orders=orders,
+                open_positions=open_positions,
+            )
 
         validation_results = validate_positions(
             positions,

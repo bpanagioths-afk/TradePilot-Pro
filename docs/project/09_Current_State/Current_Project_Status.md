@@ -1,240 +1,93 @@
 # Current Project Status
 
-Status updated after Sprint 26.
+Status updated after Sprint 28.
 
----
-
-## Completed Through Sprint 26
+## Completed Through Sprint 28
 
 ### Backend
 
-- FastAPI backend foundation.
-- PostgreSQL + SQLAlchemy foundation.
-- MT5 multi-account architecture.
-- MT5 Account CRUD.
-- Account-aware MT5 sync.
-- MT5 account summary endpoint:
-  - `GET /mt5/accounts/{account_id}/summary`
-- MT5 sync status endpoint.
-- Portfolio backend modularization.
-- Portfolio overview / analytics API foundation.
-- Portfolio engines for summary, performance, risk, equity and drawdown.
-- Live MT5 Open Positions endpoint.
-- Live MT5 Pending Orders endpoint.
-- Live MT5 Account Health endpoint.
-- Live MT5 Today's Performance endpoint.
-- Live MT5 Connection Health endpoint.
-
----
+- FastAPI, PostgreSQL, SQLAlchemy and Pydantic foundation.
+- MT5 multi-account management and live Trading Center.
+- Portfolio Repository / Service / Engine architecture.
+- Portfolio summary, performance, risk, equity and drawdown engines.
+- MT5 Synchronization Engine v2 under `backend/app/services/mt5/`.
+- Position-level aggregation using `mt5_position_id`.
+- Open-position, partial-close and closed-position lifecycle support.
+- Idempotent upsert: repeated sync updates existing Trades.
+- Recently closed-position reconciliation.
+- Open positions excluded from historical Portfolio and Analytics calculations.
 
 ### Frontend
 
-- React + Vite + Material UI foundation.
-- TradePilot Theme foundation.
-- Sidebar navigation.
-- Dashboard layout and widget grid.
-- Widget Infrastructure:
-  - `WidgetContainer`
-  - `WidgetHeader`
-  - `WidgetFooter`
-  - `WidgetMetric`
-  - `WidgetMetricGrid`
-  - `WidgetMetrics`
-  - `WidgetLoading`
-  - `WidgetErrorState`
-  - `WidgetEmptyState`
-- Shared layout foundation:
-  - `PageHeader`
-  - `PageLayout`
-- Portfolio Feature Module:
-  - `usePortfolio`
-  - `PortfolioSummaryMetrics`
-  - `PortfolioPerformanceMetrics`
-  - `PortfolioStatisticsCard`
-  - `PortfolioAllocationCard`
-  - `PortfolioChartsCard`
-- Full Portfolio page route:
-  - `/portfolio`
-- Dashboard MT5 Widget connected to live MT5 account summary data.
-- MT5 Trading Center completed.
-- Open Positions widget.
-- Pending Orders widget.
-- Account Health widget.
-- Today's Performance widget.
-- Connection Health widget.
-- Dashboard cleanup completed.
-- Portfolio Dashboard widget converted to summary view.
-- Home page converted into Welcome / Command Center.
+- Shared TradePilot Theme and PageLayout foundation.
+- Shared Widget System:
+  - WidgetContainer
+  - WidgetHeader
+  - WidgetFooter
+  - WidgetMetric
+  - WidgetMetricGrid
+  - WidgetMetrics
+  - WidgetLoading
+  - WidgetErrorState
+  - WidgetEmptyState
+- Dashboard migrated to shared metric widgets.
+- Portfolio remains the reference UI implementation.
+- Analytics Center implemented and migrated to shared widgets.
+- MT5 Trading Center operational.
 
----
-
-## Sprint 25 Completed
-
-Sprint 25 completed:
-
-- Live MT5 Open Positions.
-- Backend MT5 Open Positions API.
-- Frontend Open Positions widget.
-- Automatic refresh support.
-- Professional MT5 position presentation.
-
----
-
-## Sprint 26 Completed
-
-Sprint 26 completed:
-
-- MT5 Trading Center.
-- Pending Orders.
-- Account Health.
-- Today's Performance.
-- Connection Health.
-- Dashboard cleanup.
-- Portfolio summary widget redesign.
-- Home page cleanup.
-- Removal of duplicated MT5 information.
-- Clear workspace responsibility model.
-
----
-
-## Current Architecture Status
-
-Frontend now follows:
+## Current Architecture
 
 ```text
-App / Routes
+Frontend Routes / Pages
 ↓
-MainLayout
+Feature Modules
 ↓
-Sidebar
+Shared Widget System
 ↓
-PageLayout
-↓
-Pages / Feature Modules
-↓
-Dashboard Widgets / Workspace Widgets
-↓
-Widget Infrastructure
-↓
-TradePilot UI Framework
+TradePilot Theme
 ↓
 Material UI
 ```
 
-Backend continues to follow:
-
 ```text
-Routers
+FastAPI Routers
 ↓
 Services / Feature Modules
 ↓
-Models / Schemas
+MT5 Builder / Aggregator / Validator / Repository
 ↓
-Database
+SQLAlchemy Models
 ↓
-MetaTrader 5
+PostgreSQL / MetaTrader 5
 ```
 
----
+## Mandatory Decisions
 
-## Protected Components
+- D-049 — Single Source of Information
+- D-050 — Audit Before New Code
+- D-051 — Single Touch Rule
+- D-052 — Package First Development
+- D-053 — Shared Widget System
+- D-054 — Portfolio Reference UI
+- D-055 — Multi-Asset MT5 Engine
 
-The following components are considered shared infrastructure and must not be changed for a single page-specific visual issue:
+## Known Sprint 29 Work
 
-```text
-frontend/src/components/widgets/WidgetContainer.jsx
-frontend/src/components/widgets/WidgetHeader.jsx
-frontend/src/components/widgets/WidgetFooter.jsx
-frontend/src/components/widgets/WidgetMetric.jsx
-frontend/src/components/widgets/WidgetMetricGrid.jsx
-frontend/src/components/widgets/WidgetMetrics.jsx
-frontend/src/components/layout/PageHeader.jsx
-frontend/src/components/layout/PageLayout.jsx
-frontend/src/components/Sidebar.jsx
-frontend/src/components/dashboard/DashboardLayout.jsx
-frontend/src/components/dashboard/WidgetGrid.jsx
-```
+1. Complete canonical multi-asset movement/pips calculations.
+2. Distinguish Forex pips from non-Forex points/ticks where required.
+3. Add a shared chart wrapper using the Widget System.
+4. Improve empty states for unassigned systems and psychology states.
+5. Continue responsive layout and theme-personalization work.
+6. Audit and remove obsolete compatibility code only after replacement paths are fully tested.
 
-Change these only when the change is intentionally system-wide and after auditing all dependent pages.
-
----
-
-## Current Product Direction
-
-TradePilot Pro continues moving from:
+## Workspace Ownership
 
 ```text
-Trading Journal
-```
-
-toward:
-
-```text
-Professional Multi-Workspace Trading Platform
-```
-
-Current workspace responsibilities:
-
-```text
-Home
-↓
-Welcome / Command Center
-
-Dashboard
-↓
-Executive Overview
-
-MT5
-↓
-Live Trading Center
-
-Portfolio
-↓
-Portfolio Analysis
-
-Analytics
-↓
-Historical Analysis
-
-Psychology
-↓
-Trader Journal
-
-Reports
-↓
-Reports & Export
-```
-
----
-
-## Next Sprint Direction
-
-Sprint 27 will focus on the Analytics Center.
-
-Recommended direction:
-
-1. Build Analytics workspace.
-2. Reuse Portfolio calculations where possible.
-3. Reuse Dashboard widget infrastructure.
-4. Avoid unnecessary UI refactoring.
-5. Continue following the Audit → Reuse → Build workflow.
-
-Sprint 27 must always begin with:
-
-```text
-Audit
-↓
-Reuse Existing Code
-↓
-Small Safe Change
-↓
-Build
-↓
-Test
-↓
-Commit
-↓
-Push
-↓
-Documentation
+Home       → Welcome / Command Center
+Dashboard  → Executive Overview
+MT5        → Live Trading Center
+Portfolio  → Portfolio Analysis
+Analytics  → Historical Analysis
+Psychology → Trader Journal
+Reports    → Reports & Export
 ```

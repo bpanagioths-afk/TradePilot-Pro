@@ -2348,3 +2348,77 @@ The source-code structure must remain aligned with:
 - The protected infrastructure rules.
 - The single-primary-workspace rule.
 - The active sprint scope.
+
+---
+
+# Sprint 27-28 Source Structure Update
+
+## Analytics Feature
+
+```text
+frontend/src/features/analytics/
+└── hooks/
+    └── useAnalytics.js
+
+frontend/src/services/
+└── analyticsService.js
+
+frontend/src/pages/
+└── Analytics.jsx
+```
+
+Analytics must reuse the shared Widget System and existing backend data sources.
+
+## MT5 Synchronization Engine v2
+
+```text
+backend/app/services/mt5/
+├── __init__.py
+├── models.py
+├── builder.py
+├── aggregator.py
+├── validator.py
+├── repository.py
+└── sync_service.py
+```
+
+Responsibilities:
+
+- `models.py`: normalized synchronization data objects.
+- `builder.py`: conversion from raw MetaTrader 5 objects.
+- `aggregator.py`: position-level aggregation of deals and orders.
+- `validator.py`: lifecycle and volume validation.
+- `repository.py`: database lookup, create, save, commit and rollback.
+- `sync_service.py`: synchronization orchestration and Trade mapping.
+
+Compatibility entry point:
+
+```text
+backend/app/services/mt5_sync.py
+```
+
+The existing router continues importing `sync_mt5_history()` from this compatibility layer.
+
+## Canonical MT5 Identity
+
+```text
+mt5_account_id + mt5_position_id
+```
+
+A deal ticket is traceability data, not the canonical Trade identity.
+
+## Shared Frontend Infrastructure
+
+Dashboard, Portfolio and Analytics must compose:
+
+```text
+PageLayout
+↓
+WidgetContainer / WidgetHeader
+↓
+WidgetMetric / WidgetMetricGrid / WidgetMetrics
+↓
+Theme tokens
+```
+
+Do not create page-specific KPI design systems.

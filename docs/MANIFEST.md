@@ -78,3 +78,28 @@ Added / updated documentation for:
 - Decision D-049 (Single Source of Information).
 - Decision D-050 (Reuse Existing Implementation Before Creating New One).
 
+
+## Sprint 27-28 Documentation Update
+
+Added / updated documentation for:
+
+- Analytics Center implementation.
+- MT5 Synchronization Engine v2.
+- Canonical Trade Lifecycle.
+- MT5 position aggregation and idempotent upsert.
+- Shared Widget System adoption across Dashboard, Portfolio and Analytics.
+- Portfolio as the reference UI implementation.
+- Decisions D-051 through D-055.
+- Current project status after Sprint 28.
+- Sprint 29 active scope and continuation prompt.
+
+New important files:
+
+- `docs/architecture/TRADE_LIFECYCLE.md`
+- `docs/changelog/09_SPRINT_27_28.md`
+- `docs/decisions/D-051_Single_Touch_Rule.md`
+- `docs/decisions/D-052_Package_First_Development.md`
+- `docs/decisions/D-053_Shared_Widget_System.md`
+- `docs/decisions/D-054_Portfolio_Reference_UI.md`
+- `docs/decisions/D-055_Multi_Asset_MT5_Engine.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT29.md`
