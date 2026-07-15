@@ -88,3 +88,9 @@
 ### MT5 Architecture
 
 - [D-055 - Multi-Asset MT5 Engine](D-055_Multi_Asset_MT5_Engine.md)
+
+
+### Additional Architecture Decisions
+
+- [D-058 - Backend Is The Single Business Logic Authority](D-058_Backend_Is_The_Single_Business_Logic_Authority.md)
+- [D-059 - Portfolio Is The Reference Module](D-059_Portfolio_Is_The_Reference_Module.md)
