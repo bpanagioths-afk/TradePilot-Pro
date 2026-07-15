@@ -65,6 +65,103 @@ function formatNumber(value, decimals = 2) {
     return numericValue.toFixed(decimals);
 }
 
+function buildChartData(data = []) {
+    return data.flatMap((item) => {
+        const breakdown = item.movement_breakdown ?? [];
+
+        return breakdown.map((movement) => ({
+            label: item.label,
+            value: movement.total,
+            average: movement.average,
+            unit: movement.unit,
+            assetClass: movement.asset_class,
+            trades: movement.trades,
+        }));
+    });
+}
+
+
+function formatAssetClass(value) {
+    if (!value) {
+        return "Other";
+    }
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+
+function buildMovementChartData(items = []) {
+    return items.flatMap((item) => {
+        const breakdown = Array.isArray(item.movement_breakdown)
+            ? item.movement_breakdown
+            : [];
+
+        return breakdown.map((movement) => ({
+            label:
+                breakdown.length > 1
+                    ? `${item.label} · ${formatAssetClass(
+                        movement.asset_class
+                    )}`
+                    : String(item.label),
+            groupLabel: String(item.label),
+            value: Number(movement.total ?? 0),
+            average: Number(movement.average ?? 0),
+            unit: movement.unit ?? "",
+            assetClass: movement.asset_class ?? "other",
+            trades: Number(movement.trades ?? 0)
+        }));
+    });
+}
+
+
+function MovementTooltip({
+    active,
+    payload
+}) {
+    if (!active || !payload?.length) {
+        return null;
+    }
+
+    const item = payload[0]?.payload;
+
+    if (!item) {
+        return null;
+    }
+
+    return (
+        <Box
+            sx={{
+                bgcolor: "background.paper",
+                border: 1,
+                borderColor: "divider",
+                borderRadius: 1,
+                p: 1.5,
+                boxShadow: 3
+            }}
+        >
+            <Box sx={{ fontWeight: 700 }}>
+                {item.groupLabel}
+            </Box>
+
+            <Box sx={{ color: "text.secondary" }}>
+                {formatAssetClass(item.assetClass)}
+            </Box>
+
+            <Box>
+                Total: {formatNumber(item.value)} {item.unit}
+            </Box>
+
+            <Box>
+                Average: {formatNumber(item.average)} {item.unit}
+            </Box>
+
+            <Box>
+                Trades: {item.trades}
+            </Box>
+        </Box>
+    );
+}
+
 
 function MetricGrid({ children }) {
     return (
@@ -88,9 +185,7 @@ function MetricGrid({ children }) {
 function BarChartWidget({
     title,
     subtitle,
-    data,
-    xKey,
-    valueKey
+    data
 }) {
     const theme = useTheme();
 
@@ -110,7 +205,7 @@ function BarChartWidget({
                         />
 
                         <XAxis
-                            dataKey={xKey}
+                            dataKey="label"
                             stroke={theme.palette.text.secondary}
                         />
 
@@ -119,20 +214,16 @@ function BarChartWidget({
                         />
 
                         <Tooltip
-                            contentStyle={{
-                                backgroundColor: theme.palette.background.paper,
-                                borderColor: theme.palette.divider,
-                                color: theme.palette.text.primary
-                            }}
+                            content={<MovementTooltip />}
                         />
 
-                        <Bar dataKey={valueKey}>
+                        <Bar dataKey="value">
                             {data.map((item, index) => (
                                 <Cell
                                     key={`${title}-${index}`}
                                     fill={getPerformanceColor(
                                         theme,
-                                        item[valueKey]
+                                        item.value
                                     )}
                                 />
                             ))}
@@ -143,8 +234,6 @@ function BarChartWidget({
         </WidgetContainer>
     );
 }
-
-
 function LineChartWidget({
     title,
     subtitle,
@@ -287,6 +376,39 @@ export default function Analytics() {
         psychology_label:
             item.psychology_state_id ?? "Unassigned"
     }));
+
+const pairChartData = buildChartData(
+    pairs
+);
+
+const hourChartData = buildChartData(
+    hours
+);
+
+const systemChartData = buildChartData(
+    systemData
+);
+
+const psychologyChartData = buildChartData(
+    psychologyData
+);
+
+const pairMovementData = buildMovementChartData(
+    pairs
+);
+
+const hourlyMovementData = buildMovementChartData(
+    hours
+);
+
+const systemMovementData = buildMovementChartData(
+    systemData
+);
+
+const psychologyMovementData = buildMovementChartData(
+    psychologyData
+);
+
 
     return (
         <PageLayout
@@ -518,7 +640,7 @@ export default function Analytics() {
                 <BarChartWidget
                     title="Pair Performance"
                     subtitle="Performance grouped by trading symbol."
-                    data={pairs}
+                    data={pairChartData}
                     xKey="symbol"
                     valueKey="total_pips"
                 />
@@ -526,7 +648,7 @@ export default function Analytics() {
                 <BarChartWidget
                     title="Hourly Performance"
                     subtitle="Average performance by entry hour."
-                    data={hours}
+                    data={hourChartData}
                     xKey="hour"
                     valueKey="avg_pips"
                 />
@@ -534,7 +656,7 @@ export default function Analytics() {
                 <BarChartWidget
                     title="System Performance"
                     subtitle="Performance grouped by trading system."
-                    data={systemData}
+                    data={systemChartData}
                     xKey="system_label"
                     valueKey="total_pips"
                 />
@@ -542,7 +664,7 @@ export default function Analytics() {
                 <BarChartWidget
                     title="Psychology Performance"
                     subtitle="Performance grouped by psychology state."
-                    data={psychologyData}
+                    data={psychologyChartData}
                     xKey="psychology_label"
                     valueKey="total_pips"
                 />

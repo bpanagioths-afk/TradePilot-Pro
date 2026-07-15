@@ -1,72 +1,172 @@
 from fastapi import APIRouter
-from sqlalchemy import func, extract
 
 from app.core.database import SessionLocal
+from app.features.portfolio.engines.analytics_engine import (
+    calculate_by_hour,
+    calculate_by_psychology,
+    calculate_by_symbol,
+    calculate_by_system,
+)
+from app.features.portfolio.engines.movement_engine import (
+    calculate_breakdown,
+    calculate_unit_totals,
+    get_value,
+)
 from app.models.trade import Trade
+
 
 router = APIRouter(
     prefix="/dashboard",
-    tags=["Dashboard"]
+    tags=["Dashboard"],
 )
+
+
+def _get_trades(db):
+    return (
+        db.query(Trade)
+        .order_by(Trade.id)
+        .all()
+    )
+
+
+def _build_summary(trades):
+    total_trades = len(trades)
+
+    wins = sum(
+        1
+        for trade in trades
+        if trade.is_win == 1
+    )
+
+    losses = sum(
+        1
+        for trade in trades
+        if trade.is_win == 0
+    )
+
+    win_rate = (
+        round(
+            wins / total_trades * 100,
+            2,
+        )
+        if total_trades > 0
+        else 0
+    )
+
+    total_profit = round(
+        sum(
+            float(trade.profit_money or 0)
+            for trade in trades
+        ),
+        2,
+    )
+
+    movement_breakdown = calculate_breakdown(
+        trades,
+    )
+
+    movement_totals = calculate_unit_totals(
+        trades,
+    )
+
+    pips = movement_totals.get(
+        "pips",
+        {
+            "total": 0,
+            "average": 0,
+            "trades": 0,
+        },
+    )
+
+    points = movement_totals.get(
+        "points",
+        {
+            "total": 0,
+            "average": 0,
+            "trades": 0,
+        },
+    )
+
+    return {
+        "total_trades": total_trades,
+        "wins": wins,
+        "losses": losses,
+        "win_rate": win_rate,
+        "total_profit": total_profit,
+        "total_pips": pips["total"],
+        "average_pips": pips["average"],
+        "pips_trades": pips["trades"],
+        "total_points": points["total"],
+        "average_points": points["average"],
+        "points_trades": points["trades"],
+        "movement_breakdown": movement_breakdown,
+    }
+
+
+def _build_equity_curve(trades):
+    equity = 0
+    result = []
+
+    for trade in trades:
+        equity += float(
+            trade.profit_money or 0
+        )
+
+        result.append({
+            "trade_id": trade.id,
+            "equity": round(
+                equity,
+                2,
+            ),
+        })
+
+    return result
+
+
+def _build_best_pair(trades):
+    symbol_profit = {}
+
+    for trade in trades:
+        if not trade.symbol:
+            continue
+
+        symbol_profit[trade.symbol] = (
+            symbol_profit.get(
+                trade.symbol,
+                0,
+            )
+            + float(
+                trade.profit_money or 0
+            )
+        )
+
+    if not symbol_profit:
+        return None
+
+    return max(
+        symbol_profit,
+        key=symbol_profit.get,
+    )
 
 
 @router.get("/summary")
 def summary():
-
     db = SessionLocal()
 
     try:
-        total = db.query(Trade).count()
+        trades = _get_trades(db)
 
-        wins = db.query(Trade).filter(
-            Trade.is_win == 1
-        ).count()
+        result = _build_summary(
+            trades,
+        )
 
-        losses = total - wins
-
-        win_rate = 0
-
-        if total > 0:
-            win_rate = round(
-                wins / total * 100,
-                2
+        result["best_pair"] = (
+            _build_best_pair(
+                trades,
             )
+        )
 
-        total_pips = db.query(
-            func.sum(Trade.profit_pips)
-        ).scalar() or 0
-
-        total_profit = db.query(
-            func.sum(Trade.profit_money)
-        ).scalar() or 0
-
-        average_pips = 0
-
-        if total > 0:
-            average_pips = round(
-                total_pips / total,
-                2
-            )
-
-        best_pair = db.query(
-            Trade.symbol,
-            func.sum(Trade.profit_pips)
-        ).group_by(
-            Trade.symbol
-        ).order_by(
-            func.sum(Trade.profit_pips).desc()
-        ).first()
-
-        return {
-            "total_trades": total,
-            "wins": wins,
-            "losses": losses,
-            "win_rate": win_rate,
-            "total_pips": round(total_pips, 2),
-            "average_pips": average_pips,
-            "total_profit": round(total_profit, 2),
-            "best_pair": best_pair[0] if best_pair else None
-        }
+        return result
 
     finally:
         db.close()
@@ -74,86 +174,12 @@ def summary():
 
 @router.get("/pairs")
 def pair_statistics():
-
     db = SessionLocal()
 
     try:
-        rows = db.query(
-            Trade.symbol,
-            func.count(Trade.id),
-            func.sum(Trade.profit_pips)
-        ).group_by(
-            Trade.symbol
-        ).all()
-
-        result = []
-
-        for row in rows:
-            result.append({
-                "symbol": row[0],
-                "trades": row[1],
-                "total_pips": round(row[2] or 0, 2)
-            })
-
-        return result
-
-    finally:
-        db.close()
-
-
-@router.get("/psychology")
-def psychology_statistics():
-
-    db = SessionLocal()
-
-    try:
-        rows = db.query(
-            Trade.psychology_state_id,
-            func.count(Trade.id),
-            func.sum(Trade.profit_pips)
-        ).group_by(
-            Trade.psychology_state_id
-        ).all()
-
-        result = []
-
-        for row in rows:
-            result.append({
-                "psychology_state_id": row[0],
-                "trades": row[1],
-                "total_pips": round(row[2] or 0, 2)
-            })
-
-        return result
-
-    finally:
-        db.close()
-
-
-@router.get("/systems")
-def system_statistics():
-
-    db = SessionLocal()
-
-    try:
-        rows = db.query(
-            Trade.trading_system_id,
-            func.count(Trade.id),
-            func.sum(Trade.profit_pips)
-        ).group_by(
-            Trade.trading_system_id
-        ).all()
-
-        result = []
-
-        for row in rows:
-            result.append({
-                "trading_system_id": row[0],
-                "trades": row[1],
-                "total_pips": round(row[2] or 0, 2)
-            })
-
-        return result
+        return calculate_by_symbol(
+            _get_trades(db),
+        )
 
     finally:
         db.close()
@@ -161,35 +187,38 @@ def system_statistics():
 
 @router.get("/hours")
 def hour_statistics():
-
     db = SessionLocal()
 
     try:
-        rows = db.query(
-            extract("hour", Trade.open_time),
-            func.count(Trade.id),
-            func.avg(Trade.profit_pips)
-        ).filter(
-            Trade.open_time.isnot(None)
-        ).group_by(
-            extract("hour", Trade.open_time)
-        ).order_by(
-            extract("hour", Trade.open_time)
-        ).all()
+        return calculate_by_hour(
+            _get_trades(db),
+        )
 
-        result = []
+    finally:
+        db.close()
 
-        for row in rows:
-            if row[0] is None:
-                continue
 
-            result.append({
-                "hour": int(row[0]),
-                "trades": row[1],
-                "avg_pips": round(float(row[2] or 0), 2)
-            })
+@router.get("/systems")
+def system_statistics():
+    db = SessionLocal()
 
-        return result
+    try:
+        return calculate_by_system(
+            _get_trades(db),
+        )
+
+    finally:
+        db.close()
+
+
+@router.get("/psychology")
+def psychology_statistics():
+    db = SessionLocal()
+
+    try:
+        return calculate_by_psychology(
+            _get_trades(db),
+        )
 
     finally:
         db.close()
@@ -197,29 +226,12 @@ def hour_statistics():
 
 @router.get("/equity")
 def equity_curve():
-
     db = SessionLocal()
 
     try:
-        trades = db.query(
-            Trade
-        ).order_by(
-            Trade.id
-        ).all()
-
-        equity = 0
-
-        result = []
-
-        for trade in trades:
-            equity += trade.profit_money or 0
-
-            result.append({
-                "trade_id": trade.id,
-                "equity": round(equity, 2)
-            })
-
-        return result
+        return _build_equity_curve(
+            _get_trades(db),
+        )
 
     finally:
         db.close()
@@ -227,98 +239,30 @@ def equity_curve():
 
 @router.get("/full")
 def dashboard_full():
-
     db = SessionLocal()
 
     try:
+        trades = _get_trades(db)
 
-        total = db.query(Trade).count()
+        summary_data = _build_summary(
+            trades,
+        )
 
-        wins = db.query(
-            Trade
-        ).filter(
-            Trade.is_win == 1
-        ).count()
-
-        losses = total - wins
-
-        win_rate = 0
-
-        if total > 0:
-            win_rate = round(
-                wins / total * 100,
-                2
+        summary_data["best_pair"] = (
+            _build_best_pair(
+                trades,
             )
-
-        total_profit = db.query(
-            func.sum(Trade.profit_money)
-        ).scalar() or 0
-
-        total_pips = db.query(
-            func.sum(Trade.profit_pips)
-        ).scalar() or 0
-
-        equity = 0
-
-        equity_curve = []
-
-        trades = db.query(
-            Trade
-        ).order_by(
-            Trade.id
-        ).all()
-
-        for trade in trades:
-
-            equity += trade.profit_money or 0
-
-            equity_curve.append({
-                "trade_id": trade.id,
-                "equity": round(equity, 2)
-            })
-
-        pairs = []
-
-        rows = db.query(
-            Trade.symbol,
-            func.count(Trade.id),
-            func.sum(Trade.profit_pips)
-        ).group_by(
-            Trade.symbol
-        ).all()
-
-        for row in rows:
-
-            pairs.append({
-                "symbol": row[0],
-                "trades": row[1],
-                "total_pips": round(row[2] or 0, 2)
-            })
+        )
 
         return {
-
-            "summary": {
-
-                "total_trades": total,
-
-                "wins": wins,
-
-                "losses": losses,
-
-                "win_rate": win_rate,
-
-                "total_profit": round(total_profit, 2),
-
-                "total_pips": round(total_pips, 2)
-
-            },
-
-            "equity": equity_curve,
-
-            "pairs": pairs
-
+            "summary": summary_data,
+            "equity": _build_equity_curve(
+                trades,
+            ),
+            "pairs": calculate_by_symbol(
+                trades,
+            ),
         }
 
     finally:
-
         db.close()

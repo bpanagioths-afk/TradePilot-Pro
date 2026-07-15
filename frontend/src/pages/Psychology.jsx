@@ -32,12 +32,18 @@ const psychologyMap = {
 };
 
 function normalizePsychology(rows) {
-    return rows.map((row) => ({
-        ...row,
-        name: psychologyMap[row.psychology_state_id] || "Άγνωστο"
-    }));
-}
+    return rows.map((row) => {
+        const movement = row.movement_breakdown?.[0];
 
+        return {
+            ...row,
+            name: psychologyMap[row.psychology_state_id] || "Άγνωστο",
+            value: movement?.total ?? 0,
+            average: movement?.average ?? 0,
+            unit: movement?.unit ?? "pips"
+        };
+    });
+}
 export default function Psychology() {
 
     const [data, setData] = useState([]);
@@ -68,7 +74,7 @@ export default function Psychology() {
                         <XAxis dataKey="name" />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="total_pips" />
+                        <Bar dataKey="value" />
                     </BarChart>
                 </ResponsiveContainer>
             </Paper>
@@ -99,16 +105,15 @@ export default function Psychology() {
                                 color="primary"
                                 size="small"
                             />
-
                             <Typography color="text.secondary">
-                                Total Pips
+                                Total {item.unit}
                             </Typography>
 
                             <Typography
                                 variant="h5"
-                                color={(item.total_pips || 0) >= 0 ? "success.main" : "error.main"}
+                                color={(item.value || 0) >= 0 ? "success.main" : "error.main"}
                             >
-                                {item.total_pips}
+                                {item.value} {item.unit}
                             </Typography>
                         </Stack>
                     </Paper>

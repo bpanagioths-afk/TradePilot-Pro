@@ -1,56 +1,63 @@
 # 11 — Active Sprint
 
-# Sprint 29 — Multi-Asset Metrics and Shared Chart Infrastructure
+# Sprint 30 — Shared Chart Infrastructure and Frontend Performance
 
 ## Starting Point
 
-Sprint 27 completed the Analytics Center.
+Sprint 29 completed:
 
-Sprint 28 completed:
-
-- MT5 Synchronization Engine v2.
-- Position-level aggregation.
-- Idempotent Trade upsert.
-- Open/closed lifecycle reconciliation.
-- Dashboard and Analytics migration to the shared Widget System.
-- Portfolio confirmation as the reference UI.
+- Canonical multi-asset movement calculations.
+- Forex pips and non-Forex points separation.
+- Shared movement and analytics engines.
+- Multi-asset Dashboard, Analytics, Trades, Reports and Psychology UI.
+- Portfolio Allocation by asset class.
+- Backend compile, dead-code audit and frontend production build.
 
 ## Primary Goal
 
 ```text
-Reliable Multi-Asset Movement Metrics
-+
 Shared Chart Infrastructure
++
+Frontend Performance Cleanup
 ```
 
 ## Priority Order
 
-1. Audit current `profit_pips` values and affected symbols.
-2. Define a canonical movement model for Forex and non-Forex assets.
-3. Implement broker-metadata-based calculations.
-4. Update Dashboard and Analytics contracts only after backend metrics are verified.
-5. Create/reuse a shared chart wrapper consistent with the Widget System.
-6. Improve System and Psychology empty states.
-7. Build, test, document, commit and push.
+1. Audit the real frontend tree and all Recharts usage.
+2. Design one shared chart contract before creating components.
+3. Reuse WidgetContainer, WidgetHeader, loading, error and empty states.
+4. Introduce shared tooltip and movement-unit formatting.
+5. Migrate charts package-by-package without page-specific design systems.
+6. Evaluate route-level code splitting for the current Vite bundle warning.
+7. Compile, build, test, document, commit and push.
+
+## Protected Contracts
+
+Do not change without a verified bug:
+
+- MT5 movement calculation semantics.
+- `movement_value`, `movement_unit` and `asset_class` fields.
+- Dashboard `movement_breakdown` contract.
+- Portfolio Average Pips Forex-only behavior.
+- Portfolio Allocation by asset class.
 
 ## Mandatory Rules
 
-- D-049 through D-055 are binding.
-- Audit the real source tree before requesting files or proposing paths.
-- Reuse existing APIs, services, feature modules and widgets.
-- Do not create a second Design System.
+- D-001 through D-055 are binding.
+- Read the real tree before every path instruction.
+- Audit before new code.
+- Reuse before creation.
 - Portfolio is the reference UI.
-- One planned change per file per package.
-- A second touch requires Architecture Review.
-- `οκ ετοιμο` means the previous action and test succeeded; continue without requesting the same confirmation.
+- Give exact instructions using complete replace blocks or precise above/below markers.
+- `οκ ετοιμο` confirms the previous step succeeded.
 - Documentation and clean Git status are required before sprint closure.
 
 ## Success Criteria
 
-- Forex pip calculations verified.
-- Indices, metals, stocks, crypto and CFDs no longer report misleading Forex pips.
-- Dashboard and Analytics show semantically correct units.
-- Shared charts follow the common Widget System.
-- Build and backend compile succeed.
-- Sync remains idempotent.
+- Shared charts use one common wrapper and tooltip behavior.
+- Movement units are displayed consistently.
+- No page-specific chart design system is introduced.
+- Existing Dashboard, Portfolio and Analytics behavior remains stable.
+- Frontend build succeeds.
+- Bundle-size warning is reduced or documented with an approved plan.
 - Documentation is updated and Git status is clean.

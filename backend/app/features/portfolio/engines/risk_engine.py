@@ -34,9 +34,20 @@ def calculate(trades):
     pips_values = [
         trade.profit_pips
         for trade in trades
-        if trade.profit_pips is not None
+        if (
+            trade.profit_pips is not None
+            and (
+                trade.movement_unit == "pips"
+                or (
+                    trade.movement_unit is None
+                    and trade.asset_class in (
+                        None,
+                        "forex",
+                    )
+                )
+            )
+        )
     ]
-
     duration_values = [
         trade.duration_minutes
         for trade in trades

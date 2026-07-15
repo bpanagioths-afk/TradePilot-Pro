@@ -17,28 +17,37 @@ function AllocationRow({ item }) {
                 }}
             >
                 <Typography variant="body2">
-                    {item.name}
+                    {item.asset_class
+    ? item.asset_class.charAt(0).toUpperCase() +
+      item.asset_class.slice(1)
+    : item.name}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary">
-                    {item.percentage}%
+                    {item.allocation_percentage ?? item.percentage}%
                 </Typography>
             </Box>
 
             <LinearProgress
                 variant="determinate"
-                value={Math.min(Math.abs(item.percentage), 100)}
+                value={Math.min(
+    Math.abs(
+        item.allocation_percentage ??
+        item.percentage
+    ),
+    100
+)}
             />
         </Box>
     );
 }
 
 export default function PortfolioAllocationCard({ allocation }) {
-    const symbols = allocation?.by_symbol || [];
-    const directions = allocation?.by_direction || [];
+ const symbols = Array.isArray(allocation)
+    ? allocation
+    : allocation?.by_symbol || [];
 
-    const hasData = symbols.length > 0 || directions.length > 0;
-
+const hasData = symbols.length > 0;
     if (!hasData) {
         return (
             <WidgetEmptyState
@@ -53,7 +62,7 @@ export default function PortfolioAllocationCard({ allocation }) {
         <WidgetContainer>
             <WidgetHeader
                 title="Portfolio Allocation"
-                subtitle="Exposure by symbol and trade direction"
+                subtitle="Exposure by asset class"
             />
 
             <Box sx={{ mt: 1 }}>
@@ -64,31 +73,12 @@ export default function PortfolioAllocationCard({ allocation }) {
                             color="text.secondary"
                             sx={{ mb: 1 }}
                         >
-                            By Symbol
+                            By Asset Class
                         </Typography>
 
                         {symbols.map((item) => (
                             <AllocationRow
-                                key={`symbol-${item.name}`}
-                                item={item}
-                            />
-                        ))}
-                    </Box>
-                )}
-
-                {directions.length > 0 && (
-                    <Box>
-                        <Typography
-                            variant="subtitle2"
-                            color="text.secondary"
-                            sx={{ mb: 1 }}
-                        >
-                            By Direction
-                        </Typography>
-
-                        {directions.map((item) => (
-                            <AllocationRow
-                                key={`direction-${item.name}`}
+                                key={`asset-${item.asset_class ?? item.name}`}
                                 item={item}
                             />
                         ))}

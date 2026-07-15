@@ -14,6 +14,7 @@ Sections:
 * [Sprint 19](changelog/06_SPRINT_19.md)
 * [Sprint 24](changelog/08_SPRINT_24.md)
 * [Sprint 27-28](changelog/09_SPRINT_27_28.md)
+* [Sprint 29](changelog/10_SPRINT_29.md)
 * [Full Changelog Archive](changelog/99_FULL_CHANGELOG_ARCHIVE.md)
 
 Rule:
@@ -351,3 +352,21 @@ Highlights:
 - Trade lifecycle and synchronization architecture documented.
 
 See: `docs/changelog/09_SPRINT_27_28.md`.
+
+
+---
+
+# Sprint 29 — Multi-Asset Movement and Analytics
+
+Status: Completed
+
+Highlights:
+
+- Canonical multi-asset movement engine for Forex, JPY pairs, indices, metals, stocks, crypto and CFDs.
+- Pips and non-Forex points separated across Dashboard and Analytics.
+- Shared movement and analytics engines added to the Portfolio feature.
+- Trades, Trade Details, Reports and Psychology migrated to semantic movement units.
+- Portfolio Allocation changed from per-symbol exposure to asset-class exposure.
+- Backend compile, static dead-code audit and frontend production build passed.
+
+See: `docs/changelog/10_SPRINT_29.md`.

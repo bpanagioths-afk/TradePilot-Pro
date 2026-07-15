@@ -1,13 +1,13 @@
 from sqlalchemy import (
-    Column,
-    Integer,
     BigInteger,
-    String,
-    Float,
-    Text,
-    DateTime,
     Boolean,
-    ForeignKey
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
 )
 
 from app.core.database import Base
@@ -17,7 +17,10 @@ class Trade(Base):
 
     __tablename__ = "trades"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+    )
 
     symbol = Column(String)
 
@@ -36,6 +39,36 @@ class Trade(Base):
     profit_money = Column(Float)
 
     profit_pips = Column(Float)
+
+    movement_value = Column(
+        Float,
+        nullable=True,
+    )
+
+    movement_unit = Column(
+        String,
+        nullable=True,
+    )
+
+    asset_class = Column(
+        String,
+        nullable=True,
+    )
+
+    symbol_digits = Column(
+        Integer,
+        nullable=True,
+    )
+
+    symbol_point = Column(
+        Float,
+        nullable=True,
+    )
+
+    tick_size = Column(
+        Float,
+        nullable=True,
+    )
 
     risk_reward = Column(Float)
 
@@ -62,26 +95,26 @@ class Trade(Base):
     mt5_account_id = Column(
         Integer,
         ForeignKey("mt5_accounts.id"),
-        nullable=True
+        nullable=True,
     )
 
     mt5_ticket = Column(
         BigInteger,
-        nullable=True
+        nullable=True,
     )
 
     mt5_position_id = Column(
         BigInteger,
         nullable=True,
-        index=True
+        index=True,
     )
 
     imported_from_mt5 = Column(
         Boolean,
-        default=False
+        default=False,
     )
 
     is_archived = Column(
         Boolean,
-        default=False
+        default=False,
     )

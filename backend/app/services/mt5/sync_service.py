@@ -18,6 +18,7 @@ from app.services.mt5.builder import (
     build_open_position,
     build_order,
 )
+from app.services.mt5.movement import calculate_movement
 from app.services.mt5.repository import (
     commit_sync,
     get_or_create_trade,
@@ -30,67 +31,6 @@ from app.utils.trade_stats import (
     calculate_rr,
 )
 
-
-def _calculate_profit_pips(
-    symbol: str,
-    direction: str,
-    entry_price: float | None,
-    exit_price: float | None,
-) -> float | None:
-
-    if (
-        entry_price is None
-        or exit_price is None
-    ):
-        return None
-
-    symbol_info = mt5.symbol_info(symbol)
-
-    if symbol_info is None:
-        return None
-
-    price_difference = (
-        exit_price - entry_price
-        if direction == "BUY"
-        else entry_price - exit_price
-    )
-
-    path = (
-        symbol_info.path or ""
-    ).lower()
-
-    # ---------- FOREX ----------
-    if "forex" in path:
-
-        if symbol_info.digits in (3, 5):
-            pip_size = 0.0001
-
-            # JPY pairs
-            if "jpy" in symbol.lower():
-                pip_size = 0.01
-
-        else:
-            pip_size = symbol_info.point
-
-        return round(
-            price_difference / pip_size,
-            1,
-        )
-
-    # ---------- NON FOREX ----------
-    # Indices, Stocks, Metals, Crypto, CFDs
-    tick_size = (
-        symbol_info.trade_tick_size
-        or symbol_info.point
-    )
-
-    if tick_size <= 0:
-        return None
-
-    return round(
-        price_difference / tick_size,
-        2,
-    )
 
 def _calculate_risk_reward(
     entry_price: float | None,
@@ -109,6 +49,40 @@ def _calculate_risk_reward(
         stop_loss,
         take_profit,
     )
+
+
+def _clear_movement_fields(
+    trade,
+) -> None:
+    trade.movement_value = None
+    trade.movement_unit = None
+    trade.asset_class = None
+    trade.symbol_digits = None
+    trade.symbol_point = None
+    trade.tick_size = None
+    trade.profit_pips = None
+
+
+def _apply_movement_to_trade(
+    trade,
+    position,
+    entry_price: float | None,
+    exit_price: float | None,
+) -> None:
+    movement = calculate_movement(
+        symbol=position.symbol,
+        direction=position.direction,
+        entry_price=entry_price,
+        exit_price=exit_price,
+    )
+
+    trade.movement_value = movement.movement_value
+    trade.movement_unit = movement.movement_unit
+    trade.asset_class = movement.asset_class
+    trade.symbol_digits = movement.symbol_digits
+    trade.symbol_point = movement.symbol_point
+    trade.tick_size = movement.tick_size
+    trade.profit_pips = movement.legacy_profit_pips
 
 
 def _apply_position_to_trade(
@@ -170,9 +144,13 @@ def _apply_position_to_trade(
         trade.exit_price = None
         trade.close_time = None
         trade.duration_minutes = None
-        trade.profit_pips = None
         trade.is_win = None
         trade.profit_money = profit_money
+
+        _clear_movement_fields(
+            trade,
+        )
+
         trade.notes = "Synced from MT5 - open position"
         return
 
@@ -192,9 +170,9 @@ def _apply_position_to_trade(
         else None
     )
 
-    trade.profit_pips = _calculate_profit_pips(
-        symbol=position.symbol,
-        direction=position.direction,
+    _apply_movement_to_trade(
+        trade=trade,
+        position=position,
         entry_price=entry_price,
         exit_price=exit_price,
     )

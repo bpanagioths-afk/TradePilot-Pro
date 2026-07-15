@@ -159,10 +159,10 @@ export default function Reports() {
                     <ResponsiveContainer width="100%" height="85%">
                         <BarChart data={pairs}>
                             <CartesianGrid />
-                            <XAxis dataKey="symbol" />
+                            <XAxis dataKey="label" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="total_pips" />
+                            <Bar dataKey="value" />
                         </BarChart>
                     </ResponsiveContainer>
                 </Paper>
@@ -175,10 +175,10 @@ export default function Reports() {
                     <ResponsiveContainer width="100%" height="85%">
                         <BarChart data={hours}>
                             <CartesianGrid />
-                            <XAxis dataKey="hour" />
+                            <XAxis dataKey="label" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="avg_pips" />
+                            <Bar dataKey="average" />
                         </BarChart>
                     </ResponsiveContainer>
                 </Paper>
@@ -200,14 +200,21 @@ export default function Reports() {
                         />
 
                         <Chip
-                            label={`Total Pips: ${summary.total_pips}`}
+                            label={`Forex Pips: ${summary.total_pips}`}
                             color="primary"
                         />
 
+                            {summary.points_trades > 0 && (
                         <Chip
-                            label={`Average Pips: ${summary.average_pips}`}
-                            color="secondary"
+                            label={`Non-Forex Points: ${summary.total_points}`}
+                            color="warning"
                         />
+)}
+
+<Chip
+    label={`Average Forex Pips: ${summary.average_pips}`}
+    color="secondary"
+/>
                     </Stack>
                 </Paper>
             </Box>

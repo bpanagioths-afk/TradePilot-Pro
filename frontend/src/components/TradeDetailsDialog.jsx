@@ -156,7 +156,8 @@ export default function TradeDetailsDialog({
                         </Typography>
 
                         <Typography color="text.secondary">
-                            {trade.profit_pips ?? 0} pips
+                             {trade.movement_value ?? trade.profit_pips ?? 0}{" "}
+                             {trade.movement_unit ?? "pips"}
                         </Typography>
                     </Box>
 

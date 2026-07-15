@@ -23,6 +23,10 @@ from app.features.portfolio.engines.drawdown_engine import (
 )
 
 
+from app.features.portfolio.engines.allocation_engine import (
+    calculate as calculate_allocation,
+)
+
 def get_portfolio_dashboard(db: Session):
     """
     Portfolio Dashboard Orchestrator
@@ -40,10 +44,13 @@ def get_portfolio_dashboard(db: Session):
 
     drawdown = calculate_drawdown(equity)
 
+    allocation = calculate_allocation(trades)
+
     return {
         "summary": summary,
         "performance": performance,
         "risk": risk,
         "equity": equity,
         "drawdown": drawdown,
+        "allocation": allocation,
     }

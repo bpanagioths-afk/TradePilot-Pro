@@ -1,67 +1,55 @@
 # Current Project Status
 
-Status updated after Sprint 28.
+Status updated after Sprint 29.
 
-## Completed Through Sprint 28
+## Completed Through Sprint 29
 
 ### Backend
 
 - FastAPI, PostgreSQL, SQLAlchemy and Pydantic foundation.
 - MT5 multi-account management and live Trading Center.
-- Portfolio Repository / Service / Engine architecture.
-- Portfolio summary, performance, risk, equity and drawdown engines.
-- MT5 Synchronization Engine v2 under `backend/app/services/mt5/`.
-- Position-level aggregation using `mt5_position_id`.
-- Open-position, partial-close and closed-position lifecycle support.
-- Idempotent upsert: repeated sync updates existing Trades.
-- Recently closed-position reconciliation.
-- Open positions excluded from historical Portfolio and Analytics calculations.
+- Modular MT5 Synchronization Engine v2 with position-level aggregation and idempotent upsert.
+- Canonical multi-asset movement engine using MT5 symbol metadata.
+- Supported movement semantics:
+  - Forex and JPY pairs → pips
+  - Indices, metals, stocks, crypto and CFDs → broker points
+- Trade model stores movement value, movement unit, asset class and symbol metadata.
+- Shared Portfolio movement and analytics engines.
+- Dashboard summary separates Forex pips from non-Forex points.
+- Portfolio Average Pips includes Forex trades only.
+- Portfolio Allocation groups exposure by asset class.
+- Legacy `mt5_sync.py` retained only as a compatibility wrapper.
 
 ### Frontend
 
-- Shared TradePilot Theme and PageLayout foundation.
-- Shared Widget System:
-  - WidgetContainer
-  - WidgetHeader
-  - WidgetFooter
-  - WidgetMetric
-  - WidgetMetricGrid
-  - WidgetMetrics
-  - WidgetLoading
-  - WidgetErrorState
-  - WidgetEmptyState
-- Dashboard migrated to shared metric widgets.
+- Shared TradePilot Theme, PageLayout and Widget System.
 - Portfolio remains the reference UI implementation.
-- Analytics Center implemented and migrated to shared widgets.
-- MT5 Trading Center operational.
+- Dashboard displays Forex Pips and Non-Forex Points separately.
+- Analytics uses the shared movement-breakdown contract.
+- Trades and Trade Details show the correct movement unit.
+- Reports and Psychology support multi-asset movement values.
+- Portfolio Allocation displays exposure by asset class.
+- Production build succeeds.
 
 ## Current Architecture
 
 ```text
-Frontend Routes / Pages
+MT5 Symbol Metadata
 ↓
-Feature Modules
+Movement Engine
 ↓
-Shared Widget System
+Trade movement_value + movement_unit + asset_class
 ↓
-TradePilot Theme
+Movement / Analytics Engines
 ↓
-Material UI
-```
-
-```text
-FastAPI Routers
+Dashboard, Portfolio and Analytics APIs
 ↓
-Services / Feature Modules
-↓
-MT5 Builder / Aggregator / Validator / Repository
-↓
-SQLAlchemy Models
-↓
-PostgreSQL / MetaTrader 5
+Shared Widget UI
 ```
 
 ## Mandatory Decisions
+
+D-001 through D-055 remain binding, with special enforcement of:
 
 - D-049 — Single Source of Information
 - D-050 — Audit Before New Code
@@ -71,14 +59,17 @@ PostgreSQL / MetaTrader 5
 - D-054 — Portfolio Reference UI
 - D-055 — Multi-Asset MT5 Engine
 
-## Known Sprint 29 Work
+## Validation State
 
-1. Complete canonical multi-asset movement/pips calculations.
-2. Distinguish Forex pips from non-Forex points/ticks where required.
-3. Add a shared chart wrapper using the Widget System.
-4. Improve empty states for unassigned systems and psychology states.
-5. Continue responsive layout and theme-personalization work.
-6. Audit and remove obsolete compatibility code only after replacement paths are fully tested.
+- Real MT5 synchronization: passed.
+- Backend compile: passed.
+- Vulture 100% confidence audit: no findings.
+- Frontend production build: passed.
+- Known non-blocking warning: frontend bundle exceeds the default 500 kB warning threshold.
+
+## Next Sprint Direction
+
+Sprint 30 focuses on Shared Chart Infrastructure and frontend performance cleanup without changing the validated multi-asset movement contract.
 
 ## Workspace Ownership
 

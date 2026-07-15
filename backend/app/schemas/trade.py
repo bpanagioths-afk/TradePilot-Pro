@@ -60,6 +60,18 @@ class TradeResponse(BaseModel):
 
     profit_pips: Optional[float] = None
 
+    movement_value: Optional[float] = None
+
+    movement_unit: Optional[str] = None
+
+    asset_class: Optional[str] = None
+
+    symbol_digits: Optional[int] = None
+
+    symbol_point: Optional[float] = None
+
+    tick_size: Optional[float] = None
+
     risk_reward: Optional[float] = None
 
     duration_minutes: Optional[int] = None

@@ -2422,3 +2422,34 @@ Theme tokens
 ```
 
 Do not create page-specific KPI design systems.
+
+
+## Sprint 29 Multi-Asset Additions
+
+```text
+backend/app/services/mt5/movement.py
+    Canonical broker-metadata-driven movement calculation.
+
+backend/app/features/portfolio/engines/movement_engine.py
+    Shared movement grouping and unit totals.
+
+backend/app/features/portfolio/engines/analytics_engine.py
+    Symbol, hour, system and psychology movement aggregation.
+
+backend/app/routers/dashboard.py
+    Dashboard and Analytics movement-breakdown endpoints.
+
+frontend/src/features/portfolio/components/PortfolioAllocationCard.jsx
+    Allocation presentation by asset class.
+```
+
+Canonical data flow:
+
+```text
+MT5 symbol metadata
+→ services/mt5/movement.py
+→ Trade movement fields
+→ portfolio movement/analytics engines
+→ Dashboard / Portfolio APIs
+→ Dashboard / Analytics / Reports / Psychology / Trades UI
+```

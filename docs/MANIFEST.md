@@ -103,3 +103,23 @@ New important files:
 - `docs/decisions/D-054_Portfolio_Reference_UI.md`
 - `docs/decisions/D-055_Multi_Asset_MT5_Engine.md`
 - `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT29.md`
+
+
+## Sprint 29 Documentation Update
+
+Added / updated documentation for:
+
+- Canonical multi-asset movement model.
+- Forex pips and non-Forex points separation.
+- Dashboard and Analytics movement contracts.
+- Portfolio movement and analytics engines.
+- Portfolio Allocation by asset class.
+- Multi-asset UI updates across Dashboard, Analytics, Trades, Reports, Psychology and Trade Details.
+- Sprint 29 validation results.
+- Current project status after Sprint 29.
+- Sprint 30 continuation prompt.
+
+New important files:
+
+- `docs/changelog/10_SPRINT_29.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT30.md`

@@ -440,3 +440,18 @@ The engine supports open positions, partial closes, final closes and recently cl
 Sprint 28 also consolidated Dashboard, Portfolio and Analytics around the shared Widget System. Portfolio was confirmed as the reference UI implementation for feature pages.
 
 The next major technical direction is a canonical multi-asset movement model for Forex, indices, metals, stocks, crypto and CFDs.
+
+
+---
+
+# Sprint 29 History — Multi-Asset Movement and Analytics
+
+Sprint 29 completed the transition from Forex-only pip assumptions to a broker-metadata-driven multi-asset movement model.
+
+The MT5 synchronization layer now stores both the numeric movement and its semantic unit. Forex and JPY pairs use pips, while indices, metals, stocks, crypto and CFDs use broker points. Compatibility with the existing `profit_pips` field is preserved, but Dashboard and Analytics no longer combine incompatible units.
+
+The backend added reusable movement and analytics engines, and the Dashboard endpoints were refactored around a shared `movement_breakdown` contract. Portfolio risk calculations now exclude non-Forex points from Average Pips. Portfolio Allocation was restored and redesigned to group exposure by asset class instead of individual symbols.
+
+The frontend was updated across Dashboard, Analytics, Trades, Trade Details, Reports, Psychology and Portfolio. The result is a consistent multi-asset presentation where each value is shown with the correct unit.
+
+Validation included real MT5 synchronization, backend compilation, a 100%-confidence Vulture audit and a successful frontend production build.

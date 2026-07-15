@@ -227,25 +227,33 @@ useEffect(() => {
                 );
             }
         },
-        {
-            field: "profit_pips",
-            headerName: "Pips",
-            width: 110,
-            renderCell: (params) => {
-                const value = params.value || 0;
-                const positive = value >= 0;
+ {
+    field: "movement_value",
+    headerName: "Movement",
+    width: 150,
+    renderCell: (params) => {
+        const value =
+            params.row.movement_value ??
+            params.row.profit_pips ??
+            0;
 
-                return (
-                    <Typography
-                        fontWeight="bold"
-                        color={positive ? "success.main" : "error.main"}
-                    >
-                        {positive ? "+" : ""}
-                        {value}
-                    </Typography>
-                );
-            }
-        },
+        const unit =
+            params.row.movement_unit ??
+            "pips";
+
+        const positive = Number(value) >= 0;
+
+        return (
+            <Typography
+                fontWeight="bold"
+                color={positive ? "success.main" : "error.main"}
+            >
+                {positive ? "+" : ""}
+                {value} {unit}
+            </Typography>
+        );
+    }
+},
         {
             field: "risk_reward",
             headerName: "RR",

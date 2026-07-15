@@ -45,6 +45,11 @@ export default function DashboardSummaryWidget({ summary, equity }) {
     const totalProfit = Number(summary?.total_profit);
     const totalPips = Number(summary?.total_pips);
     const averagePips = Number(summary?.average_pips);
+    const totalPoints = Number(summary?.total_points);
+    const averagePoints = Number(summary?.average_points);
+
+    const hasPips = Number(summary?.pips_trades) > 0;
+    const hasPoints = Number(summary?.points_trades) > 0;
 
     return (
         <Box
@@ -60,7 +65,7 @@ export default function DashboardSummaryWidget({ summary, equity }) {
                 />
 
                 <WidgetMetricGrid
-                    columns={4}
+                    columns={hasPips && hasPoints ? 5 : 4}
                     gap={2}
                     mt={1}
                 >
@@ -88,17 +93,25 @@ export default function DashboardSummaryWidget({ summary, equity }) {
                         trend={<CandlestickChartIcon fontSize="small" />}
                     />
 
-                    <WidgetMetric
-                        title="Total Pips"
-                        value={formatNumber(totalPips, 1)}
-                        helperText={
-                            Number.isFinite(averagePips)
-                                ? `Average: ${formatNumber(averagePips, 1)}`
-                                : "Average: —"
-                        }
-                        status={getPerformanceStatus(totalPips)}
-                        trend={<TimelineIcon fontSize="small" />}
-                    />
+                    {hasPips && (
+                        <WidgetMetric
+                            title="Forex Pips"
+                            value={formatNumber(totalPips, 1)}
+                            helperText={`Average: ${formatNumber(averagePips, 1)} · ${summary?.pips_trades ?? 0} trades`}
+                            status={getPerformanceStatus(totalPips)}
+                            trend={<TimelineIcon fontSize="small" />}
+                        />
+                    )}
+
+                    {hasPoints && (
+                        <WidgetMetric
+                            title="Non-Forex Points"
+                            value={formatNumber(totalPoints, 2)}
+                            helperText={`Average: ${formatNumber(averagePoints, 2)} · ${summary?.points_trades ?? 0} trades`}
+                            status={getPerformanceStatus(totalPoints)}
+                            trend={<TimelineIcon fontSize="small" />}
+                        />
+                    )}
                 </WidgetMetricGrid>
             </WidgetContainer>
 
