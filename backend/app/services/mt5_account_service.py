@@ -7,6 +7,9 @@ except ImportError:
 
 from app.models.mt5_account import MT5Account
 from app.models.trade import Trade
+from app.services.mt5.terminal_connection import (
+    initialize_mt5_if_running,
+)
 
 from app.schemas.mt5_account import (
     MT5AccountCreate,
@@ -93,7 +96,9 @@ def get_live_mt5_metrics():
             "message": "MetaTrader5 Python package is not installed.",
         }
 
-    initialized = mt5.initialize()
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
 
     if not initialized:
         return {
@@ -102,7 +107,7 @@ def get_live_mt5_metrics():
             "equity": None,
             "floating_profit_loss": None,
             "open_positions": 0,
-            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+            "message": initialization_message,
         }
 
     try:
@@ -157,7 +162,9 @@ def get_live_mt5_account_health():
             "message": "MetaTrader5 Python package is not installed.",
         }
 
-    initialized = mt5.initialize()
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
 
     if not initialized:
         return {
@@ -172,7 +179,7 @@ def get_live_mt5_account_health():
             "server": None,
             "company": None,
             "login": None,
-            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+            "message": initialization_message,
         }
 
     try:
@@ -229,7 +236,9 @@ def get_live_mt5_today_performance():
             "message": "MetaTrader5 Python package is not installed.",
         }
 
-    initialized = mt5.initialize()
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
 
     if not initialized:
         return {
@@ -242,7 +251,7 @@ def get_live_mt5_today_performance():
             "lots_today": 0.0,
             "commission_today": 0.0,
             "swap_today": 0.0,
-            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+            "message": initialization_message,
         }
 
     try:
@@ -334,7 +343,9 @@ def get_live_mt5_connection_health():
             "message": "MetaTrader5 Python package is not installed.",
         }
 
-    initialized = mt5.initialize()
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
 
     if not initialized:
         return {
@@ -349,7 +360,7 @@ def get_live_mt5_connection_health():
             "account_login": None,
             "account_server": None,
             "account_company": None,
-            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+            "message": initialization_message,
         }
 
     try:
@@ -427,7 +438,9 @@ def get_live_mt5_open_positions():
             "message": "MetaTrader5 Python package is not installed.",
         }
 
-    initialized = mt5.initialize()
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
 
     if not initialized:
         return {
@@ -435,7 +448,7 @@ def get_live_mt5_open_positions():
             "positions": [],
             "total_positions": 0,
             "floating_profit_loss": 0.0,
-            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+            "message": initialization_message,
         }
 
     try:
@@ -494,14 +507,16 @@ def get_live_mt5_pending_orders():
             "message": "MetaTrader5 Python package is not installed.",
         }
 
-    initialized = mt5.initialize()
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
 
     if not initialized:
         return {
             "connected": False,
             "orders": [],
             "total_orders": 0,
-            "message": f"MT5 terminal connection failed: {mt5.last_error()}",
+            "message": initialization_message,
         }
 
     try:

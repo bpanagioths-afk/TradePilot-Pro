@@ -6,3 +6,11 @@ Sprint 16 : Rule Engine
 Sprint 17 : MT5 Account Manager
 Sprint 18 : UI Framework & Design System
 Sprint 19 : Professional MT5 Widget
+
+Sprint 20-24 : Portfolio Feature and UI Foundation
+Sprint 25-26 : MT5 Trading Center
+Sprint 27-28 : Analytics Center and MT5 Synchronization Engine v2
+Sprint 29 : Multi-Asset Movement and Analytics
+Sprint 30 : Shared Charts, Route Lazy Loading and Explicit MT5 Connection
+Version 0.9 : Completed
+Sprint 31 : Version 1.0 Foundation Audit and Planning

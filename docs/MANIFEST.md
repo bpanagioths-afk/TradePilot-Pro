@@ -123,3 +123,21 @@ New important files:
 
 - `docs/changelog/10_SPRINT_29.md`
 - `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT30.md`
+
+
+## Sprint 30 Documentation Update
+
+Added / updated documentation for:
+
+- Shared Chart Infrastructure.
+- Route-level frontend lazy loading.
+- Dashboard, Portfolio, Analytics, Psychology and Reports chart migration.
+- Reports regression correction using the canonical `movement_breakdown` contract.
+- Explicit MT5 terminal connection policy.
+- Version 0.9 completion.
+- Version 1.0 / Sprint 31 audit-first continuation plan.
+
+New important files:
+
+- `docs/changelog/11_SPRINT_30.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT31.md`

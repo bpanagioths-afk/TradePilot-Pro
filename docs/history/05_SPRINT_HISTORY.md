@@ -268,3 +268,16 @@ Reuse existing infrastructure before creating new components or endpoints.
 ```
 
 Protected component rule was introduced after global widget changes caused unwanted visual side effects.
+
+
+---
+
+# Sprint 30 - Shared Chart Infrastructure and MT5 Connection Policy
+
+- Added shared `ChartContainer` and `ChartTooltip`.
+- Centralized direct `ResponsiveContainer` usage.
+- Migrated Dashboard, Portfolio, Analytics, Psychology and Reports charts.
+- Added route-level lazy loading.
+- Corrected Reports against real movement-breakdown contracts.
+- Prevented automatic MT5 terminal startup.
+- Completed Version 0.9.

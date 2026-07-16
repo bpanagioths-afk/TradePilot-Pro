@@ -1,63 +1,87 @@
 # 11 — Active Sprint
 
-# Sprint 30 — Shared Chart Infrastructure and Frontend Performance
+# Sprint 31 — Version 1.0 Foundation Audit and Planning
+
+Status: Ready to start in a new conversation
 
 ## Starting Point
 
-Sprint 29 completed:
+Version 0.9 and Sprint 30 are completed.
 
-- Canonical multi-asset movement calculations.
-- Forex pips and non-Forex points separation.
-- Shared movement and analytics engines.
-- Multi-asset Dashboard, Analytics, Trades, Reports and Psychology UI.
-- Portfolio Allocation by asset class.
-- Backend compile, dead-code audit and frontend production build.
+Completed foundation includes:
+
+- Multi-asset MT5 movement model.
+- Shared movement and analytics contracts.
+- Shared Widget System.
+- Shared Chart Infrastructure.
+- Route-level frontend lazy loading.
+- Explicit MT5 terminal connection policy.
+- Successful backend compile and frontend production build.
 
 ## Primary Goal
 
 ```text
-Shared Chart Infrastructure
+Version 1.0 Foundation Audit
 +
-Frontend Performance Cleanup
+Multi-User / Commercial Architecture Plan
 ```
+
+## Important Scope Rule
+
+Sprint 31 begins with audit and architecture planning only.
+
+Do not immediately implement:
+
+- login,
+- subscriptions,
+- credential vaults,
+- cloud MT5 connectors,
+- billing,
+- tenant isolation,
+- broker APIs.
+
+These require a verified package plan first.
 
 ## Priority Order
 
-1. Audit the real frontend tree and all Recharts usage.
-2. Design one shared chart contract before creating components.
-3. Reuse WidgetContainer, WidgetHeader, loading, error and empty states.
-4. Introduce shared tooltip and movement-unit formatting.
-5. Migrate charts package-by-package without page-specific design systems.
-6. Evaluate route-level code splitting for the current Vite bundle warning.
-7. Compile, build, test, document, commit and push.
+1. Read all documentation and decisions D-001 through D-059.
+2. Read the real backend and frontend trees.
+3. Audit the current `User`, `MT5Account`, Trade and database relationships.
+4. Audit current authentication, dependency and security foundations.
+5. Audit all APIs for future user/account ownership boundaries.
+6. Define the Version 1.0 package roadmap.
+7. Separate local-development connection behavior from future commercial connector behavior.
+8. Approve architecture before implementation.
 
-## Protected Contracts
+## Protected Version 0.9 Contracts
 
 Do not change without a verified bug:
 
-- MT5 movement calculation semantics.
-- `movement_value`, `movement_unit` and `asset_class` fields.
-- Dashboard `movement_breakdown` contract.
+- MT5 position aggregation and idempotent synchronization.
+- Multi-asset movement semantics.
+- `movement_value`, `movement_unit` and `asset_class`.
+- `movement_breakdown` API contract.
 - Portfolio Average Pips Forex-only behavior.
 - Portfolio Allocation by asset class.
+- Shared Widget System.
+- Shared Chart Infrastructure.
+- Explicit MT5 terminal connection policy.
 
 ## Mandatory Rules
 
-- D-001 through D-055 are binding.
+- D-001 through D-059 are binding.
 - Read the real tree before every path instruction.
 - Audit before new code.
 - Reuse before creation.
-- Portfolio is the reference UI.
-- Give exact instructions using complete replace blocks or precise above/below markers.
-- `οκ ετοιμο` confirms the previous step succeeded.
-- Documentation and clean Git status are required before sprint closure.
+- Complete package design before editing.
+- One complete change per file per package.
+- Provide full files when requested.
+- `οκ ετοιμο` means the previous action succeeded; continue immediately.
+- Documentation, build validation and clean Git status are required before sprint closure.
 
 ## Success Criteria
 
-- Shared charts use one common wrapper and tooltip behavior.
-- Movement units are displayed consistently.
-- No page-specific chart design system is introduced.
-- Existing Dashboard, Portfolio and Analytics behavior remains stable.
-- Frontend build succeeds.
-- Bundle-size warning is reduced or documented with an approved plan.
-- Documentation is updated and Git status is clean.
+- Current identity and account ownership architecture is fully documented.
+- Version 1.0 package boundaries are approved.
+- Local MT5 behavior and future commercial connector behavior are clearly separated.
+- No Version 0.9 regression is introduced.

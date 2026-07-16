@@ -26,6 +26,9 @@ from app.services.mt5.repository import (
     save_trade,
 )
 from app.services.mt5.validator import validate_positions
+from app.services.mt5.terminal_connection import (
+    initialize_mt5_if_running,
+)
 from app.utils.trade_stats import (
     calculate_duration,
     calculate_rr,
@@ -187,13 +190,14 @@ def _apply_position_to_trade(
 
 
 def sync(account_id: int):
-    if not mt5.initialize():
+    initialized, initialization_message = (
+        initialize_mt5_if_running()
+    )
+
+    if not initialized:
         return {
             "success": False,
-            "message": (
-                "MT5 initialization failed: "
-                f"{mt5.last_error()}"
-            ),
+            "message": initialization_message,
         }
 
     db = SessionLocal()

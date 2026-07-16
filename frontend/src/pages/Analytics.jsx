@@ -7,7 +7,6 @@ import {
     Cell,
     Line,
     LineChart,
-    ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis
@@ -25,6 +24,7 @@ import {
 } from "../components/widgets";
 
 import useAnalytics from "../features/analytics/hooks/useAnalytics";
+import { ChartContainer, ChartTooltip } from "../components/charts";
 
 
 function getPerformanceStatus(value) {
@@ -197,7 +197,7 @@ function BarChartWidget({
             />
 
             <Box sx={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer height={300}>
                     <BarChart data={data}>
                         <CartesianGrid
                             stroke={theme.palette.divider}
@@ -214,7 +214,7 @@ function BarChartWidget({
                         />
 
                         <Tooltip
-                            content={<MovementTooltip />}
+                            content={<ChartTooltip />}
                         />
 
                         <Bar dataKey="value">
@@ -229,7 +229,7 @@ function BarChartWidget({
                             ))}
                         </Bar>
                     </BarChart>
-                </ResponsiveContainer>
+                </ChartContainer>
             </Box>
         </WidgetContainer>
     );
@@ -259,7 +259,7 @@ function LineChartWidget({
             />
 
             <Box sx={{ width: "100%", height: 300 }}>
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer height={300}>
                     <LineChart data={data}>
                         <CartesianGrid
                             stroke={theme.palette.divider}
@@ -294,7 +294,7 @@ function LineChartWidget({
                             dot={false}
                         />
                     </LineChart>
-                </ResponsiveContainer>
+                </ChartContainer>
             </Box>
         </WidgetContainer>
     );

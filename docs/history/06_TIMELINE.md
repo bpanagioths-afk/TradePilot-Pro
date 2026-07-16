@@ -35,13 +35,14 @@
 - Chapter 33: Sprint 20 - Source Code Structure Developer Handbook
 - Chapter 34: Sprint 20 - Feature Module Architecture Direction
 - Chapter 35: Sprint 20 - Sprint Execution Process Locked
+- Chapter 36: Sprint 27-28 - Analytics and MT5 Sync Engine v2
+- Chapter 37: Sprint 29 - Multi-Asset Movement
+- Chapter 38: Sprint 30 - Shared Charts and Explicit MT5 Connection
 
 ---
 
 # Current Timeline Position
 
-Sprint 20 is completed.
+Version 0.9 and Sprint 30 are completed.
 
-Next active work starts from Sprint 21.
-
-Sprint 21 should continue from the completed Professional Dashboard and Widget Infrastructure foundation.
+Next active work starts from Version 1.0 / Sprint 31 with architecture audit and planning.

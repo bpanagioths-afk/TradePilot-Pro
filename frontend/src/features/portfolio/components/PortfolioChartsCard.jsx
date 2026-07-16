@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
 import {
-    ResponsiveContainer,
     LineChart,
     Line,
     XAxis,
@@ -17,11 +18,18 @@ import {
     WidgetEmptyState
 } from "../../../components/widgets";
 
+import {
+    ChartContainer,
+    ChartTooltip
+} from "../../../components/charts";
+
 function hasChartData(items) {
     return Array.isArray(items) && items.length > 0;
 }
 
 export default function PortfolioChartsCard({ equity, drawdown }) {
+    const theme = useTheme();
+
     const equityCurve = equity?.equity_curve || [];
     const drawdownCurve = drawdown?.drawdown_curve || [];
 
@@ -54,43 +62,104 @@ export default function PortfolioChartsCard({ equity, drawdown }) {
                 }}
             >
                 {hasChartData(equityCurve) && (
-                    <Box sx={{ height: 360 }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Box>
+                        <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ mb: 1 }}
+                        >
                             Equity Curve
                         </Typography>
 
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ChartContainer height={360}>
                             <LineChart data={equityCurve}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="trade" />
-                                <YAxis />
-                                <Tooltip />
+                                <CartesianGrid
+                                    stroke={theme.palette.divider}
+                                    strokeDasharray="3 3"
+                                />
+
+                                <XAxis
+                                    dataKey="trade"
+                                    tick={{
+                                        fill: theme.palette.text.secondary
+                                    }}
+                                />
+
+                                <YAxis
+                                    tick={{
+                                        fill: theme.palette.text.secondary
+                                    }}
+                                />
+
+                                <Tooltip
+                                    content={
+                                        <ChartTooltip
+                                            nameFormatter={() => "Equity"}
+                                        />
+                                    }
+                                />
+
                                 <Line
                                     type="monotone"
                                     dataKey="equity"
+                                    name="Equity"
+                                    stroke={theme.palette.primary.main}
                                     strokeWidth={2}
                                     dot={false}
+                                    activeDot={{
+                                        r: 4
+                                    }}
                                 />
                             </LineChart>
-                        </ResponsiveContainer>
+                        </ChartContainer>
                     </Box>
                 )}
 
                 {hasChartData(drawdownCurve) && (
-                    <Box sx={{ height: 360 }}>
-                        <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                    <Box>
+                        <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                            sx={{ mb: 1 }}
+                        >
                             Drawdown
                         </Typography>
 
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ChartContainer height={360}>
                             <BarChart data={drawdownCurve}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="trade" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="drawdown" />
+                                <CartesianGrid
+                                    stroke={theme.palette.divider}
+                                    strokeDasharray="3 3"
+                                />
+
+                                <XAxis
+                                    dataKey="trade"
+                                    tick={{
+                                        fill: theme.palette.text.secondary
+                                    }}
+                                />
+
+                                <YAxis
+                                    tick={{
+                                        fill: theme.palette.text.secondary
+                                    }}
+                                />
+
+                                <Tooltip
+                                    content={
+                                        <ChartTooltip
+                                            nameFormatter={() => "Drawdown"}
+                                        />
+                                    }
+                                />
+
+                                <Bar
+                                    dataKey="drawdown"
+                                    name="Drawdown"
+                                    fill={theme.palette.error.main}
+                                />
                             </BarChart>
-                        </ResponsiveContainer>
+                        </ChartContainer>
                     </Box>
                 )}
             </Box>

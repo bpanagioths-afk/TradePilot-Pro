@@ -455,3 +455,16 @@ The backend added reusable movement and analytics engines, and the Dashboard end
 The frontend was updated across Dashboard, Analytics, Trades, Trade Details, Reports, Psychology and Portfolio. The result is a consistent multi-asset presentation where each value is shown with the correct unit.
 
 Validation included real MT5 synchronization, backend compilation, a 100%-confidence Vulture audit and a successful frontend production build.
+
+
+---
+
+# Sprint 30 History — Shared Charts and Explicit MT5 Connection
+
+Sprint 30 completed Version 0.9 by introducing one shared chart infrastructure and a safer local MT5 connection policy.
+
+Frontend chart behavior was centralized through `ChartContainer` and `ChartTooltip`. Dashboard Equity, Portfolio, Analytics, Psychology and Reports were migrated to the common infrastructure. Route-level lazy loading was added to reduce the initial page bundle. Reports was validated and corrected against the real backend `movement_breakdown` response rather than assumed fields.
+
+The MT5 integration was also corrected so page loading, widget polling and synchronization do not start the local MT5 terminal automatically. TradePilot Pro now connects only to an already-running terminal after explicit user action.
+
+The commercial architecture remains intentionally deferred. Version 1.0 begins with a complete audit of users, account ownership, security, API boundaries and the future connector model before authentication, subscriptions or cloud MT5 access are implemented.

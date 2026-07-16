@@ -191,6 +191,14 @@ backend/app/
 │   └── trading_plan.py
 │
 ├── services/
+│   ├── mt5/
+│   │   ├── aggregator.py
+│   │   ├── builder.py
+│   │   ├── movement.py
+│   │   ├── repository.py
+│   │   ├── sync_service.py
+│   │   ├── terminal_connection.py
+│   │   └── validator.py
 │   ├── mt5_account_service.py
 │   ├── mt5_sync.py
 │   ├── portfolio_service.py
@@ -449,6 +457,23 @@ get_live_mt5_today_performance()
 get_live_mt5_connection_health()
 ```
 
+#### Explicit MT5 Terminal Connection Policy
+
+```text
+Page / widget polling
+        ↓
+Check already-running MT5 terminal
+        ↓
+Return live data or unavailable state
+```
+
+Rules:
+
+- TradePilot Pro must not start the MT5 terminal automatically.
+- Live endpoints must not launch MT5 as a side effect of GET requests.
+- Sync uses an already-running terminal after explicit user action.
+- Future commercial connector and credential architecture is a Version 1.x concern.
+
 ---
 
 ### `backend/app/reports/`
@@ -565,6 +590,12 @@ frontend/src/
 │   └── vite.svg
 │
 ├── components/
+│   ├── charts/
+│   │   ├── ChartContainer.jsx
+│   │   ├── ChartTooltip.jsx
+│   │   └── index.js
+│   ├── dashboard/
+│   └── widgets/
 ├── features/
 │   └── portfolio/
 │       ├── components/
@@ -743,6 +774,31 @@ MetaTrader 5 terminal
 
 ---
 
+### `frontend/src/components/charts/`
+
+Purpose:
+
+- Shared Recharts wrapper and tooltip infrastructure.
+- One responsive chart container for all workspaces.
+- Consistent theme-aware tooltip presentation.
+
+Current files:
+
+| File | Purpose |
+|---|---|
+| `ChartContainer.jsx` | Owns the shared `ResponsiveContainer` behavior and chart sizing. |
+| `ChartTooltip.jsx` | Shared tooltip rendering and basic value/unit presentation. |
+| `index.js` | Public exports for shared chart components. |
+
+Rules:
+
+- Direct `ResponsiveContainer` usage belongs only in `ChartContainer.jsx`.
+- Pages and widgets import chart infrastructure from `components/charts`.
+- Business calculations and unit classification do not belong in chart components.
+- Chart consumers must use validated API response fields.
+
+---
+
 ### `frontend/src/features/`
 
 Purpose:
@@ -750,9 +806,11 @@ Purpose:
 - Reusable frontend feature modules.
 - Groups feature-specific components, hooks and services.
 
-Current feature module:
+Current feature modules:
 
 ```text
+features/analytics/
+
 features/portfolio/
 ├── components/
 ├── hooks/
@@ -2162,6 +2220,23 @@ get_live_mt5_account_health()
 get_live_mt5_today_performance()
 get_live_mt5_connection_health()
 ```
+
+#### Explicit MT5 Terminal Connection Policy
+
+```text
+Page / widget polling
+        ↓
+Check already-running MT5 terminal
+        ↓
+Return live data or unavailable state
+```
+
+Rules:
+
+- TradePilot Pro must not start the MT5 terminal automatically.
+- Live endpoints must not launch MT5 as a side effect of GET requests.
+- Sync uses an already-running terminal after explicit user action.
+- Future commercial connector and credential architecture is a Version 1.x concern.
 
 New endpoints inside:
 

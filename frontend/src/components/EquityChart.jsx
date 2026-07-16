@@ -1,5 +1,6 @@
+import { useTheme } from "@mui/material/styles";
+
 import {
-    ResponsiveContainer,
     LineChart,
     Line,
     XAxis,
@@ -8,29 +9,55 @@ import {
     CartesianGrid
 } from "recharts";
 
+import {
+    ChartContainer,
+    ChartTooltip
+} from "./charts";
+
 export default function EquityChart({ data }) {
+    const theme = useTheme();
 
     return (
-        <ResponsiveContainer
-            width="100%"
-            height={400}
-        >
+        <ChartContainer height={400}>
             <LineChart data={data}>
+                <CartesianGrid
+                    stroke={theme.palette.divider}
+                    strokeDasharray="3 3"
+                />
 
-                <CartesianGrid />
+                <XAxis
+                    dataKey="trade_id"
+                    tick={{
+                        fill: theme.palette.text.secondary
+                    }}
+                />
 
-                <XAxis dataKey="trade_id" />
+                <YAxis
+                    tick={{
+                        fill: theme.palette.text.secondary
+                    }}
+                />
 
-                <YAxis />
-
-                <Tooltip />
+                <Tooltip
+                    content={
+                        <ChartTooltip
+                            nameFormatter={() => "Equity"}
+                        />
+                    }
+                />
 
                 <Line
                     type="monotone"
                     dataKey="equity"
+                    name="Equity"
+                    stroke={theme.palette.primary.main}
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{
+                        r: 4
+                    }}
                 />
-
             </LineChart>
-        </ResponsiveContainer>
+        </ChartContainer>
     );
 }

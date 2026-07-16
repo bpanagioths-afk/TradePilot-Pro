@@ -8,17 +8,24 @@ import {
     Chip
 } from "@mui/material";
 
+import { useTheme } from "@mui/material/styles";
+
 import {
     BarChart,
     Bar,
+    Cell,
     XAxis,
     YAxis,
     Tooltip,
-    CartesianGrid,
-    ResponsiveContainer
+    CartesianGrid
 } from "recharts";
 
 import api from "../api/api";
+
+import {
+    ChartContainer,
+    ChartTooltip
+} from "../components/charts";
 
 const psychologyMap = {
     1: "Ήρεμος",
@@ -44,8 +51,9 @@ function normalizePsychology(rows) {
         };
     });
 }
-export default function Psychology() {
 
+export default function Psychology() {
+    const theme = useTheme();
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -63,20 +71,59 @@ export default function Psychology() {
                 Psychology Analysis
             </Typography>
 
-            <Paper sx={{ p: 3, mb: 3, height: 420 }}>
+            <Paper sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h6" mb={2}>
                     Profit/Pips by Psychology
                 </Typography>
 
-                <ResponsiveContainer width="100%" height="85%">
+                <ChartContainer height={350}>
                     <BarChart data={data}>
-                        <CartesianGrid />
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="value" />
+                        <CartesianGrid
+                            stroke={theme.palette.divider}
+                            strokeDasharray="3 3"
+                        />
+
+                        <XAxis
+                            dataKey="name"
+                            tick={{
+                                fill: theme.palette.text.secondary
+                            }}
+                        />
+
+                        <YAxis
+                            tick={{
+                                fill: theme.palette.text.secondary
+                            }}
+                        />
+
+                        <Tooltip
+                            content={
+                                <ChartTooltip
+                                    nameFormatter={() => "Performance"}
+                                />
+                            }
+                        />
+
+                        <Bar
+                            dataKey="value"
+                            name="Performance"
+                        >
+                            {data.map((item) => (
+                                <Cell
+                                    key={
+                                        item.psychology_state_id
+                                        ?? item.name
+                                    }
+                                    fill={
+                                        Number(item.value) >= 0
+                                            ? theme.palette.success.main
+                                            : theme.palette.error.main
+                                    }
+                                />
+                            ))}
+                        </Bar>
                     </BarChart>
-                </ResponsiveContainer>
+                </ChartContainer>
             </Paper>
 
             <Box
@@ -105,13 +152,18 @@ export default function Psychology() {
                                 color="primary"
                                 size="small"
                             />
+
                             <Typography color="text.secondary">
                                 Total {item.unit}
                             </Typography>
 
                             <Typography
                                 variant="h5"
-                                color={(item.value || 0) >= 0 ? "success.main" : "error.main"}
+                                color={
+                                    Number(item.value) >= 0
+                                        ? "success.main"
+                                        : "error.main"
+                                }
                             >
                                 {item.value} {item.unit}
                             </Typography>

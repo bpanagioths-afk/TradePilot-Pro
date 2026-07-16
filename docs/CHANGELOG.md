@@ -15,6 +15,7 @@ Sections:
 * [Sprint 24](changelog/08_SPRINT_24.md)
 * [Sprint 27-28](changelog/09_SPRINT_27_28.md)
 * [Sprint 29](changelog/10_SPRINT_29.md)
+* [Sprint 30](changelog/11_SPRINT_30.md)
 * [Full Changelog Archive](changelog/99_FULL_CHANGELOG_ARCHIVE.md)
 
 Rule:

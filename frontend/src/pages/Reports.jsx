@@ -8,11 +8,13 @@ import {
     Chip
 } from "@mui/material";
 
+import { useTheme } from "@mui/material/styles";
+
 import {
     PieChart,
     Pie,
+    Cell,
     Tooltip,
-    ResponsiveContainer,
     BarChart,
     Bar,
     XAxis,
@@ -22,7 +24,106 @@ import {
 
 import api from "../api/api";
 
+import {
+    ChartContainer,
+    ChartTooltip
+} from "../components/charts";
+
+function formatAssetClass(value) {
+    if (!value) {
+        return "Other";
+    }
+
+    return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function buildMovementChartData(items = [], valueKey = "total") {
+    return items.flatMap((item) => {
+        const breakdown = Array.isArray(item.movement_breakdown)
+            ? item.movement_breakdown
+            : [];
+
+        return breakdown.map((movement) => ({
+            label:
+                breakdown.length > 1
+                    ? `${item.label} · ${formatAssetClass(
+                        movement.asset_class
+                    )}`
+                    : String(item.label),
+            groupLabel: String(item.label),
+            value: Number(movement[valueKey] ?? 0),
+            total: Number(movement.total ?? 0),
+            average: Number(movement.average ?? 0),
+            unit: movement.unit ?? "",
+            assetClass: movement.asset_class ?? "other",
+            trades: Number(movement.trades ?? item.trades ?? 0)
+        }));
+    });
+}
+
+function ReportsChartTooltip({
+    active,
+    payload
+}) {
+    if (!active || !payload?.length) {
+        return null;
+    }
+
+    const item = payload[0]?.payload;
+
+    if (!item) {
+        return null;
+    }
+
+    return (
+        <Paper
+            elevation={6}
+            sx={{
+                minWidth: 170,
+                p: 1.5,
+                border: 1,
+                borderColor: "divider"
+            }}
+        >
+            <Typography
+                variant="subtitle2"
+                sx={{ mb: 0.5 }}
+            >
+                {item.groupLabel}
+            </Typography>
+
+            <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                    display: "block",
+                    mb: 1
+                }}
+            >
+                {formatAssetClass(item.assetClass)}
+            </Typography>
+
+            <Typography variant="body2">
+                Value: {item.value.toFixed(2)} {item.unit}
+            </Typography>
+
+            <Typography variant="body2">
+                Total: {item.total.toFixed(2)} {item.unit}
+            </Typography>
+
+            <Typography variant="body2">
+                Average: {item.average.toFixed(2)} {item.unit}
+            </Typography>
+
+            <Typography variant="body2">
+                Trades: {item.trades}
+            </Typography>
+        </Paper>
+    );
+}
+
 export default function Reports() {
+    const theme = useTheme();
 
     const [summary, setSummary] = useState(null);
     const [pairs, setPairs] = useState([]);
@@ -61,6 +162,16 @@ export default function Reports() {
         }
     ];
 
+    const pairChartData = buildMovementChartData(
+        pairs,
+        "total"
+    );
+
+    const hourlyChartData = buildMovementChartData(
+        hours,
+        "average"
+    );
+
     return (
         <Box>
             <Typography variant="h4" mb={3}>
@@ -85,7 +196,11 @@ export default function Reports() {
 
                     <Typography
                         variant="h4"
-                        color={summary.total_profit >= 0 ? "success.main" : "error.main"}
+                        color={
+                            summary.total_profit >= 0
+                                ? "success.main"
+                                : "error.main"
+                        }
                     >
                         {summary.total_profit} €
                     </Typography>
@@ -132,12 +247,12 @@ export default function Reports() {
                     gap: 3
                 }}
             >
-                <Paper sx={{ p: 3, height: 380 }}>
+                <Paper sx={{ p: 3 }}>
                     <Typography variant="h6" mb={2}>
                         Win / Loss Ratio
                     </Typography>
 
-                    <ResponsiveContainer width="100%" height="85%">
+                    <ChartContainer height={320}>
                         <PieChart>
                             <Pie
                                 data={winLossData}
@@ -145,42 +260,110 @@ export default function Reports() {
                                 nameKey="name"
                                 outerRadius={110}
                                 label
+                            >
+                                <Cell
+                                    fill={theme.palette.success.main}
+                                />
+                                <Cell
+                                    fill={theme.palette.error.main}
+                                />
+                            </Pie>
+
+                            <Tooltip
+                                content={<ChartTooltip />}
                             />
-                            <Tooltip />
                         </PieChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </Paper>
 
-                <Paper sx={{ p: 3, height: 380 }}>
+                <Paper sx={{ p: 3 }}>
                     <Typography variant="h6" mb={2}>
                         Pair Performance
                     </Typography>
 
-                    <ResponsiveContainer width="100%" height="85%">
-                        <BarChart data={pairs}>
-                            <CartesianGrid />
-                            <XAxis dataKey="label" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="value" />
+                    <ChartContainer height={320}>
+                        <BarChart data={pairChartData}>
+                            <CartesianGrid
+                                stroke={theme.palette.divider}
+                                strokeDasharray="3 3"
+                            />
+
+                            <XAxis
+                                dataKey="label"
+                                tick={{
+                                    fill: theme.palette.text.secondary
+                                }}
+                            />
+
+                            <YAxis
+                                tick={{
+                                    fill: theme.palette.text.secondary
+                                }}
+                            />
+
+                            <Tooltip
+                                content={<ReportsChartTooltip />}
+                            />
+
+                            <Bar dataKey="value">
+                                {pairChartData.map((item, index) => (
+                                    <Cell
+                                        key={`pair-${item.label}-${index}`}
+                                        fill={
+                                            item.value >= 0
+                                                ? theme.palette.success.main
+                                                : theme.palette.error.main
+                                        }
+                                    />
+                                ))}
+                            </Bar>
                         </BarChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </Paper>
 
-                <Paper sx={{ p: 3, height: 380 }}>
+                <Paper sx={{ p: 3 }}>
                     <Typography variant="h6" mb={2}>
                         Hourly Performance
                     </Typography>
 
-                    <ResponsiveContainer width="100%" height="85%">
-                        <BarChart data={hours}>
-                            <CartesianGrid />
-                            <XAxis dataKey="label" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="average" />
+                    <ChartContainer height={320}>
+                        <BarChart data={hourlyChartData}>
+                            <CartesianGrid
+                                stroke={theme.palette.divider}
+                                strokeDasharray="3 3"
+                            />
+
+                            <XAxis
+                                dataKey="label"
+                                tick={{
+                                    fill: theme.palette.text.secondary
+                                }}
+                            />
+
+                            <YAxis
+                                tick={{
+                                    fill: theme.palette.text.secondary
+                                }}
+                            />
+
+                            <Tooltip
+                                content={<ReportsChartTooltip />}
+                            />
+
+                            <Bar dataKey="value">
+                                {hourlyChartData.map((item, index) => (
+                                    <Cell
+                                        key={`hour-${item.label}-${index}`}
+                                        fill={
+                                            item.value >= 0
+                                                ? theme.palette.success.main
+                                                : theme.palette.error.main
+                                        }
+                                    />
+                                ))}
+                            </Bar>
                         </BarChart>
-                    </ResponsiveContainer>
+                    </ChartContainer>
                 </Paper>
 
                 <Paper sx={{ p: 3 }}>
@@ -204,17 +387,17 @@ export default function Reports() {
                             color="primary"
                         />
 
-                            {summary.points_trades > 0 && (
-                        <Chip
-                            label={`Non-Forex Points: ${summary.total_points}`}
-                            color="warning"
-                        />
-)}
+                        {summary.points_trades > 0 && (
+                            <Chip
+                                label={`Non-Forex Points: ${summary.total_points}`}
+                                color="warning"
+                            />
+                        )}
 
-<Chip
-    label={`Average Forex Pips: ${summary.average_pips}`}
-    color="secondary"
-/>
+                        <Chip
+                            label={`Average Forex Pips: ${summary.average_pips}`}
+                            color="secondary"
+                        />
                     </Stack>
                 </Paper>
             </Box>

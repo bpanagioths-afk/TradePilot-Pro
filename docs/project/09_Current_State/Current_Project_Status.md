@@ -1,8 +1,16 @@
 # Current Project Status
 
-Status updated after Sprint 29.
+Status updated after Sprint 30.
 
-## Completed Through Sprint 29
+## Release State
+
+```text
+Version 0.9 — Completed
+Sprint 30 — Completed
+Next: Version 1.0 / Sprint 31 planning and audit
+```
+
+## Completed Through Sprint 30
 
 ### Backend
 
@@ -19,15 +27,21 @@ Status updated after Sprint 29.
 - Portfolio Average Pips includes Forex trades only.
 - Portfolio Allocation groups exposure by asset class.
 - Legacy `mt5_sync.py` retained only as a compatibility wrapper.
+- Explicit MT5 terminal connection policy prevents automatic terminal startup.
+- Live MT5 endpoints and sync use only an already-running local terminal.
 
 ### Frontend
 
 - Shared TradePilot Theme, PageLayout and Widget System.
 - Portfolio remains the reference UI implementation.
+- Route-level lazy loading through React `lazy()` and `Suspense`.
+- Shared chart infrastructure through `ChartContainer` and `ChartTooltip`.
+- Direct `ResponsiveContainer` usage centralized in one file.
+- Dashboard Equity Chart uses the shared chart infrastructure.
+- Portfolio, Analytics, Psychology and Reports charts use the shared chart infrastructure.
+- Reports consumes the canonical `movement_breakdown` contract.
 - Dashboard displays Forex Pips and Non-Forex Points separately.
-- Analytics uses the shared movement-breakdown contract.
 - Trades and Trade Details show the correct movement unit.
-- Reports and Psychology support multi-asset movement values.
 - Portfolio Allocation displays exposure by asset class.
 - Production build succeeds.
 
@@ -35,21 +49,33 @@ Status updated after Sprint 29.
 
 ```text
 MT5 Symbol Metadata
-↓
+        ↓
 Movement Engine
-↓
+        ↓
 Trade movement_value + movement_unit + asset_class
-↓
+        ↓
 Movement / Analytics Engines
-↓
+        ↓
 Dashboard, Portfolio and Analytics APIs
-↓
-Shared Widget UI
+        ↓
+Shared Widget + Shared Chart UI
 ```
+
+Current local MT5 connection model:
+
+```text
+TradePilot Pro
+        ↓ explicit user action
+Already-running local MT5 terminal
+        ↓
+Broker
+```
+
+TradePilot Pro must not start MT5 automatically.
 
 ## Mandatory Decisions
 
-D-001 through D-055 remain binding, with special enforcement of:
+D-001 through D-059 remain binding, with special enforcement of:
 
 - D-049 — Single Source of Information
 - D-050 — Audit Before New Code
@@ -58,18 +84,35 @@ D-001 through D-055 remain binding, with special enforcement of:
 - D-053 — Shared Widget System
 - D-054 — Portfolio Reference UI
 - D-055 — Multi-Asset MT5 Engine
+- D-056 — Tree Verification Before File Modification
+- D-057 — Exact Edit Instructions
+- D-058 — Backend Is the Single Business Logic Authority
+- D-059 — Portfolio Is the Reference Module
 
 ## Validation State
 
 - Real MT5 synchronization: passed.
 - Backend compile: passed.
-- Vulture 100% confidence audit: no findings.
 - Frontend production build: passed.
-- Known non-blocking warning: frontend bundle exceeds the default 500 kB warning threshold.
+- Shared chart audit: passed.
+- Reports real-contract regression check: passed.
+- MT5 automatic-launch regression check: passed.
+
+## Deferred Commercial Architecture
+
+The following are intentionally deferred beyond Version 0.9:
+
+- User authentication and authorization.
+- Roles and subscription validation.
+- Secure credential storage.
+- Cloud or local TradePilot MT5 Connector service.
+- Broker API / Manager API integration.
+- Multi-user tenant isolation.
+- Commercial licensing and billing.
 
 ## Next Sprint Direction
 
-Sprint 30 focuses on Shared Chart Infrastructure and frontend performance cleanup without changing the validated multi-asset movement contract.
+Sprint 31 starts Version 1.0 with audit and planning first. No commercial or multi-user implementation should begin before the existing user, account, database, API and security foundations are fully audited.
 
 ## Workspace Ownership
 
