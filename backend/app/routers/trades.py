@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from sqlalchemy.orm import Session
 import os
 import shutil
 from uuid import uuid4
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from sqlalchemy.orm import Session
 
 from app.core.deps import (
     get_current_user,
@@ -16,6 +17,7 @@ from app.utils.trade_stats import (
     calculate_pips,
     calculate_rr,
 )
+
 
 router = APIRouter(
     prefix="/trades",
@@ -189,25 +191,39 @@ def upload_screenshot(
         )
 
     upload_dir = "uploads/screenshots"
-
     os.makedirs(upload_dir, exist_ok=True)
 
-    file_extension = os.path.splitext(file.filename)[1]
+    original_filename = file.filename or ""
+    file_extension = os.path.splitext(original_filename)[1].lower()
 
-    allowed_extensions = [
+    allowed_extensions = {
         ".jpg",
         ".jpeg",
         ".png",
         ".webp",
-    ]
+    }
 
-    if file_extension.lower() not in allowed_extensions:
+    allowed_content_types = {
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+    }
+
+    if file_extension not in allowed_extensions:
         raise HTTPException(
             status_code=400,
             detail="Unsupported image format",
         )
 
-    new_filename = f"{trade_id}_{uuid4().hex}{file_extension}"
+    if file.content_type not in allowed_content_types:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid image content type",
+        )
+
+    new_filename = (
+        f"{trade_id}_{uuid4().hex}{file_extension}"
+    )
 
     file_path = os.path.join(
         upload_dir,
@@ -220,7 +236,9 @@ def upload_screenshot(
             buffer,
         )
 
-    trade.screenshot_path = f"/uploads/screenshots/{new_filename}"
+    trade.screenshot_path = (
+        f"/uploads/screenshots/{new_filename}"
+    )
 
     db.commit()
     db.refresh(trade)

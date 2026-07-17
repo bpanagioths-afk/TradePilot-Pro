@@ -7,34 +7,11 @@ from app.models.trading_plan import TradingPlan
 from app.models.user import User
 from app.services.rule_engine import evaluate_trade
 
+
 router = APIRouter(
     prefix="/rule-engine",
     tags=["Rule Engine"],
 )
-
-
-@router.get("/test")
-def test_rule_engine():
-    class FakeTrade:
-        risk_reward = 1.5
-        session_name = "Asia"
-
-    class FakeTradingPlan:
-        minimum_rr = 2
-        session_asia = False
-        session_london = True
-        session_newyork = True
-        session_overlap = True
-        maximum_trades_day = 2
-
-    result = evaluate_trade(
-        trade=FakeTrade(),
-        trading_plan=FakeTradingPlan(),
-        trades_today_count=3,
-        has_high_impact_news=False,
-    )
-
-    return result
 
 
 @router.get("/trade/{trade_id}")
@@ -73,11 +50,9 @@ def evaluate_real_trade(
             detail="Default trading plan not found",
         )
 
-    result = evaluate_trade(
+    return evaluate_trade(
         trade=trade,
         trading_plan=trading_plan,
         trades_today_count=1,
         has_high_impact_news=False,
     )
-
-    return result

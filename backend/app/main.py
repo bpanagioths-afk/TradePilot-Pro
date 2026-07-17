@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+
+from app.core.database import Base, engine
+from app.core.deps import get_current_user
 
 from app.routers.auth import router as auth_router
 from app.routers.trades import router as trades_router
@@ -12,7 +15,6 @@ from app.routers.rule_engine import router as rule_engine_router
 from app.routers.portfolio import router as portfolio_legacy_router
 
 from app.features.portfolio.api import router as portfolio_router
-from app.core.database import Base, engine
 
 from app.models.trade import Trade
 from app.models.user import User
@@ -49,32 +51,58 @@ app.mount(
     name="uploads",
 )
 
+# Public authentication endpoints
 app.include_router(auth_router)
-app.include_router(trades_router)
-app.include_router(dashboard_router)
-app.include_router(mt5_router)
-app.include_router(exports_router)
-app.include_router(trading_plans_router)
-app.include_router(rule_engine_router)
-app.include_router(portfolio_legacy_router)
 
+# Protected application endpoints
+protected_dependencies = [
+    Depends(get_current_user),
+]
+
+app.include_router(
+    trades_router,
+    dependencies=protected_dependencies,
+)
+app.include_router(
+    dashboard_router,
+    dependencies=protected_dependencies,
+)
+app.include_router(
+    mt5_router,
+    dependencies=protected_dependencies,
+)
+app.include_router(
+    exports_router,
+    dependencies=protected_dependencies,
+)
+app.include_router(
+    trading_plans_router,
+    dependencies=protected_dependencies,
+)
+app.include_router(
+    rule_engine_router,
+    dependencies=protected_dependencies,
+)
+app.include_router(
+    portfolio_legacy_router,
+    dependencies=protected_dependencies,
+)
 app.include_router(
     portfolio_router,
     prefix="/api/portfolio",
     tags=["Portfolio"],
+    dependencies=protected_dependencies,
 )
 
 
 @app.on_event("startup")
 def startup():
-
     # start_scheduler()
     pass
 
 
 @app.get("/")
 def home():
-
     return {
         "status": "ok",
     }

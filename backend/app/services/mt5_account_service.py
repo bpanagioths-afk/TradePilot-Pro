@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 try:
@@ -7,28 +9,34 @@ except ImportError:
 
 from app.models.mt5_account import MT5Account
 from app.models.trade import Trade
+from app.schemas.mt5_account import (
+    MT5AccountCreate,
+    MT5AccountSummary,
+    MT5AccountUpdate,
+)
 from app.services.mt5.terminal_connection import (
     initialize_mt5_if_running,
 )
 
-from app.schemas.mt5_account import (
-    MT5AccountCreate,
-    MT5AccountUpdate,
-    MT5AccountSummary,
-)
 
-from datetime import datetime
-
-
-def get_accounts(db: Session):
-
-    return db.query(MT5Account).all()
+def get_accounts(
+    db: Session,
+    user_id: int,
+):
+    return (
+        db.query(MT5Account)
+        .filter(MT5Account.user_id == user_id)
+        .all()
+    )
 
 
-def create_account(db: Session, data: MT5AccountCreate):
-
+def create_account(
+    db: Session,
+    user_id: int,
+    data: MT5AccountCreate,
+):
     account = MT5Account(
-        user_id=data.user_id,
+        user_id=user_id,
         account_name=data.account_name,
         broker=data.broker,
         login=data.login,
@@ -43,11 +51,18 @@ def create_account(db: Session, data: MT5AccountCreate):
     return account
 
 
-def update_account(db: Session, account_id: int, data: MT5AccountUpdate):
-
+def update_account(
+    db: Session,
+    account_id: int,
+    user_id: int,
+    data: MT5AccountUpdate,
+):
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
@@ -65,11 +80,17 @@ def update_account(db: Session, account_id: int, data: MT5AccountUpdate):
     return account
 
 
-def disable_account(db: Session, account_id: int):
-
+def disable_account(
+    db: Session,
+    account_id: int,
+    user_id: int,
+):
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
@@ -566,12 +587,17 @@ def get_live_mt5_pending_orders():
 
     finally:
         mt5.shutdown()
-
-def get_mt5_account_summary(db: Session, account_id: int):
-
+def get_mt5_account_summary(
+    db: Session,
+    account_id: int,
+    user_id: int,
+):
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
@@ -582,6 +608,7 @@ def get_mt5_account_summary(db: Session, account_id: int):
         db.query(Trade)
         .filter(
             Trade.mt5_account_id == account_id,
+            Trade.user_id == user_id,
             Trade.imported_from_mt5 == True,
             Trade.is_archived == False,
         )
@@ -592,6 +619,7 @@ def get_mt5_account_summary(db: Session, account_id: int):
         db.query(Trade)
         .filter(
             Trade.mt5_account_id == account_id,
+            Trade.user_id == user_id,
             Trade.imported_from_mt5 == True,
             Trade.is_archived == False,
             Trade.close_time == None,

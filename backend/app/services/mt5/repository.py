@@ -7,12 +7,14 @@ def get_trade_by_position(
     db: Session,
     account_id: int,
     position_id: int,
+    user_id: int,
 ) -> Trade | None:
     return (
         db.query(Trade)
         .filter(
             Trade.mt5_account_id == account_id,
             Trade.mt5_position_id == position_id,
+            Trade.user_id == user_id,
         )
         .first()
     )
@@ -49,6 +51,7 @@ def get_or_create_trade(
         db=db,
         account_id=account_id,
         position_id=position_id,
+        user_id=user_id,
     )
 
     if trade is not None:

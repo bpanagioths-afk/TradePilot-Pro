@@ -210,6 +210,7 @@ def sync(
             db.query(MT5Account)
             .filter(
                 MT5Account.id == account_id,
+                MT5Account.user_id == user_id,
             )
             .first()
         )

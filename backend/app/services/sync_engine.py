@@ -5,11 +5,17 @@ from sqlalchemy.orm import Session
 from app.models.mt5_account import MT5Account
 
 
-def get_mt5_sync_status(db: Session, account_id: int):
-
+def get_mt5_sync_status(
+    db: Session,
+    account_id: int,
+    user_id: int,
+):
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
@@ -24,7 +30,7 @@ def get_mt5_sync_status(db: Session, account_id: int):
 
         if account.last_sync is not None:
             next_sync = account.last_sync + timedelta(
-                minutes=account.sync_interval_minutes
+                minutes=account.sync_interval_minutes,
             )
 
             if next_sync <= datetime.now():
@@ -43,13 +49,16 @@ def get_mt5_sync_status(db: Session, account_id: int):
         "message": get_sync_status_message(
             account.auto_sync,
             account.is_active,
-            status
+            status,
         ),
     }
 
 
-def get_sync_status_message(auto_sync: bool, is_active: bool, status: str):
-
+def get_sync_status_message(
+    auto_sync: bool,
+    is_active: bool,
+    status: str,
+):
     if not is_active:
         return "Account is disabled."
 
