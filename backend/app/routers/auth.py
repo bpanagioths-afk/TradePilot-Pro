@@ -1,0 +1,144 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func, or_
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from app.core.deps import get_current_user, get_db
+from app.core.security import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    create_access_token,
+    hash_password,
+    verify_password,
+)
+from app.models.user import User
+from app.schemas.auth import (
+    LoginRequest,
+    LogoutResponse,
+    RegisterRequest,
+    TokenResponse,
+    UserResponse,
+)
+
+router = APIRouter(
+    prefix="/auth",
+    tags=["Authentication"],
+)
+
+
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def register_user(
+    registration_data: RegisterRequest,
+    db: Session = Depends(get_db),
+):
+
+    normalized_username = registration_data.username.strip()
+    normalized_email = registration_data.email.lower()
+
+    existing_user = db.query(User).filter(
+        or_(
+            func.lower(User.username) == normalized_username.lower(),
+            func.lower(User.email) == normalized_email,
+        )
+    ).first()
+
+    if existing_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username or email is already registered",
+        )
+
+    try:
+        password_hash = hash_password(registration_data.password)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        ) from exc
+
+    user = User(
+        username=normalized_username,
+        email=normalized_email,
+        password_hash=password_hash,
+    )
+
+    db.add(user)
+
+    try:
+        db.commit()
+    except IntegrityError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username or email is already registered",
+        ) from exc
+
+    db.refresh(user)
+
+    return user
+
+
+@router.post(
+    "/login",
+    response_model=TokenResponse,
+)
+def login_user(
+    login_data: LoginRequest,
+    db: Session = Depends(get_db),
+):
+
+    identity = login_data.username_or_email.strip().lower()
+
+    user = db.query(User).filter(
+        or_(
+            func.lower(User.username) == identity,
+            func.lower(User.email) == identity,
+        )
+    ).first()
+
+    if user is None or not verify_password(
+        login_data.password,
+        user.password_hash,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username/email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = create_access_token(user.id)
+
+    return TokenResponse(
+        access_token=access_token,
+        expires_in=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        user=UserResponse.model_validate(user),
+    )
+
+
+@router.get(
+    "/me",
+    response_model=UserResponse,
+)
+def get_authenticated_user(
+    current_user: User = Depends(get_current_user),
+):
+
+    return current_user
+
+
+@router.post(
+    "/logout",
+    response_model=LogoutResponse,
+)
+def logout_user(
+    current_user: User = Depends(get_current_user),
+):
+
+    return LogoutResponse(
+        message=(
+            "Logout confirmed. Remove the access token from the client session."
+        )
+    )
