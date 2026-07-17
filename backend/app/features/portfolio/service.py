@@ -27,12 +27,18 @@ from app.features.portfolio.engines.allocation_engine import (
     calculate as calculate_allocation,
 )
 
-def get_portfolio_dashboard(db: Session):
+def get_portfolio_dashboard(
+    db: Session,
+    user_id: int,
+):
     """
     Portfolio Dashboard Orchestrator
     """
 
-    trades = get_active_trades(db)
+    trades = get_active_trades(
+    db,
+    user_id,
+)
 
     summary = calculate_summary(trades)
 

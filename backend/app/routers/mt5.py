@@ -8,6 +8,8 @@ from fastapi import (
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.deps import get_current_user
+from app.models.user import User
 
 from app.services.mt5_sync import (
     sync_mt5_history,
@@ -44,9 +46,12 @@ router = APIRouter(
 @router.post("/sync")
 def sync_mt5(
     account_id: int = Query(...),
+    current_user: User = Depends(get_current_user),
 ):
-    return sync_mt5_history(account_id)
-
+    return sync_mt5_history(
+        account_id=account_id,
+        user_id=current_user.id,
+    )
 
 @router.get("/status")
 def mt5_status():

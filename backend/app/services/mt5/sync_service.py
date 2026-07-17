@@ -189,7 +189,10 @@ def _apply_position_to_trade(
     trade.notes = "Synced from MT5 - closed position"
 
 
-def sync(account_id: int):
+def sync(
+    account_id: int,
+    user_id: int,
+):
     initialized, initialization_message = (
         initialize_mt5_if_running()
     )
@@ -383,6 +386,7 @@ def sync(account_id: int):
                 db=db,
                 account_id=account_id,
                 position_id=position.position_id,
+                user_id=user_id,
             )
 
             _apply_position_to_trade(

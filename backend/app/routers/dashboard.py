@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.core.database import SessionLocal
+from app.core.deps import get_current_user
 from app.features.portfolio.engines.analytics_engine import (
     calculate_by_hour,
     calculate_by_psychology,
@@ -10,9 +11,9 @@ from app.features.portfolio.engines.analytics_engine import (
 from app.features.portfolio.engines.movement_engine import (
     calculate_breakdown,
     calculate_unit_totals,
-    get_value,
 )
 from app.models.trade import Trade
+from app.models.user import User
 
 
 router = APIRouter(
@@ -21,9 +22,15 @@ router = APIRouter(
 )
 
 
-def _get_trades(db):
+def _get_trades(
+    db,
+    user_id: int,
+):
     return (
         db.query(Trade)
+        .filter(
+            Trade.user_id == user_id,
+        )
         .order_by(Trade.id)
         .all()
     )
@@ -150,20 +157,23 @@ def _build_best_pair(trades):
 
 
 @router.get("/summary")
-def summary():
+def summary(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
-        trades = _get_trades(db)
+        trades = _get_trades(
+            db,
+            current_user.id,
+        )
 
         result = _build_summary(
             trades,
         )
 
-        result["best_pair"] = (
-            _build_best_pair(
-                trades,
-            )
+        result["best_pair"] = _build_best_pair(
+            trades,
         )
 
         return result
@@ -173,12 +183,17 @@ def summary():
 
 
 @router.get("/pairs")
-def pair_statistics():
+def pair_statistics(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
         return calculate_by_symbol(
-            _get_trades(db),
+            _get_trades(
+                db,
+                current_user.id,
+            ),
         )
 
     finally:
@@ -186,12 +201,17 @@ def pair_statistics():
 
 
 @router.get("/hours")
-def hour_statistics():
+def hour_statistics(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
         return calculate_by_hour(
-            _get_trades(db),
+            _get_trades(
+                db,
+                current_user.id,
+            ),
         )
 
     finally:
@@ -199,12 +219,17 @@ def hour_statistics():
 
 
 @router.get("/systems")
-def system_statistics():
+def system_statistics(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
         return calculate_by_system(
-            _get_trades(db),
+            _get_trades(
+                db,
+                current_user.id,
+            ),
         )
 
     finally:
@@ -212,12 +237,17 @@ def system_statistics():
 
 
 @router.get("/psychology")
-def psychology_statistics():
+def psychology_statistics(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
         return calculate_by_psychology(
-            _get_trades(db),
+            _get_trades(
+                db,
+                current_user.id,
+            ),
         )
 
     finally:
@@ -225,12 +255,17 @@ def psychology_statistics():
 
 
 @router.get("/equity")
-def equity_curve():
+def equity_curve(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
         return _build_equity_curve(
-            _get_trades(db),
+            _get_trades(
+                db,
+                current_user.id,
+            ),
         )
 
     finally:
@@ -238,20 +273,23 @@ def equity_curve():
 
 
 @router.get("/full")
-def dashboard_full():
+def dashboard_full(
+    current_user: User = Depends(get_current_user),
+):
     db = SessionLocal()
 
     try:
-        trades = _get_trades(db)
+        trades = _get_trades(
+            db,
+            current_user.id,
+        )
 
         summary_data = _build_summary(
             trades,
         )
 
-        summary_data["best_pair"] = (
-            _build_best_pair(
-                trades,
-            )
+        summary_data["best_pair"] = _build_best_pair(
+            trades,
         )
 
         return {

@@ -1,20 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.core.deps import get_db
+from app.core.deps import get_current_user, get_db
 from app.models.trade import Trade
 from app.models.trading_plan import TradingPlan
+from app.models.user import User
 from app.services.rule_engine import evaluate_trade
 
 router = APIRouter(
     prefix="/rule-engine",
-    tags=["Rule Engine"]
+    tags=["Rule Engine"],
 )
 
 
 @router.get("/test")
 def test_rule_engine():
-
     class FakeTrade:
         risk_reward = 1.5
         session_name = "Asia"
@@ -31,7 +31,7 @@ def test_rule_engine():
         trade=FakeTrade(),
         trading_plan=FakeTradingPlan(),
         trades_today_count=3,
-        has_high_impact_news=False
+        has_high_impact_news=False,
     )
 
     return result
@@ -40,34 +40,44 @@ def test_rule_engine():
 @router.get("/trade/{trade_id}")
 def evaluate_real_trade(
     trade_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id,
+        )
+        .first()
+    )
 
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
-
-    if not trade:
+    if trade is None:
         raise HTTPException(
             status_code=404,
-            detail="Trade not found"
+            detail="Trade not found",
         )
 
-    trading_plan = db.query(TradingPlan).filter(
-        TradingPlan.is_default == True
-    ).first()
+    trading_plan = (
+        db.query(TradingPlan)
+        .filter(
+            TradingPlan.user_id == current_user.id,
+            TradingPlan.is_default.is_(True),
+        )
+        .first()
+    )
 
-    if not trading_plan:
+    if trading_plan is None:
         raise HTTPException(
             status_code=404,
-            detail="Default trading plan not found"
+            detail="Default trading plan not found",
         )
 
     result = evaluate_trade(
         trade=trade,
         trading_plan=trading_plan,
         trades_today_count=1,
-        has_high_impact_news=False
+        has_high_impact_news=False,
     )
 
     return result

@@ -1,32 +1,34 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 import os
 import shutil
 from uuid import uuid4
 
-from app.core.deps import get_db
+from app.core.deps import (
+    get_current_user,
+    get_db,
+)
 from app.models.trade import Trade
+from app.models.user import User
 from app.schemas.trade import TradeCreate
-
 from app.utils.trade_stats import (
+    calculate_duration,
     calculate_pips,
     calculate_rr,
-    calculate_duration
 )
 
 router = APIRouter(
     prefix="/trades",
-    tags=["Trades"]
+    tags=["Trades"],
 )
 
 
 def apply_trade_calculations(trade_obj):
-
     if trade_obj.exit_price is not None:
         trade_obj.profit_pips = calculate_pips(
             trade_obj.direction,
             trade_obj.entry_price,
-            trade_obj.exit_price
+            trade_obj.exit_price,
         )
 
         trade_obj.is_win = 1 if trade_obj.profit_pips > 0 else 0
@@ -35,23 +37,24 @@ def apply_trade_calculations(trade_obj):
         trade_obj.risk_reward = calculate_rr(
             trade_obj.entry_price,
             trade_obj.stop_loss,
-            trade_obj.take_profit
+            trade_obj.take_profit,
         )
 
     if trade_obj.open_time is not None and trade_obj.close_time is not None:
         trade_obj.duration_minutes = calculate_duration(
             trade_obj.open_time,
-            trade_obj.close_time
+            trade_obj.close_time,
         )
 
 
 @router.post("/")
 def create_trade(
     trade: TradeCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
     new_trade = Trade(
+        user_id=current_user.id,
         symbol=trade.symbol,
         direction=trade.direction,
         entry_price=trade.entry_price,
@@ -67,7 +70,7 @@ def create_trade(
         psychology_state_id=trade.psychology_state_id,
         tradingview_link=trade.tradingview_link,
         screenshot_path=trade.screenshot_path,
-        notes=trade.notes
+        notes=trade.notes,
     )
 
     apply_trade_calculations(new_trade)
@@ -81,26 +84,36 @@ def create_trade(
 
 @router.get("/")
 def get_trades(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
-    return db.query(Trade).order_by(Trade.id.desc()).all()
+    return (
+        db.query(Trade)
+        .filter(Trade.user_id == current_user.id)
+        .order_by(Trade.id.desc())
+        .all()
+    )
 
 
 @router.get("/{trade_id}")
 def get_trade(
     trade_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
             status_code=404,
-            detail="Trade not found"
+            detail="Trade not found",
         )
 
     return trade
@@ -110,17 +123,22 @@ def get_trade(
 def update_trade(
     trade_id: int,
     trade_data: TradeCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
             status_code=404,
-            detail="Trade not found"
+            detail="Trade not found",
         )
 
     trade.symbol = trade_data.symbol
@@ -152,17 +170,22 @@ def update_trade(
 def upload_screenshot(
     trade_id: int,
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
             status_code=404,
-            detail="Trade not found"
+            detail="Trade not found",
         )
 
     upload_dir = "uploads/screenshots"
@@ -175,26 +198,26 @@ def upload_screenshot(
         ".jpg",
         ".jpeg",
         ".png",
-        ".webp"
+        ".webp",
     ]
 
     if file_extension.lower() not in allowed_extensions:
         raise HTTPException(
             status_code=400,
-            detail="Unsupported image format"
+            detail="Unsupported image format",
         )
 
     new_filename = f"{trade_id}_{uuid4().hex}{file_extension}"
 
     file_path = os.path.join(
         upload_dir,
-        new_filename
+        new_filename,
     )
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(
             file.file,
-            buffer
+            buffer,
         )
 
     trade.screenshot_path = f"/uploads/screenshots/{new_filename}"
@@ -204,29 +227,34 @@ def upload_screenshot(
 
     return {
         "message": "Screenshot uploaded successfully",
-        "screenshot_path": trade.screenshot_path
+        "screenshot_path": trade.screenshot_path,
     }
 
 
 @router.delete("/{trade_id}")
 def delete_trade(
     trade_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id,
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
             status_code=404,
-            detail="Trade not found"
+            detail="Trade not found",
         )
 
     db.delete(trade)
     db.commit()
 
     return {
-        "message": "Trade deleted successfully"
+        "message": "Trade deleted successfully",
     }

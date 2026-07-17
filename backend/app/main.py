@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+from app.routers.auth import router as auth_router
 from app.routers.trades import router as trades_router
 from app.routers.dashboard import router as dashboard_router
 from app.routers.mt5 import router as mt5_router
@@ -18,16 +19,13 @@ from app.models.user import User
 from app.models.trading_plan import TradingPlan, TradingPlanHistory
 from app.models.mt5_account import MT5Account
 
-from app.services.scheduler import (
-    start_scheduler
-)
-
+from app.services.scheduler import start_scheduler
 
 
 app = FastAPI(
     title="TradePilot Pro API",
     version="1.0.0",
-    description="Professional Trading Journal Backend"
+    description="Professional Trading Journal Backend",
 )
 
 app.add_middleware(
@@ -48,9 +46,10 @@ Base.metadata.create_all(bind=engine)
 app.mount(
     "/uploads",
     StaticFiles(directory="uploads"),
-    name="uploads"
+    name="uploads",
 )
 
+app.include_router(auth_router)
 app.include_router(trades_router)
 app.include_router(dashboard_router)
 app.include_router(mt5_router)
@@ -65,15 +64,17 @@ app.include_router(
     tags=["Portfolio"],
 )
 
+
 @app.on_event("startup")
 def startup():
 
-   # start_scheduler()
-   pass
+    # start_scheduler()
+    pass
+
 
 @app.get("/")
 def home():
 
     return {
-        "status": "ok"
+        "status": "ok",
     }

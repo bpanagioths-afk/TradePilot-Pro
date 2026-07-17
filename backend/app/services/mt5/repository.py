@@ -23,10 +23,12 @@ def create_trade(
     *,
     account_id: int,
     position_id: int,
+    user_id: int,
 ) -> Trade:
     trade = Trade(
         mt5_account_id=account_id,
         mt5_position_id=position_id,
+        user_id=user_id,
         imported_from_mt5=True,
         is_archived=False,
     )
@@ -41,6 +43,7 @@ def get_or_create_trade(
     *,
     account_id: int,
     position_id: int,
+    user_id: int,
 ) -> tuple[Trade, bool]:
     trade = get_trade_by_position(
         db=db,
@@ -55,6 +58,7 @@ def get_or_create_trade(
         db=db,
         account_id=account_id,
         position_id=position_id,
+        user_id=user_id,
     )
 
     return trade, True

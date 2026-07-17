@@ -98,6 +98,13 @@ class Trade(Base):
         nullable=True,
     )
 
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+
     mt5_ticket = Column(
         BigInteger,
         nullable=True,
