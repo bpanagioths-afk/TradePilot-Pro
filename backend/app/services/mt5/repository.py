@@ -5,12 +5,14 @@ from app.models.trade import Trade
 
 def get_trade_by_position(
     db: Session,
+    user_id: int,
     account_id: int,
     position_id: int,
 ) -> Trade | None:
     return (
         db.query(Trade)
         .filter(
+            Trade.user_id == user_id,
             Trade.mt5_account_id == account_id,
             Trade.mt5_position_id == position_id,
         )
@@ -21,10 +23,12 @@ def get_trade_by_position(
 def create_trade(
     db: Session,
     *,
+    user_id: int,
     account_id: int,
     position_id: int,
 ) -> Trade:
     trade = Trade(
+        user_id=user_id,
         mt5_account_id=account_id,
         mt5_position_id=position_id,
         imported_from_mt5=True,
@@ -39,11 +43,13 @@ def create_trade(
 def get_or_create_trade(
     db: Session,
     *,
+    user_id: int,
     account_id: int,
     position_id: int,
 ) -> tuple[Trade, bool]:
     trade = get_trade_by_position(
         db=db,
+        user_id=user_id,
         account_id=account_id,
         position_id=position_id,
     )
@@ -53,6 +59,7 @@ def get_or_create_trade(
 
     trade = create_trade(
         db=db,
+        user_id=user_id,
         account_id=account_id,
         position_id=position_id,
     )

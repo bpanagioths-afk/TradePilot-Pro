@@ -189,7 +189,10 @@ def _apply_position_to_trade(
     trade.notes = "Synced from MT5 - closed position"
 
 
-def sync(account_id: int):
+def sync(
+    account_id: int,
+    user_id: int,
+):
     initialized, initialization_message = (
         initialize_mt5_if_running()
     )
@@ -207,6 +210,7 @@ def sync(account_id: int):
             db.query(MT5Account)
             .filter(
                 MT5Account.id == account_id,
+                MT5Account.user_id == user_id,
             )
             .first()
         )
@@ -215,6 +219,39 @@ def sync(account_id: int):
             return {
                 "success": False,
                 "message": "MT5 account not found",
+            }
+
+        connected_account = mt5.account_info()
+
+        if connected_account is None:
+            return {
+                "success": False,
+                "message": (
+                    "Could not read the connected MT5 account. "
+                    f"MT5 error: {mt5.last_error()}"
+                ),
+            }
+
+        try:
+            selected_login = int(account.login)
+        except (TypeError, ValueError):
+            return {
+                "success": False,
+                "message": "The selected MT5 account has an invalid login.",
+            }
+
+        connected_login = int(connected_account.login)
+
+        if connected_login != selected_login:
+            return {
+                "success": False,
+                "message": (
+                    "MT5 account mismatch. "
+                    f"Selected account: {selected_login}. "
+                    f"Connected MT5 account: {connected_login}. "
+                    "Log in to the selected account in MetaTrader 5 "
+                    "and try again."
+                ),
             }
 
         date_to = datetime.now()
@@ -381,6 +418,7 @@ def sync(account_id: int):
 
             trade, is_new = get_or_create_trade(
                 db=db,
+                user_id=user_id,
                 account_id=account_id,
                 position_id=position.position_id,
             )

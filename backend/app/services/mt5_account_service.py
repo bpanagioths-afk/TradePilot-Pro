@@ -19,16 +19,24 @@ from app.schemas.mt5_account import (
 
 from datetime import datetime
 
+def get_accounts(
+    db: Session,
+    user_id: int,
+):
+    return (
+        db.query(MT5Account)
+        .filter(MT5Account.user_id == user_id)
+        .all()
+    )
 
-def get_accounts(db: Session):
 
-    return db.query(MT5Account).all()
-
-
-def create_account(db: Session, data: MT5AccountCreate):
-
+def create_account(
+    db: Session,
+    data: MT5AccountCreate,
+    user_id: int,
+):
     account = MT5Account(
-        user_id=data.user_id,
+        user_id=user_id,
         account_name=data.account_name,
         broker=data.broker,
         login=data.login,
@@ -43,11 +51,18 @@ def create_account(db: Session, data: MT5AccountCreate):
     return account
 
 
-def update_account(db: Session, account_id: int, data: MT5AccountUpdate):
-
+def update_account(
+    db: Session,
+    account_id: int,
+    data: MT5AccountUpdate,
+    user_id: int,
+):
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
@@ -65,24 +80,42 @@ def update_account(db: Session, account_id: int, data: MT5AccountUpdate):
     return account
 
 
-def disable_account(db: Session, account_id: int):
-
+def disable_account(
+    db: Session,
+    account_id: int,
+    user_id: int,
+):
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
     if account is None:
         return None
 
-    account.is_active = False
+    trades_count = (
+        db.query(Trade)
+        .filter(
+            Trade.mt5_account_id == account_id,
+            Trade.user_id == user_id,
+            Trade.is_archived == False,
+        )
+        .count()
+    )
 
+    if trades_count > 0:
+        raise ValueError(
+            "Cannot delete MT5 account because it contains trades."
+        )
+
+    db.delete(account)
     db.commit()
-    db.refresh(account)
 
     return account
-
 
 def get_live_mt5_metrics():
 
@@ -567,11 +600,18 @@ def get_live_mt5_pending_orders():
     finally:
         mt5.shutdown()
 
-def get_mt5_account_summary(db: Session, account_id: int):
+def get_mt5_account_summary(
+    db: Session,
+    account_id: int,
+    user_id: int,
+):
 
     account = (
         db.query(MT5Account)
-        .filter(MT5Account.id == account_id)
+        .filter(
+            MT5Account.id == account_id,
+            MT5Account.user_id == user_id,
+        )
         .first()
     )
 
@@ -582,6 +622,7 @@ def get_mt5_account_summary(db: Session, account_id: int):
         db.query(Trade)
         .filter(
             Trade.mt5_account_id == account_id,
+            Trade.user_id == user_id,
             Trade.imported_from_mt5 == True,
             Trade.is_archived == False,
         )
@@ -592,7 +633,8 @@ def get_mt5_account_summary(db: Session, account_id: int):
         db.query(Trade)
         .filter(
             Trade.mt5_account_id == account_id,
-            Trade.imported_from_mt5 == True,
+            Trade.user_id == user_id,
+            Trade.imported_from_mt5 == True, 
             Trade.is_archived == False,
             Trade.close_time == None,
         )

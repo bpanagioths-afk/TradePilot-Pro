@@ -7,14 +7,25 @@ from app.core.deps import get_current_user, get_db
 from app.core.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
     create_access_token,
+    create_password_reset_token,
+    decode_password_reset_token,
     hash_password,
     verify_password,
 )
 from app.models.user import User
+
+
+from app.services.email_service import (
+    send_password_reset_email,
+)
 from app.schemas.auth import (
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
     LoginRequest,
     LogoutResponse,
     RegisterRequest,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
     TokenResponse,
     UserResponse,
 )
@@ -117,6 +128,96 @@ def login_user(
         user=UserResponse.model_validate(user),
     )
 
+@router.post(
+    "/forgot-password",
+    response_model=ForgotPasswordResponse,
+)
+def forgot_password(
+    request_data: ForgotPasswordRequest,
+    db: Session = Depends(get_db),
+):
+
+    identity = request_data.username_or_email.strip().lower()
+
+    user = db.query(User).filter(
+        or_(
+            func.lower(User.username) == identity,
+            func.lower(User.email) == identity,
+        )
+    ).first()
+
+    generic_message = (
+        "If an account matches the provided information, "
+        "a password reset email has been sent."
+    )
+
+    if user is None:
+        return ForgotPasswordResponse(
+            message=generic_message,
+        )
+
+    reset_token = create_password_reset_token(user.id)
+
+    try:
+        send_password_reset_email(
+            recipient_email=user.email,
+            reset_token=reset_token,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Password reset email could not be sent",
+        ) from exc
+
+    return ForgotPasswordResponse(
+        message=generic_message,
+    )
+
+
+@router.post(
+    "/reset-password",
+    response_model=ResetPasswordResponse,
+)
+def reset_password(
+    request_data: ResetPasswordRequest,
+    db: Session = Depends(get_db),
+):
+
+    try:
+        user_id = decode_password_reset_token(
+            request_data.token
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
+
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    try:
+        user.password_hash = hash_password(
+            request_data.new_password
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(exc),
+        ) from exc
+
+    db.commit()
+
+    return ResetPasswordResponse(
+        message="Password updated successfully"
+    )
 
 @router.get(
     "/me",

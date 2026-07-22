@@ -22,6 +22,13 @@ class Trade(Base):
         primary_key=True,
     )
 
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+        index=True,
+    )
+
     symbol = Column(String)
 
     direction = Column(String)

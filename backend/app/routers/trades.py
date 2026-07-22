@@ -4,8 +4,9 @@ import os
 import shutil
 from uuid import uuid4
 
-from app.core.deps import get_db
+from app.core.deps import get_current_user, get_db
 from app.models.trade import Trade
+from app.models.user import User
 from app.schemas.trade import TradeCreate
 
 from app.utils.trade_stats import (
@@ -48,10 +49,12 @@ def apply_trade_calculations(trade_obj):
 @router.post("/")
 def create_trade(
     trade: TradeCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
     new_trade = Trade(
+        user_id=current_user.id,
         symbol=trade.symbol,
         direction=trade.direction,
         entry_price=trade.entry_price,
@@ -81,21 +84,33 @@ def create_trade(
 
 @router.get("/")
 def get_trades(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
-    return db.query(Trade).order_by(Trade.id.desc()).all()
+    return (
+        db.query(Trade)
+        .filter(Trade.user_id == current_user.id)
+        .order_by(Trade.id.desc())
+        .all()
+    )
 
 
 @router.get("/{trade_id}")
 def get_trade(
     trade_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
@@ -110,12 +125,18 @@ def get_trade(
 def update_trade(
     trade_id: int,
     trade_data: TradeCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
@@ -152,12 +173,18 @@ def update_trade(
 def upload_screenshot(
     trade_id: int,
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(
@@ -211,12 +238,18 @@ def upload_screenshot(
 @router.delete("/{trade_id}")
 def delete_trade(
     trade_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
 
-    trade = db.query(Trade).filter(
-        Trade.id == trade_id
-    ).first()
+    trade = (
+        db.query(Trade)
+        .filter(
+            Trade.id == trade_id,
+            Trade.user_id == current_user.id
+        )
+        .first()
+    )
 
     if not trade:
         raise HTTPException(

@@ -84,3 +84,44 @@ class TokenResponse(BaseModel):
 class LogoutResponse(BaseModel):
 
     message: str
+
+class ForgotPasswordRequest(BaseModel):
+
+    username_or_email: str = Field(
+        min_length=3,
+        max_length=255,
+    )
+
+    @field_validator("username_or_email")
+    @classmethod
+    def strip_identity(cls, value: str) -> str:
+
+        cleaned_value = value.strip()
+
+        if not cleaned_value:
+            raise ValueError(
+                "Username or email must not be empty"
+            )
+
+        return cleaned_value
+
+
+class ForgotPasswordResponse(BaseModel):
+
+    message: str
+
+
+class ResetPasswordRequest(BaseModel):
+
+    token: str = Field(min_length=20)
+
+    new_password: str = Field(
+        min_length=8,
+        max_length=128,
+    )
+
+
+class ResetPasswordResponse(BaseModel):
+
+    message: str
+

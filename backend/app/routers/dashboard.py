@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from app.core.database import SessionLocal
+from app.core.deps import get_current_user, get_db
 from app.features.portfolio.engines.analytics_engine import (
     calculate_by_hour,
     calculate_by_psychology,
@@ -10,9 +11,9 @@ from app.features.portfolio.engines.analytics_engine import (
 from app.features.portfolio.engines.movement_engine import (
     calculate_breakdown,
     calculate_unit_totals,
-    get_value,
 )
 from app.models.trade import Trade
+from app.models.user import User
 
 
 router = APIRouter(
@@ -21,9 +22,13 @@ router = APIRouter(
 )
 
 
-def _get_trades(db):
+def _get_trades(
+    db: Session,
+    user_id: int,
+):
     return (
         db.query(Trade)
+        .filter(Trade.user_id == user_id)
         .order_by(Trade.id)
         .all()
     )
@@ -150,119 +155,115 @@ def _build_best_pair(trades):
 
 
 @router.get("/summary")
-def summary():
-    db = SessionLocal()
+def summary(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    trades = _get_trades(
+        db,
+        current_user.id,
+    )
 
-    try:
-        trades = _get_trades(db)
+    result = _build_summary(
+        trades,
+    )
 
-        result = _build_summary(
-            trades,
-        )
+    result["best_pair"] = _build_best_pair(
+        trades,
+    )
 
-        result["best_pair"] = (
-            _build_best_pair(
-                trades,
-            )
-        )
-
-        return result
-
-    finally:
-        db.close()
+    return result
 
 
 @router.get("/pairs")
-def pair_statistics():
-    db = SessionLocal()
-
-    try:
-        return calculate_by_symbol(
-            _get_trades(db),
-        )
-
-    finally:
-        db.close()
+def pair_statistics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return calculate_by_symbol(
+        _get_trades(
+            db,
+            current_user.id,
+        ),
+    )
 
 
 @router.get("/hours")
-def hour_statistics():
-    db = SessionLocal()
-
-    try:
-        return calculate_by_hour(
-            _get_trades(db),
-        )
-
-    finally:
-        db.close()
+def hour_statistics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return calculate_by_hour(
+        _get_trades(
+            db,
+            current_user.id,
+        ),
+    )
 
 
 @router.get("/systems")
-def system_statistics():
-    db = SessionLocal()
-
-    try:
-        return calculate_by_system(
-            _get_trades(db),
-        )
-
-    finally:
-        db.close()
+def system_statistics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return calculate_by_system(
+        _get_trades(
+            db,
+            current_user.id,
+        ),
+    )
 
 
 @router.get("/psychology")
-def psychology_statistics():
-    db = SessionLocal()
-
-    try:
-        return calculate_by_psychology(
-            _get_trades(db),
-        )
-
-    finally:
-        db.close()
+def psychology_statistics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return calculate_by_psychology(
+        _get_trades(
+            db,
+            current_user.id,
+        ),
+    )
 
 
 @router.get("/equity")
-def equity_curve():
-    db = SessionLocal()
-
-    try:
-        return _build_equity_curve(
-            _get_trades(db),
-        )
-
-    finally:
-        db.close()
+def equity_curve(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return _build_equity_curve(
+        _get_trades(
+            db,
+            current_user.id,
+        ),
+    )
 
 
 @router.get("/full")
-def dashboard_full():
-    db = SessionLocal()
+def dashboard_full(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    trades = _get_trades(
+        db,
+        current_user.id,
+    )
 
-    try:
-        trades = _get_trades(db)
+    summary_data = _build_summary(
+        trades,
+    )
 
-        summary_data = _build_summary(
+    summary_data["best_pair"] = _build_best_pair(
+        trades,
+    )
+
+    return {
+        "summary": summary_data,
+        "equity": _build_equity_curve(
             trades,
-        )
-
-        summary_data["best_pair"] = (
-            _build_best_pair(
-                trades,
-            )
-        )
-
-        return {
-            "summary": summary_data,
-            "equity": _build_equity_curve(
-                trades,
-            ),
-            "pairs": calculate_by_symbol(
-                trades,
-            ),
-        }
-
-    finally:
-        db.close()
+        ),
+        "pairs": calculate_by_symbol(
+            trades,
+        ),
+    }
