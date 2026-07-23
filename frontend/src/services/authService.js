@@ -63,6 +63,15 @@ export function getStoredUser() {
     }
 }
 
+export async function forgotUsername(email) {
+    const response = await api.post(
+        "/auth/forgot-username",
+        { email }
+    );
+
+    return response.data;
+}
+
 export async function forgotPassword(usernameOrEmail) {
     const response = await api.post(
         "/auth/forgot-password",
@@ -89,4 +98,17 @@ export async function resetPassword(
     return response.data;
 }
 
+export async function changePassword(
+    currentPassword,
+    newPassword
+) {
+    const response = await api.post(
+        "/auth/change-password",
+        {
+            current_password: currentPassword,
+            new_password: newPassword,
+        }
+    );
 
+    return response.data;
+}

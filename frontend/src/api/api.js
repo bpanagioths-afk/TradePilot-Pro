@@ -26,6 +26,7 @@ api.interceptors.response.use(
         const isPublicAuthRequest =
             requestUrl.includes("/auth/login") ||
             requestUrl.includes("/auth/register") ||
+            requestUrl.includes("/auth/forgot-username") ||
             requestUrl.includes("/auth/forgot-password") ||
             requestUrl.includes("/auth/reset-password");
 

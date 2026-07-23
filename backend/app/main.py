@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.routers.auth import router as auth_router
 
-
 from app.routers.trades import router as trades_router
 from app.routers.dashboard import router as dashboard_router
 from app.routers.mt5 import router as mt5_router
@@ -13,6 +12,7 @@ from app.routers.rule_engine import router as rule_engine_router
 from app.routers.portfolio import router as portfolio_legacy_router
 
 from app.features.portfolio.api import router as portfolio_router
+from app.features.admin.api import router as admin_router
 from app.core.database import Base, engine
 
 from app.models.trade import Trade
@@ -67,6 +67,8 @@ app.include_router(
     prefix="/api/portfolio",
     tags=["Portfolio"],
 )
+
+app.include_router(admin_router)
 
 @app.on_event("startup")
 def startup():

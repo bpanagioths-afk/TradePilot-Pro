@@ -16,6 +16,8 @@ import { WidgetLoading } from "./components/widgets";
 import { isAuthenticated } from "./services/authService";
 
 const Login = lazy(() => import("./pages/Login"));
+const ForgotUsername = lazy(() => import("./pages/ForgotUsername"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Home = lazy(() => import("./pages/Home"));
@@ -62,55 +64,16 @@ function ProtectedLayout() {
                         element={<Navigate to="/home" replace />}
                     />
 
-                    <Route
-                        path="/home"
-                        element={<Home />}
-                    />
-
-                    <Route
-                        path="/dashboard"
-                        element={<Dashboard />}
-                    />
-
-                    <Route
-                        path="/trades"
-                        element={<Trades />}
-                    />
-
-                    <Route
-                        path="/analytics"
-                        element={<Analytics />}
-                    />
-
-                    <Route
-                        path="/psychology"
-                        element={<Psychology />}
-                    />
-
-                    <Route
-                        path="/reports"
-                        element={<Reports />}
-                    />
-
-                    <Route
-                        path="/portfolio"
-                        element={<Portfolio />}
-                    />
-
-                    <Route
-                        path="/mt5"
-                        element={<MT5 />}
-                    />
-
-                    <Route
-                        path="/settings"
-                        element={<Settings />}
-                    />
-
-                    <Route
-                        path="/trading-plan"
-                        element={<TradingPlan />}
-                    />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/trades" element={<Trades />} />
+                    <Route path="/analytics" element={<Analytics />} />
+                    <Route path="/psychology" element={<Psychology />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/portfolio" element={<Portfolio />} />
+                    <Route path="/mt5" element={<MT5 />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/trading-plan" element={<TradingPlan />} />
 
                     <Route
                         path="*"
@@ -131,6 +94,24 @@ function AppRoutes() {
                     element={
                         <PublicOnlyRoute>
                             <Login />
+                        </PublicOnlyRoute>
+                    }
+                />
+
+                <Route
+                    path="/forgot-username"
+                    element={
+                        <PublicOnlyRoute>
+                            <ForgotUsername />
+                        </PublicOnlyRoute>
+                    }
+                />
+
+                <Route
+                    path="/forgot-password"
+                    element={
+                        <PublicOnlyRoute>
+                            <ForgotPassword />
                         </PublicOnlyRoute>
                     }
                 />

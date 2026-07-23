@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 
 import {
     Alert,
@@ -8,10 +8,16 @@ import {
     Card,
     CardContent,
     CircularProgress,
+    IconButton,
+    InputAdornment,
+    Link,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import { login } from "../services/authService";
 
@@ -21,6 +27,7 @@ export default function Login() {
 
     const [usernameOrEmail, setUsernameOrEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -99,7 +106,7 @@ export default function Login() {
 
                                 <TextField
                                     label="Κωδικός"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     value={password}
                                     onChange={(event) =>
                                         setPassword(event.target.value)
@@ -107,6 +114,32 @@ export default function Login() {
                                     autoComplete="current-password"
                                     required
                                     fullWidth
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label={
+                                                        showPassword
+                                                            ? "Απόκρυψη κωδικού"
+                                                            : "Εμφάνιση κωδικού"
+                                                    }
+                                                    onClick={() =>
+                                                        setShowPassword(
+                                                            (currentValue) =>
+                                                                !currentValue
+                                                        )
+                                                    }
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? (
+                                                        <VisibilityOffIcon />
+                                                    ) : (
+                                                        <VisibilityIcon />
+                                                    )}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
                                 />
 
                                 <Button
@@ -125,6 +158,31 @@ export default function Login() {
                                         "Σύνδεση"
                                     )}
                                 </Button>
+
+                                <Stack
+                                    direction={{
+                                        xs: "column",
+                                        sm: "row"
+                                    }}
+                                    spacing={1}
+                                    justifyContent="space-between"
+                                >
+                                    <Link
+                                        component={RouterLink}
+                                        to="/forgot-username"
+                                        underline="hover"
+                                    >
+                                        Ξέχασα το username
+                                    </Link>
+
+                                    <Link
+                                        component={RouterLink}
+                                        to="/forgot-password"
+                                        underline="hover"
+                                    >
+                                        Ξέχασα τον κωδικό
+                                    </Link>
+                                </Stack>
                             </Stack>
                         </Box>
                     </Stack>
