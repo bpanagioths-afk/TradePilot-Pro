@@ -45,7 +45,27 @@ class User(Base):
         server_default="false",
     )
 
+    is_active = Column(
+        Boolean,
+        nullable=False,
+        default=True,
+        server_default="true",
+    )
+
     created_at = Column(
         DateTime(timezone=False),
+        nullable=False,
         server_default=func.now(),
+    )
+
+    updated_at = Column(
+        DateTime(timezone=False),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+
+    last_login_at = Column(
+        DateTime(timezone=False),
+        nullable=True,
     )

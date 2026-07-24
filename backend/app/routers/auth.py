@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, or_
 from sqlalchemy.exc import IntegrityError
@@ -89,6 +90,16 @@ def login_user(login_data: LoginRequest, db: Session = Depends(get_db)):
             detail="Invalid username/email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is disabled",
+        )
+
+    user.last_login_at = datetime.utcnow()
+    db.commit()
+    db.refresh(user)
 
     access_token = create_access_token(user.id)
     return TokenResponse(
