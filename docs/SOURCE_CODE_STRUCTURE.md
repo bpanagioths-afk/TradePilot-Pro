@@ -2528,3 +2528,136 @@ MT5 symbol metadata
 → Dashboard / Portfolio APIs
 → Dashboard / Analytics / Reports / Psychology / Trades UI
 ```
+
+---
+
+# Sprint 31 Source Structure Update
+
+## Multi-User Backend Foundation
+
+The project now includes the administrative backend required for Version 1.0.
+
+```text
+backend/app/features/
+└── admin/
+    ├── __init__.py
+    ├── api.py
+    ├── repository.py
+    ├── schemas.py
+    └── service.py
+```
+
+Responsibilities:
+
+- `api.py`
+  - Administrative REST endpoints.
+  - Authentication and authorization entry points.
+
+- `repository.py`
+  - User database access.
+  - Search, create and update operations.
+
+- `service.py`
+  - Business rules.
+  - Validation.
+  - Security enforcement.
+  - Password reset workflow.
+
+- `schemas.py`
+  - Request / Response models.
+  - Validation contracts.
+
+---
+
+## User Model
+
+```text
+backend/app/models/
+└── user.py
+```
+
+The User model is now the canonical identity for Version 1.0.
+
+Current responsibilities include:
+
+- Authentication.
+- Authorization.
+- Account lifecycle.
+- Active / Inactive state.
+- Password management.
+- Administrative permissions.
+
+Future commercial features such as subscriptions, licensing and tenant management will extend this model instead of replacing it.
+
+---
+
+## Authentication Flow
+
+```text
+Client
+    ↓
+JWT Authentication
+    ↓
+Authorization Dependencies
+    ↓
+Admin API
+    ↓
+Service Layer
+    ↓
+Repository
+    ↓
+PostgreSQL
+```
+
+Business logic remains exclusively inside the Service layer.
+
+---
+
+## Administrative Endpoints
+
+```text
+GET    /admin/users
+POST   /admin/users
+PUT    /admin/users/{id}
+POST   /admin/users/{id}/reset-password
+```
+
+Only authenticated administrators may access these endpoints.
+
+---
+
+## Sprint 31 Architecture Rule
+
+Administrative functionality follows exactly the same architecture used throughout TradePilot Pro:
+
+```text
+Repository
+        ↓
+Service
+        ↓
+API
+        ↓
+Schemas
+```
+
+No business logic is permitted inside routers or frontend components.
+
+---
+
+## Next Planned Structure
+
+Sprint 31B will introduce:
+
+```text
+frontend/src/features/admin/
+├── components/
+├── dialogs/
+├── hooks/
+├── pages/
+└── services/
+```
+
+The frontend must consume the existing backend APIs without duplicating business logic.
+
+
+

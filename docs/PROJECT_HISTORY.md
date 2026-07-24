@@ -468,3 +468,87 @@ Frontend chart behavior was centralized through `ChartContainer` and `ChartToolt
 The MT5 integration was also corrected so page loading, widget polling and synchronization do not start the local MT5 terminal automatically. TradePilot Pro now connects only to an already-running terminal after explicit user action.
 
 The commercial architecture remains intentionally deferred. Version 1.0 begins with a complete audit of users, account ownership, security, API boundaries and the future connector model before authentication, subscriptions or cloud MT5 access are implemented.
+
+---
+
+# Sprint 31 History — Multi-User Foundation and Administrative User Management
+
+Sprint 31 marks the beginning of Version 1.0 and the transition from a single-user trading journal to a true multi-user platform.
+
+The objective of Sprint 31A was not to introduce new trading functionality, but to establish the backend infrastructure required for secure user administration and future SaaS capabilities.
+
+## Backend Evolution
+
+The authentication system was extended to support administrative authorization while preserving the existing JWT architecture.
+
+A complete Administrative User Management module was implemented using the project's standard architecture:
+
+```text
+Repository
+        ↓
+Service
+        ↓
+API
+        ↓
+Schemas
+```
+
+The backend now provides protected administrative endpoints for:
+
+- User listing
+- User creation
+- User update
+- Password reset
+- User activation and deactivation
+
+All business logic remains inside the Service layer according to the project's architectural standards.
+
+## Security Improvements
+
+Sprint 31 introduced additional protection rules:
+
+- Duplicate username validation.
+- Duplicate email validation.
+- Password hashing for all new passwords.
+- Administrator-only access to management endpoints.
+- Protection against self-deactivation.
+- Protection against removing the administrator role from the currently authenticated administrator.
+
+These rules establish the minimum security baseline required before introducing frontend administration.
+
+## Product Direction
+
+Sprint 31 intentionally separates backend infrastructure from frontend implementation.
+
+Completed:
+
+- Multi-user backend foundation.
+- Administrative User Management.
+- Secure authentication and authorization.
+- User lifecycle management.
+
+Deferred to Sprint 31B:
+
+- Administrative Dashboard.
+- User Management interface.
+- Safe User Delete workflow.
+- Extended Roles & Permissions.
+- Subscription management.
+
+## Validation
+
+The entire administrative backend was validated through Swagger.
+
+Successful validation included:
+
+- User listing.
+- User creation.
+- User update.
+- Password reset.
+- Duplicate validation.
+- Authorization validation.
+
+Sprint 31 therefore concludes with a production-ready backend foundation for Version 1.0 while keeping the frontend implementation as the next isolated development package.
+
+
+

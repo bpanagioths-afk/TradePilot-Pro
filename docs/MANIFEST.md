@@ -141,3 +141,25 @@ New important files:
 
 - `docs/changelog/11_SPRINT_30.md`
 - `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT31.md`
+
+## Sprint 31 Documentation Update
+
+Added / updated documentation for:
+
+- Multi-user backend foundation.
+- Administrative User Management.
+- JWT authentication and admin authorization.
+- User lifecycle management.
+- User activation / deactivation.
+- Password reset workflow.
+- Backend security improvements.
+- Version 1.0 backend foundation.
+- Current project status after Sprint 31A.
+- Sprint 31B continuation plan.
+
+New important files:
+
+- `docs/changelog/12_SPRINT_31.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md`
+
+

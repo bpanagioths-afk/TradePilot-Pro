@@ -1,87 +1,79 @@
-# 11 — Active Sprint
+# ACTIVE SPRINT
 
-# Sprint 31 — Version 1.0 Foundation Audit and Planning
+---
 
-Status: Ready to start in a new conversation
+# Sprint 31B — Admin Frontend & User Management UI
 
-## Starting Point
+Status: Active
 
-Version 0.9 and Sprint 30 are completed.
+Version: 1.0
 
-Completed foundation includes:
+---
 
-- Multi-asset MT5 movement model.
-- Shared movement and analytics contracts.
-- Shared Widget System.
-- Shared Chart Infrastructure.
-- Route-level frontend lazy loading.
-- Explicit MT5 terminal connection policy.
-- Successful backend compile and frontend production build.
+## Objective
 
-## Primary Goal
+Implement the complete administrative frontend using the backend completed during Sprint 31A.
 
-```text
-Version 1.0 Foundation Audit
-+
-Multi-User / Commercial Architecture Plan
-```
+The objective is to provide a secure and production-ready User Management interface without introducing new backend business logic.
 
-## Important Scope Rule
+---
 
-Sprint 31 begins with audit and architecture planning only.
+## Backend Status
 
-Do not immediately implement:
+Completed during Sprint 31A:
 
-- login,
-- subscriptions,
-- credential vaults,
-- cloud MT5 connectors,
-- billing,
-- tenant isolation,
-- broker APIs.
+- Multi-user backend foundation.
+- Administrative User Management.
+- JWT authentication.
+- Admin authorization.
+- User CRUD.
+- Password reset.
+- User activation / deactivation.
+- Validation rules.
+- Security protections.
 
-These require a verified package plan first.
+No additional backend functionality should be implemented unless a bug is discovered.
 
-## Priority Order
+---
 
-1. Read all documentation and decisions D-001 through D-059.
-2. Read the real backend and frontend trees.
-3. Audit the current `User`, `MT5Account`, Trade and database relationships.
-4. Audit current authentication, dependency and security foundations.
-5. Audit all APIs for future user/account ownership boundaries.
-6. Define the Version 1.0 package roadmap.
-7. Separate local-development connection behavior from future commercial connector behavior.
-8. Approve architecture before implementation.
+## Sprint 31B Scope
 
-## Protected Version 0.9 Contracts
+Frontend implementation only.
 
-Do not change without a verified bug:
+Planned modules:
 
-- MT5 position aggregation and idempotent synchronization.
-- Multi-asset movement semantics.
-- `movement_value`, `movement_unit` and `asset_class`.
-- `movement_breakdown` API contract.
-- Portfolio Average Pips Forex-only behavior.
-- Portfolio Allocation by asset class.
-- Shared Widget System.
-- Shared Chart Infrastructure.
-- Explicit MT5 terminal connection policy.
+- User List.
+- Create User dialog.
+- Edit User dialog.
+- Reset Password dialog.
+- Activate / Deactivate actions.
+- Safe Delete User workflow.
+- Loading states.
+- Error handling.
+- Success notifications.
 
-## Mandatory Rules
+---
 
-- D-001 through D-059 are binding.
-- Read the real tree before every path instruction.
+## Development Rules
+
+Mandatory:
+
 - Audit before new code.
-- Reuse before creation.
-- Complete package design before editing.
-- One complete change per file per package.
-- Provide full files when requested.
-- `οκ ετοιμο` means the previous action succeeded; continue immediately.
-- Documentation, build validation and clean Git status are required before sprint closure.
+- Reuse existing components.
+- Follow Repository → Service → API architecture.
+- One package at a time.
+- One documentation update per file.
+- No duplicated business logic in the frontend.
 
-## Success Criteria
+---
 
-- Current identity and account ownership architecture is fully documented.
-- Version 1.0 package boundaries are approved.
-- Local MT5 behavior and future commercial connector behavior are clearly separated.
-- No Version 0.9 regression is introduced.
+## Definition of Done
+
+Sprint 31B is complete when:
+
+- User administration is fully available from the frontend.
+- All backend endpoints are consumed successfully.
+- Build succeeds.
+- No regressions are introduced.
+- Documentation is updated.
+- Git commit completed.
