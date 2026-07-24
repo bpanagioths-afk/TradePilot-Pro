@@ -13,7 +13,10 @@ import {
 
 import MainLayout from "./layouts/MainLayout";
 import { WidgetLoading } from "./components/widgets";
-import { isAuthenticated } from "./services/authService";
+import {
+    getStoredUser,
+    isAuthenticated
+} from "./services/authService";
 
 const Login = lazy(() => import("./pages/Login"));
 const ForgotUsername = lazy(() => import("./pages/ForgotUsername"));
@@ -29,6 +32,7 @@ const MT5 = lazy(() => import("./pages/MT5"));
 const Settings = lazy(() => import("./pages/Settings"));
 const TradingPlan = lazy(() => import("./pages/TradingPlan"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers"));
 
 function ProtectedRoute({ children }) {
     const location = useLocation();
@@ -41,6 +45,16 @@ function ProtectedRoute({ children }) {
                 state={{ from: location }}
             />
         );
+    }
+
+    return children;
+}
+
+function AdminRoute({ children }) {
+    const user = getStoredUser();
+
+    if (!user?.is_admin) {
+        return <Navigate to="/home" replace />;
     }
 
     return children;
@@ -74,6 +88,15 @@ function ProtectedLayout() {
                     <Route path="/mt5" element={<MT5 />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/trading-plan" element={<TradingPlan />} />
+
+                    <Route
+                        path="/admin/users"
+                        element={
+                            <AdminRoute>
+                                <AdminUsers />
+                            </AdminRoute>
+                        }
+                    />
 
                     <Route
                         path="*"

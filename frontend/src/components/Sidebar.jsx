@@ -22,6 +22,9 @@ import StorageIcon from "@mui/icons-material/Storage";
 import RuleIcon from "@mui/icons-material/Rule";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+
+import { getStoredUser } from "../services/authService";
 
 const drawerWidth = 240;
 
@@ -68,9 +71,25 @@ const menuGroups = [
     }
 ];
 
+const adminMenuGroup = {
+    title: "ADMIN",
+    items: [
+        {
+            text: "User Management",
+            icon: <ManageAccountsIcon />,
+            path: "/admin/users"
+        }
+    ]
+};
+
 export default function Sidebar() {
     const navigate = useNavigate();
     const location = useLocation();
+    const currentUser = getStoredUser();
+
+    const visibleMenuGroups = currentUser?.is_admin
+        ? [...menuGroups, adminMenuGroup]
+        : menuGroups;
 
     return (
         <Drawer
@@ -93,7 +112,7 @@ export default function Sidebar() {
             <Divider />
 
             <List sx={{ py: 1 }}>
-                {menuGroups.map((group) => (
+                {visibleMenuGroups.map((group) => (
                     <Box key={group.title} sx={{ mb: 1 }}>
                         <Typography
                             variant="caption"

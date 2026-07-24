@@ -21,7 +21,9 @@ export const disableMT5Account = async (accountId) => {
 };
 
 export const syncMT5Account = async (accountId) => {
-    const response = await api.post(`/mt5/sync?account_id=${accountId}`);
+    const response = await api.post(
+        `/mt5/sync?account_id=${accountId}`
+    );
     return response.data;
 };
 
@@ -29,31 +31,40 @@ export const getMT5AccountSummary = async (accountId) => {
     const response = await api.get(
         `/mt5/accounts/${accountId}/summary`
     );
-
     return response.data;
 };
 
-export const getMT5OpenPositions = async () => {
-    const response = await api.get("/mt5/open-positions");
+export const getMT5OpenPositions = async (accountId) => {
+    const response = await api.get(
+        `/mt5/open-positions?account_id=${accountId}`
+    );
     return response.data;
 };
 
-export const getMT5PendingOrders = async () => {
-    const response = await api.get("/mt5/pending-orders");
+export const getMT5PendingOrders = async (accountId) => {
+    const response = await api.get(
+        `/mt5/pending-orders?account_id=${accountId}`
+    );
     return response.data;
 };
 
-export const getMT5AccountHealth = async () => {
-    const response = await api.get("/mt5/account-health");
+export const getMT5AccountHealth = async (accountId) => {
+    const response = await api.get(
+        `/mt5/account-health?account_id=${accountId}`
+    );
     return response.data;
 };
 
-export const getMT5TodayPerformance = async () => {
-    const response = await api.get("/mt5/today-performance");
+export const getMT5TodayPerformance = async (accountId) => {
+    const response = await api.get(
+        `/mt5/today-performance?account_id=${accountId}`
+    );
     return response.data;
 };
 
-export const getMT5ConnectionHealth = async () => {
-    const response = await api.get("/mt5/connection-health");
+export const getMT5ConnectionHealth = async (accountId) => {
+    const response = await api.get(
+        `/mt5/connection-health?account_id=${accountId}`
+    );
     return response.data;
 };

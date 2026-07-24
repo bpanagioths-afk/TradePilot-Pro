@@ -22,28 +22,32 @@ from app.features.portfolio.engines.drawdown_engine import (
     calculate as calculate_drawdown,
 )
 
-
 from app.features.portfolio.engines.allocation_engine import (
     calculate as calculate_allocation,
 )
 
-def get_portfolio_dashboard(db: Session):
+
+def get_portfolio_dashboard(
+    db: Session,
+    user_id: int,
+):
     """
-    Portfolio Dashboard Orchestrator
+    Portfolio Dashboard Orchestrator.
+
+    All portfolio and analytics calculations are restricted
+    to the authenticated user's closed, non-archived trades.
     """
 
-    trades = get_active_trades(db)
+    trades = get_active_trades(
+        db=db,
+        user_id=user_id,
+    )
 
     summary = calculate_summary(trades)
-
     performance = calculate_performance(trades)
-
     risk = calculate_risk(trades)
-
     equity = calculate_equity(trades)
-
     drawdown = calculate_drawdown(equity)
-
     allocation = calculate_allocation(trades)
 
     return {
