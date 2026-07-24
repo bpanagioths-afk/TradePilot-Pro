@@ -1,16 +1,16 @@
 # Current Project Status
 
-Status updated after Sprint 31A.
+Status updated after Sprint 30.
 
 ## Release State
 
 ```text
-Version 1.0 — In Progress
-Sprint 31A — Completed
-Next: Sprint 31B — Admin Frontend & User Management UI
+Version 0.9 — Completed
+Sprint 30 — Completed
+Next: Version 1.0 / Sprint 31 planning and audit
 ```
 
-## Completed Through Sprint 31A
+## Completed Through Sprint 30
 
 ### Backend
 
@@ -30,27 +30,6 @@ Next: Sprint 31B — Admin Frontend & User Management UI
 - Explicit MT5 terminal connection policy prevents automatic terminal startup.
 - Live MT5 endpoints and sync use only an already-running local terminal.
 
-### Multi-User Foundation
-
-Sprint 31A introduced the backend foundation for Version 1.0.
-
-Completed:
-
-- Multi-user backend architecture.
-- Administrative User Management module.
-- JWT authentication integrated with admin authorization.
-- Admin-only protected endpoints.
-- User creation.
-- User update.
-- Password reset.
-- User activation / deactivation.
-- Duplicate username validation.
-- Duplicate email validation.
-- Password hashing.
-- Protection against self-deactivation.
-- Protection against self-admin privilege removal.
-- Repository → Service → API architecture preserved.
-
 ### Frontend
 
 - Shared TradePilot Theme, PageLayout and Widget System.
@@ -69,17 +48,17 @@ Completed:
 ## Current Architecture
 
 ```text
-Users
+MT5 Symbol Metadata
         ↓
-JWT Authentication
+Movement Engine
         ↓
-Authorization Dependencies
+Trade movement_value + movement_unit + asset_class
         ↓
-Repository → Service → API
+Movement / Analytics Engines
         ↓
-PostgreSQL
+Dashboard, Portfolio and Analytics APIs
         ↓
-Dashboard / MT5 / Portfolio / Analytics
+Shared Widget + Shared Chart UI
 ```
 
 Current local MT5 connection model:
@@ -112,59 +91,28 @@ D-001 through D-059 remain binding, with special enforcement of:
 
 ## Validation State
 
-Completed successfully:
-
-- Real MT5 synchronization.
-- Backend compile.
-- Frontend production build.
-- Shared chart audit.
-- Reports regression verification.
-- MT5 automatic-launch regression verification.
-- Swagger validation for Admin User Management.
-- User listing.
-- User creation.
-- User update.
-- Password reset.
-- Authorization validation.
-
-## Current Product Status
-
-Completed:
-
-- Version 0.9.
-- MT5 Trading Center.
-- Portfolio.
-- Analytics.
-- Multi-Asset Engine.
-- Multi-user backend foundation.
-- Administrative User Management backend.
-
-In Progress:
-
-- Version 1.0.
-
-Next package:
-
-- Admin Frontend.
-- User Management UI.
-- Safe User Delete.
-- Roles & Permissions expansion.
-- Subscription management.
+- Real MT5 synchronization: passed.
+- Backend compile: passed.
+- Frontend production build: passed.
+- Shared chart audit: passed.
+- Reports real-contract regression check: passed.
+- MT5 automatic-launch regression check: passed.
 
 ## Deferred Commercial Architecture
 
-The following remain intentionally deferred:
+The following are intentionally deferred beyond Version 0.9:
 
-- Tenant isolation.
-- Subscription billing.
-- License management.
-- Cloud MT5 Connector.
-- Broker Manager APIs.
-- Commercial SaaS infrastructure.
+- User authentication and authorization.
+- Roles and subscription validation.
+- Secure credential storage.
+- Cloud or local TradePilot MT5 Connector service.
+- Broker API / Manager API integration.
+- Multi-user tenant isolation.
+- Commercial licensing and billing.
 
 ## Next Sprint Direction
 
-Sprint 31B will implement the complete administrative frontend for User Management using the backend completed in Sprint 31A.
+Sprint 31 starts Version 1.0 with audit and planning first. No commercial or multi-user implementation should begin before the existing user, account, database, API and security foundations are fully audited.
 
 ## Workspace Ownership
 
@@ -175,6 +123,5 @@ MT5        → Live Trading Center
 Portfolio  → Portfolio Analysis
 Analytics  → Historical Analysis
 Psychology → Trader Journal
-Reports    → Reports
-Admin      → User Administration
+Reports    → Reports & Export
 ```
