@@ -1,54 +1,30 @@
-# TradePilot Pro - Architecture Decisions
+# TradePilot Pro — Architecture Decisions
 
-This folder contains accepted architecture decisions.
+This folder contains architectural, product, workflow, frontend, backend, MT5 and documentation decisions.
 
-## Existing Decision Groups
+## Start here
 
-- Backend architecture
-- Database and data protection
-- MT5 account management
-- Frontend structure
-- Design System
-- Widget philosophy
-- Future SaaS readiness
+1. [DECISION_STATUS_REGISTRY.md](DECISION_STATUS_REGISTRY.md)
+2. [INDEX_BY_CATEGORY.md](INDEX_BY_CATEGORY.md)
+3. The active decision files relevant to the current package
 
-## Sprint 19 Decisions
+## Status model
 
-Sprint 19 added the following accepted decisions:
+- **Active** — independently authoritative.
+- **Consolidated** — intent preserved under another active decision.
+- **Superseded** — historical record; no longer a separate operating rule.
+- **Historical reference** — useful implementation history, but not the current general authority.
 
-- [D-034 Account Summary API](D-034_Account_Summary_API.md)
-- [D-035 Sync Engine Foundation](D-035_Sync_Engine_Foundation.md)
-- [D-036 MetricCard as Reusable KPI Component](D-036_MetricCard_Reusable_KPI_Component.md)
-- [D-037 Professional MT5 Widget Pattern](D-037_Professional_MT5_Widget_Pattern.md)
+The registry is authoritative when a legacy file still contains an older `Status: Accepted` header.
 
-## Sprint 20 Decisions
+## Decision-writing rule
 
-Sprint 20 added the following accepted decisions:
+A new decision must:
 
-- [D-038 Widget Infrastructure Layer](D-038_Widget_Infrastructure_Layer.md)
-- [D-039 Feature Module Architecture Direction](D-039_Feature_Module_Architecture.md)
-- [D-040 Source Code Structure as Developer Handbook](D-040_Source_Code_Structure_Developer_Handbook.md)
-- [D-041 Sprint Execution Process](D-041_Sprint_Execution_Process.md)
+- solve a genuinely new architectural or product problem,
+- avoid repeating an existing active decision,
+- identify any decision it supersedes or consolidates,
+- use a filename that matches its actual title,
+- include status, context, decision, consequences and related decisions.
 
-## Rule
-
-Do not store long sprint summaries here.
-
-Each decision file should describe one accepted architectural decision:
-
-- context
-- decision
-- consequences
-- future notes
-
----
-
-## Sprint 22 Decisions
-
-Sprint 22 added the following accepted decisions:
-
-- [D-042 Portfolio Feature Module Reference Implementation](D-042_Portfolio_Feature_Module_Reference.md)
-- [D-043 Widget Infrastructure v3](D-043_Widget_Infrastructure_v3.md)
-- [D-044 Modular Portfolio Overview API](D-044_Modular_Portfolio_Overview_API.md)
-- [D-045 Source Structure Audit Before Routing Changes](D-045_Source_Structure_Audit_Before_Routing.md)
-
+Long sprint summaries do not belong in decision files.

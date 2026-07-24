@@ -1,96 +1,80 @@
-# Index by Category
+# Decisions — Index by Category
 
-## Architecture
-- D-001
-- D-002
-- D-003
-- D-005
-- D-018
-- D-019
-- D-024
-- D-025
-- D-028
-- D-049
+> Status authority: [DECISION_STATUS_REGISTRY.md](DECISION_STATUS_REGISTRY.md)
 
-## Frontend
-- D-015
-- D-022
-- D-023
-- D-029
-- D-030
-- D-031
-- D-032
-- D-033
+## Startup and development workflow
 
-## Backend
-- D-011
-- D-020
+- [D-061 — Single Entry Point and Startup Verification](D-061_Single_Entry_Point_and_Startup_Verification.md)
+- [D-062 — Audit-First Package Workflow](D-062_Audit_First_Package_Workflow.md)
+- [D-063 — Exact Delivery and Locked Scope](D-063_Exact_Delivery_and_Locked_Scope.md)
 
-## Product
-- D-014
-- D-026
+Legacy workflow records D-012, D-013, D-041, D-045, D-047, D-049, D-050, D-051, D-052, D-056, D-057 and D-060 are retained but superseded as separate rules.
 
-## Documentation
-- D-017
-- D-021
+## Data and MT5
 
-## Development
-- D-012
-- D-013
-- D-050
+- D-001 Internal Trade ID
+- D-002 MT5 Ticket
+- D-003 MT5 Duplicate Detection
+- D-004 Archive Instead of Delete
+- D-005 One Trade, One MT5 Account
+- D-020 Soft Delete MT5 Accounts
+- D-025 Permanent Delete MT5
+- D-028 MT5 Now, Trading Connections Later
+- D-034 Account Summary API
+- D-035 Sync Engine Foundation
+- D-055 Multi-Asset MT5 Engine
 
-## UX
-- D-007
-- D-008
-- D-009
-- D-010
-- D-016
-- D-027
+## Backend and API architecture
 
----
+- D-011 Backend Services
+- D-018 Schema First API
+- D-019 Router → Service → Database
+- D-044 Modular Portfolio Overview API
+- D-058 Backend Is the Single Business Logic Authority
 
-## Feature Module Architecture
+## Product and SaaS direction
 
-- D-042 — Portfolio Feature Module Reference Implementation
+- D-006 Multiple Trading Plans
+- D-007 Rule Engine Philosophy
+- D-008 Discipline over Profit
+- D-014 Product Identity
+- D-016 AI Coach Philosophy
+- D-024 Future SaaS Ready
+- D-026 Product Quality Pipeline
+- D-031 Portfolio-Centric Architecture
+- D-032 Local First, Cloud Ready
 
-## Widget Infrastructure
+## Frontend, design system and widgets
 
-- D-043 — Widget Infrastructure v3
+- D-009 Numeric Inputs
+- D-010 Snackbar Notifications
+- D-015 No Ugly UI
+- D-022 Maximum Component Size
+- D-023 Design System First
+- D-029 Design System Before New Screens
+- D-030 Reusable UI Components First
+- D-036 MetricCard Reusable KPI Component
+- D-037 Professional MT5 Widget Pattern
+- D-038 Widget Infrastructure Layer
+- D-043 Widget Infrastructure v3
+- D-046 Protected Global Widgets
+- D-053 Shared Widget System
+- D-054 Portfolio Reference UI
+- D-059 Portfolio Is the Reference Module
 
-## Portfolio Architecture
+## Feature-module architecture
 
-- D-044 — Modular Portfolio Overview API
+- D-039 Feature Module Architecture Direction
+- D-042 Portfolio Feature Module Reference Implementation
 
-## Sprint Process / Source Audit
+## Documentation and release
 
-- D-045 — Source Structure Audit Before Routing Changes
+- D-017 Documentation First
+- D-021 Sprint Release Process
+- D-033 Documentation as a Deliverable
+- D-040 Source Code Structure as Developer Handbook
+- D-048 One Feature, One Commit
 
-## Frontend Stability / Workflow
+## Historical and superseded rules
 
-- [D-046 - Protected Global Widgets](D-046_Protected_Global_Widgets.md)
-- [D-047 - Reuse Before New Code](D-047_Reuse_Before_New_Code.md)
-- [D-048 - One Feature, One Commit](D-048_One_Feature_One_Commit.md)
-- [D-049 - Single Source of Information](D-049_Single_Source_of_Information.md)
-- [D-050 - Audit Before Creating New Code](D-050_Audit_Before_New_Code.md)
-
-## Sprint 27-28 Architecture
-
-### Development Process
-
-- [D-051 - Single Touch Rule](D-051_Single_Touch_Rule.md)
-- [D-052 - Package First Development](D-052_Package_First_Development.md)
-
-### Widget and UI Architecture
-
-- [D-053 - Shared Widget System](D-053_Shared_Widget_System.md)
-- [D-054 - Portfolio Reference UI](D-054_Portfolio_Reference_UI.md)
-
-### MT5 Architecture
-
-- [D-055 - Multi-Asset MT5 Engine](D-055_Multi_Asset_MT5_Engine.md)
-
-
-### Additional Architecture Decisions
-
-- [D-058 - Backend Is The Single Business Logic Authority](D-058_Backend_Is_The_Single_Business_Logic_Authority.md)
-- [D-059 - Portfolio Is The Reference Module](D-059_Portfolio_Is_The_Reference_Module.md)
+See [DECISION_STATUS_REGISTRY.md](DECISION_STATUS_REGISTRY.md) for the exact migration map.

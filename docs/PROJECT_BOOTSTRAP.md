@@ -1,47 +1,88 @@
 # PROJECT BOOTSTRAP
 
-## Mandatory Startup Procedure
+## Purpose
 
-Before answering anything:
+This document defines how work is performed in TradePilot Pro.  
+Project state belongs in `Current_Project_Status.md`.  
+Sprint scope belongs in `11_ACTIVE_SPRINT.md`.  
+Conversation startup belongs in `START_HERE.md`.
 
-1. Read PROJECT_BOOTSTRAP.md completely.
-2. Read Current_Project_Status.md.
-3. Read ACTIVE_SPRINT.md.
-4. Read PROJECT_HISTORY.md.
-5. Read NEXT_CHAT_PROMPT.
-6. Read the active Decisions.
+## Source-of-truth order
 
-Never start coding before completing this sequence.
+When sources disagree, use this order:
 
-## Mandatory Rules
+1. Actual source code on the active Git branch
+2. Database migrations and schemas
+3. Current project status
+4. Active sprint
+5. Active decision registry
+6. Historical documentation
+7. Conversation memory
 
-- Never assume.
-- Never invent architecture.
-- Never propose new folders before auditing.
-- Never modify a file that has not been read first.
-- Never ask for files that already exist in Git or the supplied documentation.
-- Never ask the user to repeat information already documented.
-- Never update documentation from memory.
-- Never edit the same file twice during the same package unless a real bug is found.
-- Deliver complete packages.
-- If a repository or docs are available, audit them before responding.
+Memory and assumptions are never authoritative.
 
-## Communication Rules
+## Audit-first rule
 
-Read → Analyze → Produce.
+Before proposing or modifying code:
 
-The first response after the audit should already contain work.
+- read the current repository tree relevant to the package,
+- read every file that may be changed,
+- search for existing equivalent components, services, APIs, schemas, and utilities,
+- identify protected or locked modules,
+- confirm imports and call sites.
 
-## Package Workflow
+No file may be modified from memory.
 
-Audit
-↓
-Implementation
-↓
-Validation
-↓
-Documentation
-↓
-Git
-↓
-Next Sprint
+## Package workflow
+
+1. Audit
+2. Define scope and locked areas
+3. Design the complete package
+4. Implement
+5. Validate backend/frontend behavior
+6. Update documentation
+7. Review Git diff and status
+8. Commit and push
+9. Prepare the next continuation entry point
+
+## Change discipline
+
+- Reuse or extend existing implementations before creating new ones.
+- Avoid duplicate services, APIs, components, calculations, and documentation.
+- Modify each file once per package whenever reasonably possible.
+- Do not change global infrastructure to solve a page-local problem.
+- Do not reopen completed backend work without evidence of a defect.
+- Keep business logic in the backend.
+- Keep frontend components focused on presentation and interaction.
+
+## Delivery rules
+
+For user-applied code changes:
+
+- provide complete files ready for copy/paste,
+- use exact repository paths,
+- include every required import,
+- do not provide partial fragments unless the user explicitly requests them,
+- group all files of one package in one delivery,
+- state validation commands after the package.
+
+For simple terminal actions:
+
+- provide one clear command block,
+- wait for the result only when the next action depends on it.
+
+## Communication rules
+
+- Use Greek unless the user requests another language.
+- Keep messages direct and practical.
+- Treat “οκ έτοιμο” as confirmation that the previous action succeeded and continue.
+- Do not repeat confirmations already given.
+- Do not invent missing project facts.
+- Clearly distinguish verified repository facts from proposals.
+
+## Documentation rules
+
+- Documentation is part of the Definition of Done.
+- `START_HERE.md` is the permanent conversation entry point.
+- Sprint-specific continuation files may remain for history, but they are not the primary entry point.
+- `DECISION_STATUS_REGISTRY.md` is the authority for whether a decision is active, consolidated, superseded, or historical.
