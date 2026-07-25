@@ -83,8 +83,9 @@ class UserResponse(BaseModel):
     id: int
     username: str
     email: str
+    is_admin: bool
+    is_active: bool
     created_at: datetime | None = None
-
 
 class TokenResponse(BaseModel):
 

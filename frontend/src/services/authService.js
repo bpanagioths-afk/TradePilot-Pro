@@ -100,13 +100,15 @@ export async function resetPassword(
 
 export async function changePassword(
     currentPassword,
-    newPassword
+    newPassword,
+    confirmNewPassword
 ) {
     const response = await api.post(
         "/auth/change-password",
         {
             current_password: currentPassword,
             new_password: newPassword,
+            confirm_new_password: confirmNewPassword,
         }
     );
 

@@ -12,10 +12,10 @@ import {
     CardContent,
     CircularProgress,
     Stack,
-    TextField,
     Typography
 } from "@mui/material";
 
+import PasswordField from "../components/common/PasswordField";
 import { resetPassword } from "../services/authService";
 
 export default function ResetPassword() {
@@ -145,9 +145,8 @@ export default function ResetPassword() {
                             onSubmit={handleSubmit}
                         >
                             <Stack spacing={2}>
-                                <TextField
+                                <PasswordField
                                     label="Νέος κωδικός"
-                                    type="password"
                                     value={newPassword}
                                     onChange={(event) =>
                                         setNewPassword(
@@ -162,12 +161,10 @@ export default function ResetPassword() {
                                     }
                                     required
                                     autoFocus
-                                    fullWidth
                                 />
 
-                                <TextField
+                                <PasswordField
                                     label="Επιβεβαίωση νέου κωδικού"
-                                    type="password"
                                     value={confirmPassword}
                                     onChange={(event) =>
                                         setConfirmPassword(
@@ -181,7 +178,6 @@ export default function ResetPassword() {
                                         !token
                                     }
                                     required
-                                    fullWidth
                                 />
 
                                 <Button

@@ -9,8 +9,6 @@ import {
     Divider,
     FormControlLabel,
     Grid,
-    InputAdornment,
-    IconButton,
     Paper,
     Stack,
     Switch,
@@ -20,10 +18,9 @@ import {
 
 import SaveIcon from "@mui/icons-material/Save";
 import LockResetIcon from "@mui/icons-material/LockReset";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import MT5AccountsManager from "../components/settings/mt5/MT5AccountsManager";
+import PasswordField from "../components/common/PasswordField";
 import {
     changePassword,
     getStoredUser,
@@ -57,9 +54,6 @@ export default function Settings() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [passwordLoading, setPasswordLoading] = useState(false);
     const [passwordError, setPasswordError] = useState("");
@@ -138,7 +132,8 @@ export default function Settings() {
         try {
             const response = await changePassword(
                 currentPassword,
-                newPassword
+                newPassword,
+                confirmPassword
             );
 
             setPasswordSuccess(
@@ -274,104 +269,35 @@ export default function Settings() {
 
                 <Box component="form" onSubmit={handleChangePassword}>
                     <Stack spacing={2}>
-                        <TextField
+                        <PasswordField
                             label="Current Password"
-                            type={showCurrentPassword ? "text" : "password"}
                             value={currentPassword}
                             onChange={(event) =>
                                 setCurrentPassword(event.target.value)
                             }
                             autoComplete="current-password"
                             required
-                            fullWidth
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() =>
-                                                setShowCurrentPassword(
-                                                    (currentValue) =>
-                                                        !currentValue
-                                                )
-                                            }
-                                            edge="end"
-                                        >
-                                            {showCurrentPassword ? (
-                                                <VisibilityOffIcon />
-                                            ) : (
-                                                <VisibilityIcon />
-                                            )}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
                         />
 
-                        <TextField
+                        <PasswordField
                             label="New Password"
-                            type={showNewPassword ? "text" : "password"}
                             value={newPassword}
                             onChange={(event) =>
                                 setNewPassword(event.target.value)
                             }
                             autoComplete="new-password"
                             required
-                            fullWidth
                             helperText="Τουλάχιστον 8 χαρακτήρες."
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() =>
-                                                setShowNewPassword(
-                                                    (currentValue) =>
-                                                        !currentValue
-                                                )
-                                            }
-                                            edge="end"
-                                        >
-                                            {showNewPassword ? (
-                                                <VisibilityOffIcon />
-                                            ) : (
-                                                <VisibilityIcon />
-                                            )}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
                         />
 
-                        <TextField
+                        <PasswordField
                             label="Confirm New Password"
-                            type={showConfirmPassword ? "text" : "password"}
                             value={confirmPassword}
                             onChange={(event) =>
                                 setConfirmPassword(event.target.value)
                             }
                             autoComplete="new-password"
                             required
-                            fullWidth
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() =>
-                                                setShowConfirmPassword(
-                                                    (currentValue) =>
-                                                        !currentValue
-                                                )
-                                            }
-                                            edge="end"
-                                        >
-                                            {showConfirmPassword ? (
-                                                <VisibilityOffIcon />
-                                            ) : (
-                                                <VisibilityIcon />
-                                            )}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
                         />
 
                         <Box>

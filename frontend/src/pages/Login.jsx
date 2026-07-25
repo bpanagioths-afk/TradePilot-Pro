@@ -8,18 +8,16 @@ import {
     Card,
     CardContent,
     CircularProgress,
-    IconButton,
-    InputAdornment,
     Link,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
 
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 import { login } from "../services/authService";
+
+import PasswordField from "../components/common/PasswordField";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -27,7 +25,6 @@ export default function Login() {
 
     const [usernameOrEmail, setUsernameOrEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -104,44 +101,15 @@ export default function Login() {
                                     fullWidth
                                 />
 
-                                <TextField
-                                    label="Κωδικός"
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={(event) =>
-                                        setPassword(event.target.value)
-                                    }
-                                    autoComplete="current-password"
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label={
-                                                        showPassword
-                                                            ? "Απόκρυψη κωδικού"
-                                                            : "Εμφάνιση κωδικού"
-                                                    }
-                                                    onClick={() =>
-                                                        setShowPassword(
-                                                            (currentValue) =>
-                                                                !currentValue
-                                                        )
-                                                    }
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? (
-                                                        <VisibilityOffIcon />
-                                                    ) : (
-                                                        <VisibilityIcon />
-                                                    )}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }}
-                                />
-
+<PasswordField
+    label="Κωδικός"
+    value={password}
+    onChange={(event) =>
+        setPassword(event.target.value)
+    }
+    autoComplete="current-password"
+    required
+/>
                                 <Button
                                     type="submit"
                                     variant="contained"
