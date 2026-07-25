@@ -175,7 +175,7 @@ export default function Settings() {
                     <Stack
                         direction="row"
                         spacing={2}
-                        alignItems="center"
+                        sx={{ alignItems: "center" }}
                     >
                         <CircularProgress size={22} />
                         <Typography color="text.secondary">
@@ -184,34 +184,34 @@ export default function Settings() {
                     </Stack>
                 ) : (
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                                 label="Username"
                                 value={user?.username || ""}
                                 fullWidth
-                                InputProps={{ readOnly: true }}
+                                slotProps={{ htmlInput: { readOnly: true } }}
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                                 label="Email"
                                 value={user?.email || ""}
                                 fullWidth
-                                InputProps={{ readOnly: true }}
+                                slotProps={{ htmlInput: { readOnly: true } }}
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                                 label="Member Since"
                                 value={formatDate(user?.created_at)}
                                 fullWidth
-                                InputProps={{ readOnly: true }}
+                                slotProps={{ htmlInput: { readOnly: true } }}
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Stack spacing={1}>
                                 <Typography
                                     variant="caption"
@@ -229,21 +229,21 @@ export default function Settings() {
                             </Stack>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                                 label="Subscription"
                                 value={subscriptionLabel}
                                 fullWidth
-                                InputProps={{ readOnly: true }}
+                                slotProps={{ htmlInput: { readOnly: true } }}
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <TextField
                                 label="License"
                                 value={licenseLabel}
                                 fullWidth
-                                InputProps={{ readOnly: true }}
+                                slotProps={{ htmlInput: { readOnly: true } }}
                             />
                         </Grid>
                     </Grid>

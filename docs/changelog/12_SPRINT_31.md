@@ -1,304 +1,82 @@
-\# Sprint 31 — Multi-User Foundation \& Admin User Management
-
-
+# Sprint 31A — Multi-User Foundation and Admin User Management Backend
 
 Status: Completed
 
+## Overview
 
+Sprint 31A began Version 1.0 by transforming the backend from a single-user foundation into a multi-user-ready platform with protected administrative user management.
 
-\---
+This package intentionally completed the backend first. The Administrative Frontend is the separate Sprint 31B package.
 
+## Authentication and Authorization
 
+- JWT authentication verified.
+- Authorization dependencies centralized.
+- Admin-only endpoint protection.
+- Authentication flow prepared for future SaaS expansion.
 
-\## Overview
+## User Lifecycle
 
+The User model supports:
 
+- Active and inactive accounts.
+- Administrative permissions.
+- Password lifecycle.
+- Update tracking.
+- Last login tracking.
 
-Sprint 31 marks the beginning of Version 1.0 backend transformation from a single-user trading journal into a true multi-user platform.
+## Administrative API
 
+Verified endpoints:
 
+- `GET /admin/users`
+- `POST /admin/users`
+- `PUT /admin/users/{user_id}`
+- `POST /admin/users/{user_id}/reset-password`
 
-The primary objective of this sprint was to introduce the complete backend infrastructure required for user administration while preserving the existing architecture and coding standards.
+The router is registered in `backend/app/main.py`.
 
+## Business and Security Rules
 
+- Create and update users.
+- Reset passwords with hashing.
+- Activate and deactivate accounts.
+- Reject duplicate usernames and emails.
+- Require administrator authorization.
+- Prevent the authenticated administrator from removing their own admin privilege.
+- Prevent the authenticated administrator from deactivating their own account.
 
-This sprint intentionally focuses only on the backend foundation. Frontend administration will be implemented in the next package.
+## Architecture
 
-
-
-\---
-
-
-
-\# Backend
-
-
-
-\## Authentication
-
-
-
-Completed:
-
-
-
-\- JWT authentication verified.
-
-\- Authorization dependencies centralized.
-
-\- Admin-only endpoint protection.
-
-\- Authentication flow prepared for future SaaS expansion.
-
-
-
-\---
-
-
-
-\## User Model
-
-
-
-The User model was extended to support long-term account management.
-
-
-
-Added support for:
-
-
-
-\- Active / Inactive users.
-
-\- Password lifecycle.
-
-\- Update tracking.
-
-\- Last login tracking.
-
-\- Administrative permissions.
-
-
-
-The model now supports future subscription management without requiring structural redesign.
-
-
-
-\---
-
-
-
-\## Admin API
-
-
-
-Implemented a complete administrative backend.
-
-
-
-Available endpoints:
-
-
-
-\- GET `/admin/users`
-
-\- POST `/admin/users`
-
-\- PUT `/admin/users/{id}`
-
-\- POST `/admin/users/{id}/reset-password`
-
-
-
-\---
-
-
-
-\## Business Rules
-
-
-
-Implemented:
-
-
-
-\- Create users.
-
-\- Update users.
-
-\- Reset passwords.
-
-\- Activate users.
-
-\- Deactivate users.
-
-\- Duplicate username validation.
-
-\- Duplicate email validation.
-
-\- Password hashing.
-
-\- Admin authorization.
-
-\- Protection against self privilege removal.
-
-\- Protection against self deactivation.
-
-
-
-\---
-
-
-
-\## Architecture
-
-
-
-Sprint 31 continues the established architecture:
-
-
-
+```text
 Repository
-
-
-
 ↓
-
-
-
 Service
-
-
-
 ↓
-
-
-
 API
-
-
-
 ↓
-
-
-
 Schemas
+```
 
+Business rules remain in the service layer.
 
+## Validation
 
-No business logic was moved outside the Service layer.
+Swagger verification passed for:
 
+- User listing.
+- User creation.
+- User update.
+- Password reset.
+- Duplicate validation.
+- Permission validation.
 
+## Deferred to Sprint 31B
 
-\---
+- Administrative User Management UI.
+- Loading, error and success states.
+- Frontend production build and end-to-end validation.
 
+## Contract Note
 
-
-\## Security
-
-
-
-Added server-side protection against:
-
-
-
-\- Unauthorized administration.
-
-\- Duplicate accounts.
-
-\- Invalid password updates.
-
-\- Removing administrator privileges from the currently authenticated administrator.
-
-\- Disabling the currently authenticated administrator account.
-
-
-
-\---
-
-
-
-\## Validation
-
-
-
-All endpoints were verified through Swagger.
-
-
-
-Successful validation included:
-
-
-
-\- User listing.
-
-\- User creation.
-
-\- User update.
-
-\- Password reset.
-
-\- Duplicate validation.
-
-\- Permission validation.
-
-
-
-Backend package completed successfully.
-
-
-
-\---
-
-
-
-\## Product Status
-
-
-
-Completed
-
-
-
-\- Multi-user backend foundation.
-
-\- Administrative user management.
-
-\- User lifecycle management.
-
-\- Secure administrative endpoints.
-
-
-
-Planned
-
-
-
-\- Admin Dashboard.
-
-\- User Management UI.
-
-\- Delete User.
-
-\- Roles \& Permissions expansion.
-
-\- Subscription management.
-
-\- SaaS licensing.
-
-
-
-\---
-
-
-
-\## Result
-
-
-
-TradePilot Pro now includes the complete backend foundation required for a multi-user architecture.
-
-
-
-The application is no longer architecturally limited to a single local user and is ready for the frontend administration package that follows Sprint 31.
-
+No delete-user endpoint is present in the verified Sprint 31A API. Safe deletion requires a separately audited and approved backend contract before frontend implementation.

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_admin, get_db
@@ -11,6 +11,7 @@ from app.features.admin.schemas import (
 )
 from app.features.admin.service import (
     create_admin_user,
+    delete_admin_user,
     list_users,
     reset_admin_user_password,
     update_admin_user,
@@ -83,4 +84,24 @@ def reset_user_password_endpoint(
         db=db,
         user_id=user_id,
         password_data=password_data,
+    )
+
+
+@router.delete(
+    "/users/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_user_endpoint(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    delete_admin_user(
+        db=db,
+        user_id=user_id,
+        current_admin=current_admin,
+    )
+
+    return Response(
+        status_code=status.HTTP_204_NO_CONTENT
     )

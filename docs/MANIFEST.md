@@ -141,3 +141,24 @@ New important files:
 
 - `docs/changelog/11_SPRINT_30.md`
 - `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT31.md`
+
+## Sprint 31A Documentation Synchronization
+
+Added or synchronized documentation for:
+
+- Version 1.0 multi-user backend foundation.
+- Administrative User Management backend.
+- JWT and admin authorization verification.
+- Active Sprint 31B Administrative Frontend scope.
+- Canonical D-061 through D-063 workflow framework.
+- Current branch `feature/multi-user-rebuild`.
+- Verified admin API contracts and the missing delete-user contract.
+- Permanent startup entry point through `docs/START_HERE.md`.
+
+Important current files:
+
+- `docs/project/09_Current_State/Current_Project_Status.md`
+- `docs/project/11_ACTIVE_SPRINT.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md`
+- `docs/changelog/12_SPRINT_31.md`
+- `docs/decisions/DECISION_STATUS_REGISTRY.md`

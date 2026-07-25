@@ -1,132 +1,74 @@
-# TradePilot Pro - Documentation Map
+# TradePilot Pro — Documentation Map
 
-This file is the central map for the TradePilot Pro documentation system.
+## Mandatory Startup Order
 
-## Root Documentation
+1. `docs/START_HERE.md`
+2. `docs/PROJECT_BOOTSTRAP.md`
+3. `docs/project/09_Current_State/Current_Project_Status.md`
+4. `docs/project/11_ACTIVE_SPRINT.md`
+5. The continuation file referenced by the active sprint.
+6. `docs/decisions/DECISION_STATUS_REGISTRY.md`
+7. Only the active decisions needed by the package.
+8. The real backend and frontend source files in the active package.
 
-|File|Role|
-|-|-|
-|`README.md`|Project entry point|
-|`docs/README.md`|Documentation entry point|
-|`docs/PROJECT\_MASTER.md`|Product and architecture overview|
-|`docs/DEVELOPMENT\_STANDARDS.md`|Engineering standards overview|
-|`docs/DECISIONS.md`|Architecture Decision Records index|
-|`docs/PROJECT\_HISTORY.md`|Product history index|
-|`docs/CHANGELOG.md`|Sprint release index|
-|`docs/BACKLOG.md`|Product roadmap index|
-|`docs/DESIGN\_SYSTEM.md`|UI / UX design guide|
-|`docs/project/09_Current_State/Current_Project_Status.md`|Operational snapshot of the latest completed sprint|
-|`docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT*.md`|Handover prompt for the next development chat|
+## Authoritative Root Files
 
-\---
+| File | Role |
+|---|---|
+| `START_HERE.md` | Permanent conversation entry point |
+| `PROJECT_BOOTSTRAP.md` | Source priority, audit workflow and delivery rules |
+| `README.md` | Documentation overview and current direction |
+| `DOCUMENTATION_MAP.md` | This navigation map |
+| `PROJECT_MASTER.md` | Product and architecture overview |
+| `DEVELOPMENT_STANDARDS.md` | Engineering standards index |
+| `DECISIONS.md` | Decision index |
+| `PROJECT_HISTORY.md` | Consolidated product history |
+| `CHANGELOG.md` | Consolidated sprint release index |
+| `BACKLOG.md` | Roadmap index |
+| `DESIGN_SYSTEM.md` | UI and UX guide |
+| `SOURCE_CODE_STRUCTURE.md` | Real source-code handbook |
 
-## Documentation Folders
+## Operational Current-State Files
+
+| File | Role |
+|---|---|
+| `project/09_Current_State/Current_Project_Status.md` | Current version, branch, completed package and active package |
+| `project/11_ACTIVE_SPRINT.md` | Locked sprint scope and Definition of Done |
+| `project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md` | Sprint 31B continuation prompt |
+| `decisions/DECISION_STATUS_REGISTRY.md` | Authority for active, consolidated and superseded decisions |
+
+## Current Direction
+
+```text
+Version 1.0 in progress
+Sprint 31A backend completed
+Sprint 31B Administrative Frontend active
+```
+
+## Folder Map
 
 ```text
 docs/
-│
-├── project/       Product vision, architecture and module overview
-├── standards/     Engineering standards and coding rules
-├── decisions/     Architecture Decision Records
-├── history/       Historical product evolution
-├── sprints/       Sprint changelog and release notes
-├── roadmap/       Backlog and product roadmap
-└── design/        Detailed design system documentation
+├── project/       Product, architecture, modules and current state
+├── standards/     Engineering, database, frontend and release standards
+├── decisions/     Decision records and status registry
+├── changelog/     Sprint-level release notes
+├── history/       Product evolution and timeline
+├── backlog/       Priorities and long-term vision
+├── architecture/  Cross-module technical architecture
+└── roadmap/       Roadmap navigation
 ```
-
-\---
-
-## Reading Order for a New Chat
-
-Before continuing development:
-
-1. `docs/PROJECT\_MASTER.md`
-2. `docs/CHANGELOG.md`
-3. `docs/BACKLOG.md`
-4. `docs/DECISIONS.md`
-5. `docs/DEVELOPMENT\_STANDARDS.md`
-6. `docs/DESIGN\_SYSTEM.md`
-7. `docs/DOCUMENTATION\_MAP.md`
-
-\---
-
-## Current Active Direction
-
-Current active sprint:
-
-```text
-Sprint 23 - Portfolio Analytics Dashboard
-```
-
-Current product direction:
-
-```text
-Trading Journal
-↓
-Trading Command Center
-↓
-Professional Desktop Trading Platform
-```
-
-Current frontend architecture:
-
-```text
-Application Pages
-↓
-Feature Modules
-↓
-Dashboard Components
-↓
-Widget Infrastructure v3
-↓
-TradePilot UI Framework
-↓
-Material UI
-```
-
-\---
-
-## Documentation Rule
-
-Every important change must update the correct documentation area.
-
-Do not put everything into one large file.
-
-Each topic must have one clear home.
-
----
-
-## Sprint Handover Documents
-
-The current-state folder is the operational handover area for new chats.
-
-Key files:
-
-|File|Purpose|
-|-|-|
-|`docs/project/09_Current_State/Current_Project_Status.md`|Current project snapshot and latest completed sprint status|
-|`docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT*.md`|Mandatory next-chat prompt for the next sprint|
-|`docs/SOURCE_CODE_STRUCTURE.md`|Developer map for the real source-code structure|
-
-Rule:
-
-Before a new sprint begins, read the current-state files and the source-code structure document before writing code.
-
----
 
 ## Release Documentation Rule
 
-Every important sprint should close with:
-
 ```text
-Code Verification
+Validation
 ↓
-Documentation Update
+Documentation synchronization
 ↓
-Git Commit
+Git diff review
 ↓
-Next Chat Prompt
+Commit and push
+↓
+Current status and continuation update
 ```
-
-The documentation is not an afterthought. It is the project memory and the handover system between chats.
-

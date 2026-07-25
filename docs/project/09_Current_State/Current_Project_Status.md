@@ -1,118 +1,116 @@
 # Current Project Status
 
-Status updated after Sprint 30.
+Status synchronized after completion of the Sprint 31A backend package.
 
 ## Release State
 
 ```text
-Version 0.9 — Completed
-Sprint 30 — Completed
-Next: Version 1.0 / Sprint 31 planning and audit
+Product: TradePilot Pro
+Version: 1.0 — In progress
+Active Branch: feature/multi-user-rebuild
+Sprint 31A — Backend package completed
+Active Package: Sprint 31B — Administrative Frontend
+Next milestone: Complete and validate the User Management UI
 ```
 
-## Completed Through Sprint 30
+## Completed Product Foundation
 
-### Backend
+### Version 0.9
 
-- FastAPI, PostgreSQL, SQLAlchemy and Pydantic foundation.
-- MT5 multi-account management and live Trading Center.
-- Modular MT5 Synchronization Engine v2 with position-level aggregation and idempotent upsert.
-- Canonical multi-asset movement engine using MT5 symbol metadata.
-- Supported movement semantics:
-  - Forex and JPY pairs → pips
-  - Indices, metals, stocks, crypto and CFDs → broker points
-- Trade model stores movement value, movement unit, asset class and symbol metadata.
-- Shared Portfolio movement and analytics engines.
-- Dashboard summary separates Forex pips from non-Forex points.
-- Portfolio Average Pips includes Forex trades only.
-- Portfolio Allocation groups exposure by asset class.
-- Legacy `mt5_sync.py` retained only as a compatibility wrapper.
-- Explicit MT5 terminal connection policy prevents automatic terminal startup.
-- Live MT5 endpoints and sync use only an already-running local terminal.
+- MT5 multi-account management and Live Trading Center.
+- MT5 Synchronization Engine v2 with position aggregation and idempotent upsert.
+- Canonical multi-asset movement model.
+- Shared Portfolio, Analytics, Widget and Chart infrastructure.
+- Explicit MT5 terminal connection policy.
+- Successful backend compile and frontend production build.
 
-### Frontend
+### Version 1.0 — Sprint 31A Backend
 
-- Shared TradePilot Theme, PageLayout and Widget System.
-- Portfolio remains the reference UI implementation.
-- Route-level lazy loading through React `lazy()` and `Suspense`.
-- Shared chart infrastructure through `ChartContainer` and `ChartTooltip`.
-- Direct `ResponsiveContainer` usage centralized in one file.
-- Dashboard Equity Chart uses the shared chart infrastructure.
-- Portfolio, Analytics, Psychology and Reports charts use the shared chart infrastructure.
-- Reports consumes the canonical `movement_breakdown` contract.
-- Dashboard displays Forex Pips and Non-Forex Points separately.
-- Trades and Trade Details show the correct movement unit.
-- Portfolio Allocation displays exposure by asset class.
-- Production build succeeds.
+- JWT authentication and centralized authorization dependencies verified.
+- Admin-only endpoint protection.
+- Multi-user backend foundation.
+- User lifecycle fields for active state, administrative permissions, update tracking and last login.
+- Administrative User Management backend.
+- Duplicate username and email validation.
+- Password hashing and administrative password reset.
+- Protection against self-deactivation and self-removal of administrator privileges.
 
-## Current Architecture
+Verified administrative endpoints:
 
-```text
-MT5 Symbol Metadata
-        ↓
-Movement Engine
-        ↓
-Trade movement_value + movement_unit + asset_class
-        ↓
-Movement / Analytics Engines
-        ↓
-Dashboard, Portfolio and Analytics APIs
-        ↓
-Shared Widget + Shared Chart UI
-```
+- `GET /admin/users`
+- `POST /admin/users`
+- `PUT /admin/users/{user_id}`
+- `POST /admin/users/{user_id}/reset-password`
 
-Current local MT5 connection model:
+The admin router is registered in `backend/app/main.py` under `/admin`.
 
-```text
-TradePilot Pro
-        ↓ explicit user action
-Already-running local MT5 terminal
-        ↓
-Broker
-```
+## Active Package — Sprint 31B
 
-TradePilot Pro must not start MT5 automatically.
+Target: complete the Administrative Frontend and User Management UI.
 
-## Mandatory Decisions
+Required scope:
 
-D-001 through D-059 remain binding, with special enforcement of:
+- User list.
+- Create user.
+- Edit user.
+- Reset password.
+- Activate and deactivate user.
+- Safe delete only after the backend contract exists and is verified.
+- Loading indicators.
+- Error handling.
+- Success notifications.
+- Frontend production build validation.
 
-- D-049 — Single Source of Information
-- D-050 — Audit Before New Code
-- D-051 — Single Touch Rule
-- D-052 — Package First Development
-- D-053 — Shared Widget System
-- D-054 — Portfolio Reference UI
-- D-055 — Multi-Asset MT5 Engine
-- D-056 — Tree Verification Before File Modification
-- D-057 — Exact Edit Instructions
-- D-058 — Backend Is the Single Business Logic Authority
-- D-059 — Portfolio Is the Reference Module
+## Locked Scope
+
+The completed Sprint 31A backend is locked unless a verified defect or a missing required contract is demonstrated.
+
+Do not change without evidence:
+
+- Authentication and JWT behavior.
+- Authorization dependencies.
+- Existing admin user endpoints and service rules.
+- Version 0.9 MT5 synchronization and movement contracts.
+- Shared Widget System and Shared Chart Infrastructure.
+- Portfolio reference implementation.
+- Explicit MT5 terminal connection policy.
+
+## Known Contract Gap
+
+The current verified admin API does not expose a delete-user endpoint. “Safe Delete User” must not be implemented as a frontend-only assumption. The backend contract and business rules must first be audited and approved if deletion remains part of Sprint 31B.
+
+## Mandatory Decision Framework
+
+Authority: `docs/decisions/DECISION_STATUS_REGISTRY.md`.
+
+Specially enforced canonical decisions:
+
+- D-053 — Shared Widget System.
+- D-055 — Multi-Asset MT5 Engine.
+- D-058 — Backend Is the Single Business Logic Authority.
+- D-059 — Portfolio Is the Reference Module.
+- D-061 — Single Entry Point and Startup Verification.
+- D-062 — Audit-First Package Workflow.
+- D-063 — Exact Delivery and Locked Scope.
+
+Legacy workflow decisions that the registry marks as superseded remain historical records and are not separate active rules.
 
 ## Validation State
 
-- Real MT5 synchronization: passed.
-- Backend compile: passed.
-- Frontend production build: passed.
-- Shared chart audit: passed.
-- Reports real-contract regression check: passed.
-- MT5 automatic-launch regression check: passed.
+Completed and verified before Sprint 31B:
 
-## Deferred Commercial Architecture
+- Sprint 31A admin endpoints tested through Swagger.
+- User list, create, update and password reset passed.
+- Duplicate and permission validation passed.
+- Version 0.9 regression-sensitive contracts remain protected.
 
-The following are intentionally deferred beyond Version 0.9:
+Still required for Sprint 31B closure:
 
-- User authentication and authorization.
-- Roles and subscription validation.
-- Secure credential storage.
-- Cloud or local TradePilot MT5 Connector service.
-- Broker API / Manager API integration.
-- Multi-user tenant isolation.
-- Commercial licensing and billing.
-
-## Next Sprint Direction
-
-Sprint 31 starts Version 1.0 with audit and planning first. No commercial or multi-user implementation should begin before the existing user, account, database, API and security foundations are fully audited.
+- Frontend implementation audit.
+- Frontend production build.
+- End-to-end admin workflow validation.
+- Documentation update.
+- Git diff review, commit and push.
 
 ## Workspace Ownership
 
@@ -124,4 +122,5 @@ Portfolio  → Portfolio Analysis
 Analytics  → Historical Analysis
 Psychology → Trader Journal
 Reports    → Reports & Export
+Admin      → Administrative User Management
 ```

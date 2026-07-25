@@ -653,12 +653,31 @@ def get_mt5_account_summary(
     connection_status = "disabled"
 
     if account.is_active:
-        live_metrics = get_live_mt5_metrics()
+        connection_health = get_live_mt5_connection_health()
 
-        if live_metrics["connected"]:
-            connection_status = "connected"
-        else:
+        terminal_login = connection_health.get("account_login")
+
+        if not connection_health.get("connected"):
             connection_status = "disconnected"
+            live_metrics["message"] = connection_health.get(
+                "message",
+                "MT5 terminal is not connected.",
+            )
+
+        elif str(terminal_login) != str(account.login):
+            connection_status = "disconnected"
+            live_metrics["message"] = (
+                f"Open MT5 login {terminal_login} does not match "
+                f"account login {account.login}."
+            )
+
+        else:
+            live_metrics = get_live_mt5_metrics()
+
+            if live_metrics["connected"]:
+                connection_status = "connected"
+            else:
+                connection_status = "disconnected"
 
     return MT5AccountSummary(
         account_id=account.id,

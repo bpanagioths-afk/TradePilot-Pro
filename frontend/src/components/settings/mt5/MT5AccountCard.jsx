@@ -119,7 +119,7 @@ export default function MT5AccountCard({
     onOpenMenu,
     onCloseMenu,
     onEdit,
-    onDisable,
+    onDelete,
     onActivate,
     onSync,
 }) {
@@ -268,15 +268,20 @@ export default function MT5AccountCard({
                     Edit
                 </MenuItem>
 
-                {account.is_active ? (
-                    <MenuItem onClick={() => onDisable(account.id)}>
-                        Disable
-                    </MenuItem>
-                ) : (
+                {!account.is_active && (
                     <MenuItem onClick={() => onActivate(account)}>
                         Activate
                     </MenuItem>
                 )}
+
+                <Divider />
+
+                <MenuItem
+                    onClick={() => onDelete(account)}
+                    sx={{ color: "error.main" }}
+                >
+                    Delete
+                </MenuItem>
             </Menu>
         </TradePilotCard>
     );

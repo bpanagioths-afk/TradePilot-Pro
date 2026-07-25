@@ -19,7 +19,7 @@ import SectionHeader from "../../common/SectionHeader";
 
 import {
     createMT5Account,
-    disableMT5Account,
+    deleteMT5Account,
     getMT5Accounts,
     getMT5AccountSummary,
     updateMT5Account,
@@ -190,6 +190,36 @@ const handleActivateAccount = async (account) => {
     }
 };
 
+const handleDeactivateAccount = async (account) => {
+    try {
+        await updateMT5Account(account.id, {
+            user_id: account.user_id,
+            account_name: account.account_name,
+            broker: account.broker,
+            login: account.login,
+            server: account.server,
+            is_active: false,
+        });
+
+        setSnackbar({
+            open: true,
+            message: "MT5 account deactivated successfully",
+            severity: "success",
+        });
+
+        handleCloseMenu();
+        loadAccounts();
+    } catch (error) {
+        console.error("Failed to deactivate MT5 account", error);
+
+        setSnackbar({
+            open: true,
+            message: "Failed to deactivate MT5 account",
+            severity: "error",
+        });
+    }
+};
+
 const handleSyncAccount = async (accountId) => {
     try {
         setSyncingAccountId(accountId);
@@ -217,20 +247,38 @@ const handleSyncAccount = async (accountId) => {
         setSyncingAccountId(null);
     }
 };
-    const handleDisableAccount = async (accountId) => {
+    const handleDeleteAccount = async (account) => {
+        handleCloseMenu();
+
+        const confirmed = window.confirm(
+            `Delete MT5 account "${account.account_name}"?\n\n` +
+            "This action cannot be undone."
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
         try {
-            await disableMT5Account(accountId);
+            await deleteMT5Account(account.id);
+
             setSnackbar({
                 open: true,
-                message: "MT5 account disabled successfully",
+                message: "MT5 account deleted successfully",
                 severity: "success",
             });
-            loadAccounts();
+
+            await loadAccounts();
         } catch (error) {
-            console.error("Failed to disable MT5 account", error);
+            console.error("Failed to delete MT5 account", error);
+
+            const message =
+                error?.response?.data?.detail ||
+                "Failed to delete MT5 account";
+
             setSnackbar({
                 open: true,
-                message: "Failed to disable MT5 account",
+                message,
                 severity: "error",
             });
         }
@@ -259,7 +307,8 @@ const handleSyncAccount = async (accountId) => {
                       summary={accountSummaries[account.id]}
                       account={account}
                       onEdit={handleEditClick}
-                      onDisable={handleDisableAccount}
+                      onDelete={handleDeleteAccount}
+                      onDeactivate={handleDeactivateAccount}
                       onActivate={handleActivateAccount}
                       onSync={handleSyncAccount}
                       syncingAccountId={syncingAccountId}

@@ -2,7 +2,9 @@
 
 > This is the single entry point for every new TradePilot Pro conversation.
 
-## 1. Source access
+---
+
+# 1. Source access
 
 Before asking the user to upload files:
 
@@ -12,56 +14,163 @@ Before asking the user to upload files:
 4. Read the required files directly from Git.
 5. Only request an upload when the required source cannot be retrieved from Git, and state exactly which file or path is unavailable.
 
-A previous conversation may already have authorized GitHub access. Availability must be checked in the current conversation instead of assuming that access is absent.
+A previous conversation may already have authorized GitHub access.
+Availability must always be verified in the current conversation.
 
-## 2. Mandatory reading order
+Never assume Git access is unavailable without checking first.
 
-Read these files completely and in this order:
+---
+
+# 2. Mandatory reading order
+
+Read these files completely and in this exact order.
+
+## Phase A — Startup
 
 1. `docs/START_HERE.md`
 2. `docs/PROJECT_BOOTSTRAP.md`
 3. `docs/project/09_Current_State/Current_Project_Status.md`
 4. `docs/project/11_ACTIVE_SPRINT.md`
-5. `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md` while Sprint 31B remains active
+
+## Phase B — Current Sprint
+
+5. Read the current NEXT_CHAT_PROMPT referenced by ACTIVE_SPRINT.
+   (Example: `NEXT_CHAT_PROMPT_SPRINT32.md` while Sprint 31B is active.)
+
+## Phase C — Decisions
+
 6. `docs/decisions/DECISION_STATUS_REGISTRY.md`
-7. Only the active decisions relevant to the current package
-8. The actual source files that may be modified
+7. Only the ACTIVE decisions required by the current package.
 
-Do not begin implementation before completing this sequence.
+## Phase D — Source Audit
 
-## 3. Startup verification
+8. Audit the actual backend/frontend source files that belong to the active package.
 
-The first technical response must state:
+Implementation must never begin before completing this reading sequence.
 
-- repository and branch read,
-- current version and sprint,
-- active package,
-- locked scope,
-- source files already audited,
-- missing information, if any.
+---
 
-Do not use generic opening messages. Do not ask for files that are available in Git.
+# 3. Startup verification
 
-## 4. Current continuation target
+The first technical response must always include:
 
-Current continuation target:
+- Repository
+- Active Branch
+- Version
+- Sprint
+- Active Package
+- Locked Scope
+- Documentation audited
+- Source files audited
+- Missing information (if any)
 
-- Product: TradePilot Pro
-- Version: 1.0 in progress
-- Active Sprint: Sprint 31B
-- Package: Admin Frontend and User Management UI
-- Locked: Sprint 31A backend, unless a verified backend defect is found
+Never use generic greetings.
 
-The current-state documents remain the authority if these values change.
+Never ask for files that already exist in Git.
 
-## 5. Failure rule
+---
+
+# 4. Current continuation target
+
+Current values are determined by:
+
+`Current_Project_Status.md`
+
+Current synchronized target: Version 1.0 / Sprint 31B on `feature/multi-user-rebuild`.
+
+Typical startup summary should include:
+
+- Product
+- Version
+- Active Branch
+- Current Sprint
+- Current Package
+- Package Status
+- Locked Scope
+- Next Package
+
+If the status documents disagree with this file,
+the status documents always win.
+
+---
+
+# 5. Startup execution rules
+
+After reading the documentation:
+
+1. Audit Git before making assumptions.
+
+2. Identify the current package boundaries.
+
+3. Verify whether the requested functionality already exists.
+
+4. Reuse existing implementation whenever possible.
+
+5. Never create duplicate APIs, services, repositories or components.
+
+6. Respect Package First Development.
+
+7. Respect Single Source of Information.
+
+8. Respect Single Touch Rule.
+
+9. Do not modify files outside the active package unless a verified dependency requires it.
+
+10. Before writing code:
+
+- audit
+- verify
+- then implement
+
+Never implement first and audit afterwards.
+
+---
+
+# 6. Package lifecycle
+
+Every package follows the same lifecycle.
+
+1. Read Documentation
+2. Audit Git
+3. Audit Source Code
+4. Implement
+5. Validate
+6. Update Documentation
+7. Review Git Diff
+8. Commit
+9. Push
+10. Update Current Project Status
+
+Documentation update is mandatory before every commit.
+
+---
+
+# 7. Validation before Commit
+
+A package is NOT considered complete until:
+
+- Backend validation passes.
+- Frontend validation passes.
+- Package testing passes.
+- Git diff reviewed.
+- Documentation updated.
+- Current project status updated.
+
+Only then prepare the commit.
+
+---
+
+# 8. Failure rule
 
 When a required file cannot be found:
 
-1. Search Git by exact path and filename.
-2. Search the documentation indexes.
-3. Check the active branch.
-4. Report the exact failed path.
-5. Ask for only that missing source.
+1. Search Git by exact path.
+2. Search documentation indexes.
+3. Verify active branch.
+4. Verify current sprint.
+5. Report the exact missing path.
+6. Request only the missing source.
 
-Never conclude that the project context is unavailable merely because File Library search returned no result.
+Never conclude that project context is unavailable simply because File Library returned no results.
+
+Never request the complete documentation if only one file is missing.

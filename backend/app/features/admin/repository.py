@@ -85,6 +85,30 @@ def get_user_by_username_or_email(
     return query.first()
 
 
+def count_user_mt5_accounts(
+    db: Session,
+    user_id: int,
+) -> int:
+    return (
+        db.query(func.count(MT5Account.id))
+        .filter(MT5Account.user_id == user_id)
+        .scalar()
+        or 0
+    )
+
+
+def count_user_trades(
+    db: Session,
+    user_id: int,
+) -> int:
+    return (
+        db.query(func.count(Trade.id))
+        .filter(Trade.user_id == user_id)
+        .scalar()
+        or 0
+    )
+
+
 def create_user(
     db: Session,
     user: User,
@@ -115,3 +139,16 @@ def save_user(
     db.refresh(user)
 
     return user
+
+
+def delete_user(
+    db: Session,
+    user: User,
+) -> None:
+    db.delete(user)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise

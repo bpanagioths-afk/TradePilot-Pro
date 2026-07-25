@@ -1,87 +1,84 @@
 # 11 — Active Sprint
 
-# Sprint 31 — Version 1.0 Foundation Audit and Planning
+# Sprint 31B — Administrative Frontend and User Management UI
 
-Status: Ready to start in a new conversation
+Status: Active package, ready for source audit and implementation.
 
-## Starting Point
+## Version
 
-Version 0.9 and Sprint 30 are completed.
-
-Completed foundation includes:
-
-- Multi-asset MT5 movement model.
-- Shared movement and analytics contracts.
-- Shared Widget System.
-- Shared Chart Infrastructure.
-- Route-level frontend lazy loading.
-- Explicit MT5 terminal connection policy.
-- Successful backend compile and frontend production build.
+```text
+Version 1.0 — In progress
+Active branch: feature/multi-user-rebuild
+Completed package: Sprint 31A backend
+Active package: Sprint 31B frontend
+```
 
 ## Primary Goal
 
-```text
-Version 1.0 Foundation Audit
-+
-Multi-User / Commercial Architecture Plan
-```
+Implement the complete Administrative Frontend by consuming the verified Sprint 31A backend contracts and reusing the existing React architecture and design system.
 
-## Important Scope Rule
+## Mandatory Reading
 
-Sprint 31 begins with audit and architecture planning only.
+Start from `docs/START_HERE.md`, then follow its Mandatory Reading Order.
 
-Do not immediately implement:
+Current continuation file:
 
-- login,
-- subscriptions,
-- credential vaults,
-- cloud MT5 connectors,
-- billing,
-- tenant isolation,
-- broker APIs.
+`docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md`
 
-These require a verified package plan first.
+## In Scope
 
-## Priority Order
+- Audit the real frontend tree and existing routing, navigation, API, authentication, form, dialog, loading, error and notification patterns.
+- User list.
+- Create user.
+- Edit user.
+- Reset password.
+- Activate and deactivate user through the existing update contract.
+- Correct authorization-aware navigation and page access.
+- Loading, empty, error and success states.
+- Production build and end-to-end validation.
+- Documentation update and Git release steps.
 
-1. Read all documentation and decisions D-001 through D-059.
-2. Read the real backend and frontend trees.
-3. Audit the current `User`, `MT5Account`, Trade and database relationships.
-4. Audit current authentication, dependency and security foundations.
-5. Audit all APIs for future user/account ownership boundaries.
-6. Define the Version 1.0 package roadmap.
-7. Separate local-development connection behavior from future commercial connector behavior.
-8. Approve architecture before implementation.
+## Conditional Scope
 
-## Protected Version 0.9 Contracts
+Safe delete is included only if an actual backend endpoint and approved service rules exist. The currently verified Sprint 31A API does not expose delete. Do not invent the contract in the frontend.
 
-Do not change without a verified bug:
+## Locked Scope
 
-- MT5 position aggregation and idempotent synchronization.
-- Multi-asset movement semantics.
-- `movement_value`, `movement_unit` and `asset_class`.
-- `movement_breakdown` API contract.
-- Portfolio Average Pips Forex-only behavior.
-- Portfolio Allocation by asset class.
+- Sprint 31A backend business logic, unless a verified defect or required missing contract is proven.
+- Version 0.9 MT5 synchronization and movement contracts.
 - Shared Widget System.
 - Shared Chart Infrastructure.
+- Portfolio reference implementation.
 - Explicit MT5 terminal connection policy.
+
+## Out of Scope
+
+- Subscription management.
+- Billing and licensing.
+- Tenant isolation redesign.
+- Credential vaults.
+- Cloud MT5 connector.
+- Broker or Manager APIs.
+- Broad roles and permissions redesign.
 
 ## Mandatory Rules
 
-- D-001 through D-059 are binding.
-- Read the real tree before every path instruction.
-- Audit before new code.
-- Reuse before creation.
-- Complete package design before editing.
-- One complete change per file per package.
-- Provide full files when requested.
-- `οκ ετοιμο` means the previous action succeeded; continue immediately.
-- Documentation, build validation and clean Git status are required before sprint closure.
+- D-061 — verify entry point, repository, branch, version, sprint and package.
+- D-062 — audit tree and existing implementation before editing.
+- D-063 — define exact editable and locked files; deliver complete files when the user applies changes.
+- D-058 — backend remains the single business-logic authority.
+- D-059 — Portfolio remains the reference module.
+- Reuse existing components and patterns before creating new ones.
+- Treat `οκ ετοιμο` as confirmation and continue immediately.
 
-## Success Criteria
+## Definition of Done
 
-- Current identity and account ownership architecture is fully documented.
-- Version 1.0 package boundaries are approved.
-- Local MT5 behavior and future commercial connector behavior are clearly separated.
-- No Version 0.9 regression is introduced.
+- Administrative page is accessible only to authorized administrators.
+- User list loads from `GET /admin/users`.
+- Create, edit and reset-password flows use the verified API contracts.
+- Active-state changes obey backend protections.
+- No frontend-only business rules duplicate backend authority.
+- Loading, errors and success notifications work.
+- Frontend production build passes.
+- Relevant documentation is synchronized.
+- Git diff is reviewed, committed and pushed.

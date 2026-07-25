@@ -15,7 +15,7 @@ export const updateMT5Account = async (accountId, data) => {
     return response.data;
 };
 
-export const disableMT5Account = async (accountId) => {
+export const deleteMT5Account = async (accountId) => {
     const response = await api.delete(`/mt5/accounts/${accountId}`);
     return response.data;
 };

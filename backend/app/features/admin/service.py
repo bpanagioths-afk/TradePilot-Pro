@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 
 from app.core.security import hash_password
 from app.features.admin.repository import (
+    count_user_mt5_accounts,
+    count_user_trades,
     create_user,
+    delete_user,
     get_user_by_id,
     get_user_by_username_or_email,
     get_users_with_statistics,
@@ -183,3 +186,58 @@ def reset_admin_user_password(
         db=db,
         user=user,
     )
+
+
+def delete_admin_user(
+    db: Session,
+    user_id: int,
+    current_admin: User,
+) -> None:
+    user = get_user_by_id(
+        db=db,
+        user_id=user_id,
+    )
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    if user.id == current_admin.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete your own account",
+        )
+
+    mt5_accounts_count = count_user_mt5_accounts(
+        db=db,
+        user_id=user.id,
+    )
+    trades_count = count_user_trades(
+        db=db,
+        user_id=user.id,
+    )
+
+    if mt5_accounts_count > 0 or trades_count > 0:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "User cannot be deleted because trading data exists. "
+                "Deactivate the account instead."
+            ),
+        )
+
+    try:
+        delete_user(
+            db=db,
+            user=user,
+        )
+    except IntegrityError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "User cannot be deleted because related data exists. "
+                "Deactivate the account instead."
+            ),
+        ) from exc

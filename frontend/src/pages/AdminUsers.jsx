@@ -12,7 +12,6 @@ import {
     DialogTitle,
     FormControlLabel,
     IconButton,
-    InputAdornment,
     Paper,
     Stack,
     Switch,
@@ -28,19 +27,21 @@ import {
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
+import PasswordField from "../components/common/PasswordField";
 import { getStoredUser } from "../services/authService";
 import {
     createAdminUser,
+    deleteAdminUser,
     getAdminUsers,
     resetAdminUserPassword,
     updateAdminUser
 } from "../services/adminService";
+
 
 const EMPTY_USER_FORM = {
     username: "",
@@ -49,6 +50,7 @@ const EMPTY_USER_FORM = {
     is_admin: false,
     is_active: true
 };
+
 
 function formatDate(value) {
     if (!value) {
@@ -70,6 +72,7 @@ function formatDate(value) {
     }).format(parsedDate);
 }
 
+
 function getErrorMessage(error, fallbackMessage) {
     const detail = error.response?.data?.detail;
 
@@ -87,6 +90,16 @@ function getErrorMessage(error, fallbackMessage) {
     return fallbackMessage;
 }
 
+
+function canDeleteUser(user, currentUser) {
+    return (
+        user.id !== currentUser?.id
+        && user.mt5_accounts_count === 0
+        && user.trades_count === 0
+    );
+}
+
+
 export default function AdminUsers() {
     const currentUser = useMemo(() => getStoredUser(), []);
 
@@ -101,7 +114,6 @@ export default function AdminUsers() {
     const [userForm, setUserForm] = useState(EMPTY_USER_FORM);
     const [userDialogError, setUserDialogError] = useState("");
     const [userSaving, setUserSaving] = useState(false);
-    const [showCreatePassword, setShowCreatePassword] = useState(false);
 
     const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
     const [passwordUser, setPasswordUser] = useState(null);
@@ -109,7 +121,12 @@ export default function AdminUsers() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordDialogError, setPasswordDialogError] = useState("");
     const [passwordSaving, setPasswordSaving] = useState(false);
-    const [showResetPassword, setShowResetPassword] = useState(false);
+
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deleteUserTarget, setDeleteUserTarget] = useState(null);
+    const [deleteDialogError, setDeleteDialogError] = useState("");
+    const [deleteSaving, setDeleteSaving] = useState(false);
+
 
     async function loadUsers({ isRefresh = false } = {}) {
         if (isRefresh) {
@@ -136,17 +153,19 @@ export default function AdminUsers() {
         }
     }
 
+
     useEffect(() => {
         loadUsers();
     }, []);
+
 
     function openCreateDialog() {
         setEditingUser(null);
         setUserForm(EMPTY_USER_FORM);
         setUserDialogError("");
-        setShowCreatePassword(false);
         setUserDialogOpen(true);
     }
+
 
     function openEditDialog(user) {
         setEditingUser(user);
@@ -161,13 +180,13 @@ export default function AdminUsers() {
         setUserDialogOpen(true);
     }
 
-    function closeUserDialog() {
-        if (userSaving) {
-            return;
-        }
 
-        setUserDialogOpen(false);
+    function closeUserDialog() {
+        if (!userSaving) {
+            setUserDialogOpen(false);
+        }
     }
+
 
     function handleUserFormChange(event) {
         const { name, value, checked, type } = event.target;
@@ -177,6 +196,7 @@ export default function AdminUsers() {
             [name]: type === "checkbox" ? checked : value
         }));
     }
+
 
     async function handleUserSubmit(event) {
         event.preventDefault();
@@ -249,22 +269,22 @@ export default function AdminUsers() {
         }
     }
 
+
     function openPasswordDialog(user) {
         setPasswordUser(user);
         setNewPassword("");
         setConfirmPassword("");
         setPasswordDialogError("");
-        setShowResetPassword(false);
         setPasswordDialogOpen(true);
     }
 
-    function closePasswordDialog() {
-        if (passwordSaving) {
-            return;
-        }
 
-        setPasswordDialogOpen(false);
+    function closePasswordDialog() {
+        if (!passwordSaving) {
+            setPasswordDialogOpen(false);
+        }
     }
+
 
     async function handlePasswordReset(event) {
         event.preventDefault();
@@ -309,14 +329,64 @@ export default function AdminUsers() {
         }
     }
 
+
+    function openDeleteDialog(user) {
+        setDeleteUserTarget(user);
+        setDeleteDialogError("");
+        setDeleteDialogOpen(true);
+    }
+
+
+    function closeDeleteDialog() {
+        if (!deleteSaving) {
+            setDeleteDialogOpen(false);
+        }
+    }
+
+
+    async function handleDeleteUser() {
+        if (!deleteUserTarget) {
+            return;
+        }
+
+        setDeleteSaving(true);
+        setDeleteDialogError("");
+        setSuccessMessage("");
+
+        try {
+            await deleteAdminUser(deleteUserTarget.id);
+
+            setDeleteDialogOpen(false);
+            setSuccessMessage(
+                `Ο χρήστης ${deleteUserTarget.username} διαγράφηκε με επιτυχία.`
+            );
+            await loadUsers({ isRefresh: true });
+        } catch (error) {
+            setDeleteDialogError(
+                getErrorMessage(
+                    error,
+                    "Δεν ήταν δυνατή η διαγραφή του χρήστη."
+                )
+            );
+        } finally {
+            setDeleteSaving(false);
+        }
+    }
+
+
     return (
         <Box>
             <Stack
                 direction={{ xs: "column", sm: "row" }}
-                justifyContent="space-between"
-                alignItems={{ xs: "stretch", sm: "center" }}
                 spacing={2}
                 mb={3}
+                sx={{
+                    justifyContent: "space-between",
+                    alignItems: {
+                        xs: "stretch",
+                        sm: "center"
+                    }
+                }}
             >
                 <Box>
                     <Typography variant="h4">
@@ -371,10 +441,12 @@ export default function AdminUsers() {
             <Paper variant="outlined">
                 {loading ? (
                     <Stack
-                        alignItems="center"
-                        justifyContent="center"
                         spacing={2}
-                        sx={{ minHeight: 280 }}
+                        sx={{
+                            minHeight: 280,
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}
                     >
                         <CircularProgress />
                         <Typography color="text.secondary">
@@ -389,10 +461,18 @@ export default function AdminUsers() {
                                     <TableCell>Χρήστης</TableCell>
                                     <TableCell>Ρόλος</TableCell>
                                     <TableCell>Κατάσταση</TableCell>
-                                    <TableCell align="right">MT5 Accounts</TableCell>
-                                    <TableCell align="right">Trades</TableCell>
-                                    <TableCell>Τελευταία σύνδεση</TableCell>
-                                    <TableCell align="right">Ενέργειες</TableCell>
+                                    <TableCell align="right">
+                                        MT5 Accounts
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        Trades
+                                    </TableCell>
+                                    <TableCell>
+                                        Τελευταία σύνδεση
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        Ενέργειες
+                                    </TableCell>
                                 </TableRow>
                             </TableHead>
 
@@ -409,109 +489,136 @@ export default function AdminUsers() {
                                         </TableCell>
                                     </TableRow>
                                 ) : (
-                                    users.map((user) => (
-                                        <TableRow
-                                            key={user.id}
-                                            hover
-                                            sx={{
-                                                opacity: user.is_active
-                                                    ? 1
-                                                    : 0.65
-                                            }}
-                                        >
-                                            <TableCell>
-                                                <Stack spacing={0.25}>
-                                                    <Typography fontWeight={600}>
-                                                        {user.username}
-                                                        {user.id === currentUser?.id
-                                                            ? " (εσύ)"
-                                                            : ""}
-                                                    </Typography>
+                                    users.map((user) => {
+                                        const deleteAllowed =
+                                            canDeleteUser(user, currentUser);
 
-                                                    <Typography
-                                                        variant="body2"
-                                                        color="text.secondary"
-                                                    >
-                                                        {user.email}
-                                                    </Typography>
-                                                </Stack>
-                                            </TableCell>
+                                        const deleteTooltip =
+                                            user.id === currentUser?.id
+                                                ? "Δεν μπορείς να διαγράψεις τον λογαριασμό σου"
+                                                : deleteAllowed
+                                                    ? "Διαγραφή χρήστη"
+                                                    : "Ο χρήστης έχει trading δεδομένα. Απενεργοποίησέ τον αντί να τον διαγράψεις.";
 
-                                            <TableCell>
-                                                <Chip
-                                                    label={
-                                                        user.is_admin
-                                                            ? "Administrator"
-                                                            : "User"
-                                                    }
-                                                    color={
-                                                        user.is_admin
-                                                            ? "primary"
-                                                            : "default"
-                                                    }
-                                                    size="small"
-                                                    variant={
-                                                        user.is_admin
-                                                            ? "filled"
-                                                            : "outlined"
-                                                    }
-                                                />
-                                            </TableCell>
+                                        return (
+                                            <TableRow
+                                                key={user.id}
+                                                hover
+                                                sx={{
+                                                    opacity: user.is_active
+                                                        ? 1
+                                                        : 0.65
+                                                }}
+                                            >
+                                                <TableCell>
+                                                    <Stack spacing={0.25}>
+                                                        <Typography fontWeight={600}>
+                                                            {user.username}
+                                                            {user.id === currentUser?.id
+                                                                ? " (εσύ)"
+                                                                : ""}
+                                                        </Typography>
 
-                                            <TableCell>
-                                                <Chip
-                                                    label={
-                                                        user.is_active
-                                                            ? "Active"
-                                                            : "Inactive"
-                                                    }
-                                                    color={
-                                                        user.is_active
-                                                            ? "success"
-                                                            : "default"
-                                                    }
-                                                    size="small"
-                                                    variant="outlined"
-                                                />
-                                            </TableCell>
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="text.secondary"
+                                                        >
+                                                            {user.email}
+                                                        </Typography>
+                                                    </Stack>
+                                                </TableCell>
 
-                                            <TableCell align="right">
-                                                {user.mt5_accounts_count}
-                                            </TableCell>
-
-                                            <TableCell align="right">
-                                                {user.trades_count}
-                                            </TableCell>
-
-                                            <TableCell>
-                                                {formatDate(user.last_login_at)}
-                                            </TableCell>
-
-                                            <TableCell align="right">
-                                                <Tooltip title="Επεξεργασία">
-                                                    <IconButton
-                                                        onClick={() =>
-                                                            openEditDialog(user)
+                                                <TableCell>
+                                                    <Chip
+                                                        label={
+                                                            user.is_admin
+                                                                ? "Administrator"
+                                                                : "User"
+                                                        }
+                                                        color={
+                                                            user.is_admin
+                                                                ? "primary"
+                                                                : "default"
                                                         }
                                                         size="small"
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                        variant={
+                                                            user.is_admin
+                                                                ? "filled"
+                                                                : "outlined"
+                                                        }
+                                                    />
+                                                </TableCell>
 
-                                                <Tooltip title="Reset password">
-                                                    <IconButton
-                                                        onClick={() =>
-                                                            openPasswordDialog(user)
+                                                <TableCell>
+                                                    <Chip
+                                                        label={
+                                                            user.is_active
+                                                                ? "Active"
+                                                                : "Inactive"
+                                                        }
+                                                        color={
+                                                            user.is_active
+                                                                ? "success"
+                                                                : "default"
                                                         }
                                                         size="small"
-                                                    >
-                                                        <LockResetIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                                        variant="outlined"
+                                                    />
+                                                </TableCell>
+
+                                                <TableCell align="right">
+                                                    {user.mt5_accounts_count}
+                                                </TableCell>
+
+                                                <TableCell align="right">
+                                                    {user.trades_count}
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    {formatDate(user.last_login_at)}
+                                                </TableCell>
+
+                                                <TableCell align="right">
+                                                    <Tooltip title="Επεξεργασία">
+                                                        <IconButton
+                                                            onClick={() =>
+                                                                openEditDialog(user)
+                                                            }
+                                                            size="small"
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+
+                                                    <Tooltip title="Reset password">
+                                                        <IconButton
+                                                            onClick={() =>
+                                                                openPasswordDialog(user)
+                                                            }
+                                                            size="small"
+                                                        >
+                                                            <LockResetIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+
+                                                    <Tooltip title={deleteTooltip}>
+                                                        <span>
+                                                            <IconButton
+                                                                onClick={() =>
+                                                                    openDeleteDialog(user)
+                                                                }
+                                                                size="small"
+                                                                color="error"
+                                                                disabled={!deleteAllowed}
+                                                            >
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </span>
+                                                    </Tooltip>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
                                 )}
                             </TableBody>
                         </Table>
@@ -564,36 +671,17 @@ export default function AdminUsers() {
                             />
 
                             {!editingUser && (
-                                <TextField
+                                <PasswordField
                                     label="Password"
                                     name="password"
-                                    type={
-                                        showCreatePassword
-                                            ? "text"
-                                            : "password"
-                                    }
                                     value={userForm.password}
                                     onChange={handleUserFormChange}
+                                    autoComplete="new-password"
                                     required
-                                    fullWidth
-                                    inputProps={{ minLength: 8 }}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={() =>
-                                                        setShowCreatePassword(
-                                                            (visible) => !visible
-                                                        )
-                                                    }
-                                                    edge="end"
-                                                >
-                                                    {showCreatePassword
-                                                        ? <VisibilityOffIcon />
-                                                        : <VisibilityIcon />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
+                                    slotProps={{
+                                        htmlInput: {
+                                            minLength: 8
+                                        }
                                     }}
                                 />
                             )}
@@ -622,9 +710,9 @@ export default function AdminUsers() {
 
                             {editingUser?.id === currentUser?.id && (
                                 <Alert severity="info">
-                                    Το backend δεν επιτρέπει να αφαιρέσεις
-                                    το δικό σου admin access ή να
-                                    απενεργοποιήσεις τον λογαριασμό σου.
+                                    Δεν μπορείς να αφαιρέσεις το δικό σου
+                                    admin access ή να απενεργοποιήσεις τον
+                                    λογαριασμό σου.
                                 </Alert>
                             )}
                         </Stack>
@@ -678,54 +766,34 @@ export default function AdminUsers() {
                                 </Alert>
                             )}
 
-                            <TextField
+                            <PasswordField
                                 label="Νέος κωδικός"
-                                type={
-                                    showResetPassword
-                                        ? "text"
-                                        : "password"
-                                }
                                 value={newPassword}
                                 onChange={(event) =>
                                     setNewPassword(event.target.value)
                                 }
+                                autoComplete="new-password"
                                 required
-                                fullWidth
-                                inputProps={{ minLength: 8 }}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={() =>
-                                                    setShowResetPassword(
-                                                        (visible) => !visible
-                                                    )
-                                                }
-                                                edge="end"
-                                            >
-                                                {showResetPassword
-                                                    ? <VisibilityOffIcon />
-                                                    : <VisibilityIcon />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
+                                slotProps={{
+                                    htmlInput: {
+                                        minLength: 8
+                                    }
                                 }}
                             />
 
-                            <TextField
+                            <PasswordField
                                 label="Επιβεβαίωση νέου κωδικού"
-                                type={
-                                    showResetPassword
-                                        ? "text"
-                                        : "password"
-                                }
                                 value={confirmPassword}
                                 onChange={(event) =>
                                     setConfirmPassword(event.target.value)
                                 }
+                                autoComplete="new-password"
                                 required
-                                fullWidth
-                                inputProps={{ minLength: 8 }}
+                                slotProps={{
+                                    htmlInput: {
+                                        minLength: 8
+                                    }
+                                }}
                             />
                         </Stack>
                     </DialogContent>
@@ -749,6 +817,64 @@ export default function AdminUsers() {
                         </Button>
                     </DialogActions>
                 </Box>
+            </Dialog>
+
+            <Dialog
+                open={deleteDialogOpen}
+                onClose={closeDeleteDialog}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle>
+                    Διαγραφή χρήστη
+                </DialogTitle>
+
+                <DialogContent>
+                    <Stack spacing={2} mt={1}>
+                        {deleteDialogError && (
+                            <Alert severity="error">
+                                {deleteDialogError}
+                            </Alert>
+                        )}
+
+                        <Alert severity="warning">
+                            Η διαγραφή είναι μόνιμη και δεν μπορεί να αναιρεθεί.
+                        </Alert>
+
+                        <Typography>
+                            Θέλεις να διαγράψεις οριστικά τον χρήστη{" "}
+                            <strong>{deleteUserTarget?.username}</strong>;
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                        >
+                            Η ενέργεια επιτρέπεται μόνο όταν ο χρήστης δεν έχει
+                            MT5 accounts ή trades.
+                        </Typography>
+                    </Stack>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button
+                        onClick={closeDeleteDialog}
+                        disabled={deleteSaving}
+                    >
+                        Ακύρωση
+                    </Button>
+
+                    <Button
+                        onClick={handleDeleteUser}
+                        variant="contained"
+                        color="error"
+                        disabled={deleteSaving}
+                    >
+                        {deleteSaving
+                            ? "Διαγραφή..."
+                            : "Οριστική διαγραφή"}
+                    </Button>
+                </DialogActions>
             </Dialog>
         </Box>
     );

@@ -468,3 +468,13 @@ Frontend chart behavior was centralized through `ChartContainer` and `ChartToolt
 The MT5 integration was also corrected so page loading, widget polling and synchronization do not start the local MT5 terminal automatically. TradePilot Pro now connects only to an already-running terminal after explicit user action.
 
 The commercial architecture remains intentionally deferred. Version 1.0 begins with a complete audit of users, account ownership, security, API boundaries and the future connector model before authentication, subscriptions or cloud MT5 access are implemented.
+
+---
+
+# Sprint 31A History — Multi-User Foundation and Administrative Backend
+
+Sprint 31A opened Version 1.0 by introducing the verified backend foundation for multi-user account administration. Authentication and authorization dependencies were consolidated, administrator-only access was enforced, and the User lifecycle was expanded for active-state, permission, password and audit tracking.
+
+The administrative API now supports listing, creating and updating users and resetting passwords. Service-layer rules reject duplicate usernames and emails and protect the currently authenticated administrator from self-deactivation or self-removal of administrator privileges.
+
+The package preserved the Repository → Service → API → Schemas separation and registered the admin router in the main FastAPI application. The next package, Sprint 31B, is limited to the Administrative Frontend. A delete-user UI must not be created unless a verified backend contract is added through an audited package.

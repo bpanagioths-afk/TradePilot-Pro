@@ -2528,3 +2528,34 @@ MT5 symbol metadata
 → Dashboard / Portfolio APIs
 → Dashboard / Analytics / Reports / Psychology / Trades UI
 ```
+
+---
+
+## Version 1.0 — Sprint 31A Admin Backend
+
+Verified active-branch additions include:
+
+```text
+backend/app/features/admin/
+├── api.py
+├── repository.py
+├── schemas.py
+└── service.py
+```
+
+Integration points:
+
+- `backend/app/main.py` registers the admin router.
+- `backend/app/core/deps.py` provides database, authenticated-user and administrator dependencies.
+- `backend/app/core/security.py` owns password and token security helpers.
+- `backend/app/models/user.py` owns the user lifecycle fields.
+- `backend/app/routers/auth.py` owns authentication endpoints.
+
+Verified admin API contract:
+
+- list users,
+- create user,
+- update user,
+- reset password.
+
+No delete-user endpoint is currently verified.

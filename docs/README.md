@@ -1,16 +1,40 @@
-# TradePilot Pro
+# TradePilot Pro Documentation
 
-Professional Trading Journal & Trading Command Center
+TradePilot Pro is a professional Trading Journal and Trading Command Center evolving toward a secure multi-user platform.
 
-## Vision
+## Permanent Entry Point
 
-TradePilot Pro is a Windows Trading Command Center for:
+Every new development conversation starts from:
 
-- Forex
-- Metals
-- Prop Firm Traders
-- Multi-account trading
-- Process-based performance review
+`docs/START_HERE.md`
+
+Follow its Mandatory Reading Order before auditing or modifying source code.
+
+## Current Status
+
+```text
+Version 0.9 — Completed
+Version 1.0 — In progress
+Sprint 31A backend — Completed
+Active package — Sprint 31B Administrative Frontend
+Active branch — feature/multi-user-rebuild
+```
+
+Authoritative operational files:
+
+- `docs/project/09_Current_State/Current_Project_Status.md`
+- `docs/project/11_ACTIVE_SPRINT.md`
+- `docs/decisions/DECISION_STATUS_REGISTRY.md`
+
+## Product Direction
+
+```text
+Trading Journal
+↓
+Trading Command Center
+↓
+Secure Multi-User Trading Platform
+```
 
 Core philosophy:
 
@@ -18,245 +42,40 @@ Core philosophy:
 Process over Profit
 ```
 
-TradePilot Pro does not evaluate only whether a trade won or lost.
+## Architecture Principles
 
-It evaluates whether the trader followed the correct process, rules, discipline and Trading Plan.
+- Audit before modification.
+- Backend is the single business-logic authority.
+- Reuse before creating new services, APIs or components.
+- Package-first implementation with locked scope.
+- Portfolio remains the reference feature module and UI.
+- Documentation is part of the Definition of Done.
 
----
+## Documentation Areas
 
-## Product Identity
+| Path | Purpose |
+|---|---|
+| `START_HERE.md` | Permanent startup entry point |
+| `PROJECT_BOOTSTRAP.md` | Development workflow and source-of-truth order |
+| `project/` | Product, architecture, current state and sprint scope |
+| `decisions/` | Architecture decisions and authoritative status registry |
+| `standards/` | Engineering and release standards |
+| `changelog/` | Sprint release records |
+| `history/` | Product evolution and timeline |
+| `backlog/` | Priorities and long-term roadmap |
+| `SOURCE_CODE_STRUCTURE.md` | Source structure handbook |
+| `DESIGN_SYSTEM.md` | UI and UX reference |
 
-TradePilot Pro is evolving from a Trading Journal into a complete professional Trading Command Center.
+## Current Sprint 31B Goal
 
-Core pillars:
+Build the Administrative Frontend using the verified Sprint 31A backend contracts:
 
-- Portfolio Management
-- MT5 Integration
-- Trading Plans
-- Rule Engine
-- AI Coach
-- Psychology Analysis
-- Performance Analytics
-- Economic Calendar
-- Risk Management
-- Professional Dashboard
+- List users.
+- Create and edit users.
+- Reset passwords.
+- Activate and deactivate accounts.
+- Enforce administrator access.
+- Reuse loading, error, notification and form patterns.
+- Validate the production build.
 
----
-
-## Development Philosophy
-
-TradePilot Pro is developed with:
-
-- Small Safe Steps
-- Documentation First
-- Architecture Before Features
-- Professional UX
-- Reusable Components
-- Data Protection First
-- Future SaaS Ready
-- Process over Profit
-
-Every important module follows:
-
-```text
-Functionality
-↓
-Architecture
-↓
-Professional UX
-```
-
----
-
-## Tech Stack
-
-### Backend
-
-- Python
-- FastAPI
-- PostgreSQL
-- SQLAlchemy
-- Pydantic
-- Uvicorn
-- MetaTrader5 Python API
-- ReportLab
-
-### Frontend
-
-- React
-- Vite
-- Material UI
-- Axios
-- DataGrid
-- Recharts later
-
-### Version Control
-
-- Git
-- Clean `.gitignore`
-- No `venv`
-- No `node_modules`
-- No `.env`
-- No uploads in Git
-
----
-
-## Frontend Architecture
-
-Starting from Sprint 18, the frontend follows:
-
-```text
-Material UI
-        ↓
-TradePilot UI Framework
-        ↓
-Application Modules
-```
-
-Material UI is the rendering layer.
-
-TradePilot UI Framework is the application UI layer.
-
-Current reusable components:
-
-- Theme
-- TradePilotCard
-- TradePilotButton
-- StatusBadge
-- SectionHeader
-- InfoRow
-
-Official design reference:
-
-```text
-docs/DESIGN_SYSTEM.md
-```
-
----
-
-## Documentation v2 Structure
-
-The documentation is now organized as a modular documentation library.
-
-```text
-docs/
-│
-├── README.md
-├── DOCUMENTATION_MAP.md
-├── PROJECT_MASTER.md
-├── DEVELOPMENT_STANDARDS.md
-├── DECISIONS.md
-├── PROJECT_HISTORY.md
-├── CHANGELOG.md
-├── BACKLOG.md
-├── DESIGN_SYSTEM.md
-│
-├── project/
-├── standards/
-├── decisions/
-├── history/
-├── sprints/
-├── roadmap/
-└── design/
-```
-
----
-
-## Main Documentation Files
-
-| File | Purpose |
-|------|---------|
-| `docs/PROJECT_MASTER.md` | Product vision and architecture index |
-| `docs/DEVELOPMENT_STANDARDS.md` | Engineering handbook index |
-| `docs/DECISIONS.md` | Architecture decisions index |
-| `docs/PROJECT_HISTORY.md` | Product history index |
-| `docs/CHANGELOG.md` | Sprint changelog index |
-| `docs/BACKLOG.md` | Product roadmap index |
-| `docs/DESIGN_SYSTEM.md` | Official UI / UX design guide |
-| `docs/DOCUMENTATION_MAP.md` | Full documentation map |
-
----
-
-## Current Development Status
-
-Completed through Sprint 18:
-
-- Multi-account MT5 architecture
-- MT5 Account CRUD
-- Account-aware MT5 Sync
-- MT5 Account Manager UI
-- TradePilot Theme
-- TradePilot UI Framework v1
-- Design System foundation
-- Modular documentation architecture
-
-Next active sprint:
-
-```text
-Sprint 19 - Professional MT5 Account Widget
-```
-
-Sprint 19 target:
-
-- Balance
-- Equity
-- Floating Profit
-- Open Positions
-- Connection Health
-- Demo / Live
-- Prop Firm
-- Auto Sync
-- Import Statistics
-- Relative Last Sync
-
----
-
-## Long Term Goal
-
-To create the best Windows Trading Command Center for:
-
-- Forex
-- Metals
-- Indices
-- Crypto
-- Prop Firms
-
-with:
-
-- Portfolio Management
-- MT5 Integration
-- AI Coach
-- Trading Plans
-- Rule Engine
-- Psychology
-- Analytics
-- Risk Management
-- Economic Calendar
-- Professional Dashboard
-
----
-
-## Sprint 19 Update
-
-Sprint 19 completed the first Professional Trading Widget for TradePilot Pro.
-
-New capabilities:
-
-- MT5 Account Summary API
-- Live MT5 balance and equity metrics
-- Floating Profit / Loss
-- Open Positions
-- Connection Health
-- Import Statistics
-- Sync Status endpoint
-- Sync Engine Foundation
-- Professional MT5 Trading Widget UI
-- Reusable MetricCard component
-
-The MT5 Widget is now the reference implementation for future TradePilot widgets.
-
-Next development direction:
-
-```text
-Sprint 20 - Professional Dashboard Foundation
-```
+A delete-user operation must not be assumed because the currently verified admin API has no delete endpoint.

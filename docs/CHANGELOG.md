@@ -371,3 +371,20 @@ Highlights:
 - Backend compile, static dead-code audit and frontend production build passed.
 
 See: `docs/changelog/10_SPRINT_29.md`.
+
+---
+
+# Sprint 31A — Multi-User Foundation and Admin Backend
+
+Status: Completed
+
+Highlights:
+
+- Version 1.0 multi-user backend foundation.
+- JWT authentication and centralized admin authorization verified.
+- Administrative user list, create, update and password-reset endpoints.
+- Duplicate-account and self-protection business rules.
+- Sprint 31B Administrative Frontend established as the active package.
+- No verified delete-user endpoint; deletion remains contract-gated.
+
+See: `docs/changelog/12_SPRINT_31.md`.
