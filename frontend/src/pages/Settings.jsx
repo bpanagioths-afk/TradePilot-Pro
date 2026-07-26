@@ -339,9 +339,10 @@ export default function Settings() {
 
                 <Stack spacing={2}>
                     <TextField
-                        label="Trader Name"
-                        defaultValue="Panagiotis"
-                        fullWidth
+                       label="Trader Name"
+                       value={user?.username || ""}
+                       fullWidth
+                       slotProps={{ htmlInput: { readOnly: true } }}
                     />
 
                     <TextField

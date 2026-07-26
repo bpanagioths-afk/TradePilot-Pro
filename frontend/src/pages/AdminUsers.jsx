@@ -181,11 +181,15 @@ export default function AdminUsers() {
     }
 
 
-    function closeUserDialog() {
-        if (!userSaving) {
-            setUserDialogOpen(false);
-        }
+function closeUserDialog(event, reason) {
+    if (reason === "backdropClick") {
+        return;
     }
+
+    if (!userSaving) {
+        setUserDialogOpen(false);
+    }
+}
 
 
     function handleUserFormChange(event) {

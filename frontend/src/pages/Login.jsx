@@ -133,7 +133,9 @@ export default function Login() {
                                         sm: "row"
                                     }}
                                     spacing={1}
-                                    justifyContent="space-between"
+                                    sx={{
+                                        justifyContent: "space-between"
+                                    }}
                                 >
                                     <Link
                                         component={RouterLink}

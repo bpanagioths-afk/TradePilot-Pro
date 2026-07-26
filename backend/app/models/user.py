@@ -65,6 +65,25 @@ class User(Base):
         onupdate=func.now(),
     )
 
+    trader_name = Column(
+        String(100),
+        nullable=True,
+    )
+
+    base_currency = Column(
+        String(3),
+        nullable=False,
+        default="EUR",
+        server_default="EUR",
+    )
+
+    theme_mode = Column(
+        String(10),
+        nullable=False,
+        default="dark",
+        server_default="dark",
+    )
+
     last_login_at = Column(
         DateTime(timezone=False),
         nullable=True,

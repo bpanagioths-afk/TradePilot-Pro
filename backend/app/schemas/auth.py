@@ -83,8 +83,14 @@ class UserResponse(BaseModel):
     id: int
     username: str
     email: str
+
+    trader_name: str | None = None
+    base_currency: str
+    theme_mode: str
+
     is_admin: bool
     is_active: bool
+
     created_at: datetime | None = None
 
 class TokenResponse(BaseModel):
