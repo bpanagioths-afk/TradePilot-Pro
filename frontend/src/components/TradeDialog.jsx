@@ -58,6 +58,14 @@ export default function TradeDialog({
         setPreviewUrl(null);
     }, [trade, open]);
 
+    const handleDialogClose = (event, reason) => {
+        if (reason === "backdropClick") {
+            return;
+        }
+
+        onClose();
+    };
+
     const handleChange = (field, value) => {
         setForm({
             ...form,
@@ -108,7 +116,7 @@ export default function TradeDialog({
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={handleDialogClose}
             maxWidth="md"
             fullWidth
         >
@@ -118,7 +126,7 @@ export default function TradeDialog({
 
             <DialogContent>
                 <Grid container spacing={2} mt={1}>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             label="Pair"
                             fullWidth
@@ -127,7 +135,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             select
                             label="Direction"
@@ -140,7 +148,7 @@ export default function TradeDialog({
                         </TextField>
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             label="Session"
                             fullWidth
@@ -149,7 +157,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={3}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <TextField
                             label="Entry"
                             type="number"
@@ -159,7 +167,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={3}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <TextField
                             label="SL"
                             type="number"
@@ -169,7 +177,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={3}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <TextField
                             label="TP"
                             type="number"
@@ -179,7 +187,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={3}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <TextField
                             label="Exit"
                             type="number"
@@ -189,7 +197,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             label="Lot Size"
                             type="number"
@@ -199,7 +207,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             label="Profit Money"
                             type="number"
@@ -209,7 +217,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             label="Trading System ID"
                             type="number"
@@ -219,7 +227,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{ xs: 12, md: 4 }}>
                         <TextField
                             label="Psychology ID"
                             type="number"
@@ -229,7 +237,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12} md={8}>
+                    <Grid size={{ xs: 12, md: 8 }}>
                         <TextField
                             label="TradingView Link"
                             fullWidth
@@ -238,7 +246,7 @@ export default function TradeDialog({
                         />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Paper sx={{ p: 2 }}>
                             <Stack spacing={2}>
                                 <Typography variant="h6">
@@ -289,7 +297,7 @@ export default function TradeDialog({
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <TextField
                             label="Notes"
                             fullWidth

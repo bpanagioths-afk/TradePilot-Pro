@@ -95,6 +95,22 @@ const handleCloseMenu = () => {
     setMenuAccount(null);
 };
 
+    const handleAddDialogClose = (event, reason) => {
+        if (reason === "backdropClick") {
+            return;
+        }
+
+        setAddDialogOpen(false);
+    };
+
+    const handleEditDialogClose = (event, reason) => {
+        if (reason === "backdropClick") {
+            return;
+        }
+
+        setEditDialogOpen(false);
+    };
+
     const handleNewAccountChange = (event) => {
         const { name, value } = event.target;
         setNewAccount((prev) => ({ ...prev, [name]: value }));
@@ -320,7 +336,7 @@ const handleSyncAccount = async (accountId) => {
               ))}           
             </Stack>
 
-            <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} fullWidth maxWidth="sm">
+            <Dialog open={addDialogOpen} onClose={handleAddDialogClose} fullWidth maxWidth="sm">
                 <DialogTitle>Add MT5 Account</DialogTitle>
                 <DialogContent>
                     <Stack spacing={2} mt={1}>
@@ -331,12 +347,12 @@ const handleSyncAccount = async (accountId) => {
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setAddDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleAddDialogClose}>Cancel</Button>
                     <Button variant="contained" onClick={handleCreateAccount}>Save</Button>
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} fullWidth maxWidth="sm">
+            <Dialog open={editDialogOpen} onClose={handleEditDialogClose} fullWidth maxWidth="sm">
                 <DialogTitle>Edit MT5 Account</DialogTitle>
                 <DialogContent>
                     {editingAccount && (
@@ -349,7 +365,7 @@ const handleSyncAccount = async (accountId) => {
                     )}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleEditDialogClose}>Cancel</Button>
                     <Button variant="contained" onClick={handleUpdateAccount}>Save Changes</Button>
                 </DialogActions>
             </Dialog>

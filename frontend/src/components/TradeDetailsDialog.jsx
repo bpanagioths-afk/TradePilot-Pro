@@ -97,6 +97,14 @@ export default function TradeDetailsDialog({
                 ? "warning"
                 : "error";
 
+
+    const handleDialogClose = (event, reason) => {
+        if (reason === "backdropClick") {
+            return;
+        }
+        onClose();
+    };
+
     const screenshotUrl = trade.screenshot_path
         ? `${API_BASE_URL}${trade.screenshot_path}`
         : null;
@@ -105,7 +113,7 @@ export default function TradeDetailsDialog({
         <>
             <Dialog
                 open={open}
-                onClose={onClose}
+                onClose={handleDialogClose}
                 maxWidth="lg"
                 fullWidth
             >
@@ -162,27 +170,27 @@ export default function TradeDetailsDialog({
                     </Box>
 
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox label="Entry" value={trade.entry_price} />
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox label="Exit" value={trade.exit_price} />
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox label="Stop Loss" value={trade.stop_loss} />
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox label="Take Profit" value={trade.take_profit} />
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox label="Lot Size" value={trade.lot_size} />
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <Paper sx={{ p: 2 }}>
                                 <Typography variant="body2" color="text.secondary">
                                     Risk Reward
@@ -196,25 +204,25 @@ export default function TradeDetailsDialog({
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox
                                 label="Duration"
                                 value={`${trade.duration_minutes ?? 0} min`}
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={3}>
+                        <Grid size={{ xs: 12, md: 3 }}>
                             <InfoBox label="Session" value={trade.session_name} />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <InfoBox
                                 label="Trading System"
                                 value={systemMap[trade.trading_system_id] || "-"}
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <InfoBox
                                 label="Psychology"
                                 value={psychologyMap[trade.psychology_state_id] || "-"}
@@ -235,7 +243,7 @@ export default function TradeDetailsDialog({
                     </Paper>
 
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Paper sx={{ p: 2 }}>
                                 <Typography variant="h6" mb={1}>
                                     TradingView
@@ -260,7 +268,7 @@ export default function TradeDetailsDialog({
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Paper sx={{ p: 2 }}>
                                 <Typography variant="h6" mb={1}>
                                     Screenshot
