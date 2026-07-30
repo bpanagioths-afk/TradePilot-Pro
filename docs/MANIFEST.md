@@ -162,3 +162,11 @@ Important current files:
 - `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md`
 - `docs/changelog/12_SPRINT_31.md`
 - `docs/decisions/DECISION_STATUS_REGISTRY.md`
+
+## Version 1.0 Multi-User Documentation
+
+- `changelog/13_VERSION_1_MULTI_USER_REBUILD.md` — detailed branch change record.
+- `project/09_Current_State/Current_Project_Status.md` — current branch implementation and validation state.
+- `project/11_ACTIVE_SPRINT.md` — integration-validation package.
+- `SOURCE_CODE_STRUCTURE.md` — authentication, admin and ownership source map.
+- `project/08_SAAS_ROADMAP.md` — current multi-user foundation and future commercial layers.

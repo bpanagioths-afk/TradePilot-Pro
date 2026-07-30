@@ -23,7 +23,8 @@ export default function Home() {
             </Typography>
 
             <Typography color="text.secondary" mb={3}>
-                Professional trading platform for MT5 sync, portfolio tracking, analytics and trading discipline.
+                Professional trading platform for MT5 sync, portfolio tracking,
+                analytics and trading discipline.
             </Typography>
 
             <Box
@@ -31,96 +32,82 @@ export default function Home() {
                     display: "grid",
                     gridTemplateColumns: {
                         xs: "1fr",
-                        md: "2fr 1fr"
+                        lg: "minmax(0, 1fr) minmax(0, 1fr)"
                     },
-                    gap: 3
+                    gap: 3,
+                    alignItems: "stretch"
                 }}
             >
-                <Paper sx={{ p: 3 }}>
-                    <Typography variant="h6" mb={2}>
-                        Platform Overview
-                    </Typography>
+<Stack
+    spacing={3}
+    sx={{
+        minWidth: 0,
+        justifyContent: "space-between",
+        height: "100%"
+    }}
+                >
 
-                    <Typography color="text.secondary" mb={2}>
-                        TradePilot Pro is being built as a multi-user trading platform. Future versions will include secure login, subscriptions and personal trader workspaces.
-                    </Typography>
-
-                    <Stack
-                        direction="row"
-                        spacing={1}
+                    <Box
                         sx={{
-                            flexWrap: "wrap",
-                            gap: 1
+                            minWidth: 0,
+                            maxHeight: {
+                                xs: "none",
+                                lg: 460
+                            },
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            borderRadius: 1,
+                            "& > *": {
+                                width: "100%"
+                            }
                         }}
                     >
-                        <Chip label="MT5 Sync" color="primary" />
-                        <Chip label="Portfolio Tracking" color="primary" />
-                        <Chip label="Analytics" color="primary" />
-                        <Chip label="Reports" color="primary" />
-                        <Chip label="Psychology" color="primary" />
-                    </Stack>
+                        <TradingSessions />
+                    </Box>
 
-                    <Stack
-                        direction="row"
-                        spacing={2}
+                    <Box
                         sx={{
-                            mt: 3,
-                            flexWrap: "wrap"
+                            minWidth: 0,
+                            maxHeight: {
+                                xs: "none",
+                                lg: 540
+                            },
+                            overflowY: "auto",
+                            overflowX: "hidden",
+                            borderRadius: 1,
+                            "& > *": {
+                                width: "100%"
+                            }
                         }}
                     >
-                        <Button
-                            variant="contained"
-                            onClick={() => navigate("/dashboard")}
-                        >
-                            Open Dashboard
-                        </Button>
-
-                        <Button
-                            variant="outlined"
-                            onClick={() => navigate("/mt5")}
-                        >
-                            Open MT5 Center
-                        </Button>
-                    </Stack>
-                </Paper>
-
-                <MarketAlerts />
-
-                <TradingSessions />
-
-                <Paper sx={{ p: 3 }}>
-                    <Typography variant="h6" mb={2}>
-                        Version 0.8 Focus
-                    </Typography>
-
-                    <Stack spacing={1}>
-                        <Typography color="text.secondary">
-                            Core platform foundation
-                        </Typography>
-
-                        <Typography color="text.secondary">
-                            MT5 Trading Center
-                        </Typography>
-
-                        <Typography color="text.secondary">
-                            Portfolio and performance overview
-                        </Typography>
-
-                        <Typography color="text.secondary">
-                            Analytics foundation
-                        </Typography>
-                    </Stack>
-                </Paper>
+                        <TodayMission />
+                    </Box>
+                </Stack>
 
                 <Box
-                    sx={{
-                        gridColumn: {
-                            xs: "auto",
-                            md: "1 / -1"
-                        }
-                    }}
+                   sx={{
+                      minWidth: 0,
+                      height: {
+                          xs: "auto",
+                          lg: 0
+                      },
+                      minHeight: {
+                         xs: "auto",
+                         lg: "100%"
+                      },
+                      overflow: "hidden",
+                      borderRadius: 1,
+                      "& > *": {
+                          width: "100%",
+                          height: {
+                             xs: "auto",
+                             lg: "100%"
+                          },
+                          minHeight: 0
+                      }
+                   }}
                 >
-                    <TodayMission />
+                   <MarketAlerts />
                 </Box>
             </Box>
         </Box>

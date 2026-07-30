@@ -943,3 +943,34 @@ Portfolio remains the reference implementation for:
 - responsive page layout
 
 New feature pages should follow Portfolio unless an Architecture Review approves a deviation.
+
+---
+
+# Version 1.0 Multi-User Components
+
+## `PasswordField`
+
+Path: `frontend/src/components/common/PasswordField.jsx`
+
+Reusable password input with show/hide behavior for login, recovery, reset and administrative password workflows.
+
+## Authentication Pages
+
+- `frontend/src/pages/Login.jsx`
+- `frontend/src/pages/ForgotUsername.jsx`
+- `frontend/src/pages/ForgotPassword.jsx`
+- `frontend/src/pages/ResetPassword.jsx`
+
+These pages use the centralized authentication service and must remain outside the protected application layout where appropriate.
+
+## `AdminUsers`
+
+Path: `frontend/src/pages/AdminUsers.jsx`
+
+Administrative User Management workspace. It consumes `adminService.js` and is protected by both frontend route visibility and backend administrator authorization. Backend rules remain authoritative.
+
+## Authentication-Aware Navigation
+
+- `Sidebar.jsx` conditionally exposes administrator navigation.
+- `Topbar.jsx` reflects authenticated-user state and logout behavior.
+- `App.jsx` owns PublicOnlyRoute, ProtectedRoute and AdminRoute composition.

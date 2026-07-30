@@ -1,124 +1,93 @@
-# 04 - Current Modules
+# 04 — Current Modules
 
-## Trading Journal Engine
+## Authentication
+
+Implemented in `feature/multi-user-rebuild`:
+
+- JWT login.
+- Authenticated current-user flow.
+- Active-user enforcement.
+- Public login and recovery routes.
+- Forgot username.
+- Forgot password.
+- Reset password.
+- Centralized frontend authentication service.
+
+## Administrative User Management
 
 Implemented:
 
-* Trades CRUD
-* Add/Edit Trade Dialog
-* Trade Details Dialog
-* Screenshot upload
-* Search
-* Filters
-* CSV Export
-* PDF Export
-* Trade Score UI
+- Admin-only list users.
+- Create user.
+- Edit user and active/admin state.
+- Reset user password.
+- Duplicate username/email validation.
+- Self-protection rules for the current administrator.
+- Admin-only frontend page and navigation.
 
-Core decision:
+No delete-user contract is documented as part of the verified branch API.
 
-Trade result is not enough.
+## Trading Journal
 
-A trade is evaluated based on execution quality, process and discipline.
+Implemented:
 
----
+- Trades CRUD.
+- Trade dialogs and details.
+- Screenshot support.
+- Search and filters.
+- CSV/PDF export foundation.
+- Trade Score UI.
+- User ownership and user-scoped trade access.
 
 ## Dashboard
 
 Implemented:
 
-* KPI Cards
-* Equity Curve
-* Better card UI
-* Icons
-* Full dashboard API
+- KPI cards and summary metrics.
+- Equity curve and performance views.
+- User-scoped summary data.
+- Shared widget infrastructure.
 
-Planned:
-
-* Portfolio View
-* Multi Account Statistics
-* Equity Curve PRO
-* Drawdown
-* Profit Factor
-* Calendar View
-* Heatmap
-
----
-
-## Home Command Center
-
-Implemented static/widgets:
-
-* Home page
-* Today Mission widget
-* Market Alerts widget
-* Trading Sessions widget
-
-Planned:
-
-* Latest Trades
-* Mini Equity Curve
-* Economic Calendar
-* AI Coach
-* Market Status
-* MT5 Status
-* Spread Monitor
-* Watchlist
-* Prop Firm Progress
-
----
-
-## Trading Plan Engine
+## MT5 Trading Center
 
 Implemented:
 
-* `trading_plans` table
-* `trading_plan_history` table
-* `User` model
-* `TradingPlan` model
-* `TradingPlanHistory` model
-* Schemas
-* Router
-* CRUD API
-* Frontend Trading Plan page
-* Save Trading Plan
-* Snackbar success message
-* NumericField component accepting `,` and `.`
+- Multiple MT5 accounts.
+- Account management.
+- Open positions, pending orders and performance widgets.
+- Synchronization Engine v2.
+- Multi-asset movement model.
+- Per-user account ownership and user-scoped synchronization.
+- Explicit terminal connection policy.
 
-Architecture decision:
-
-Trading Plans must support multiple plans per user.
-
-Examples:
-
-* Forex Conservative
-* Gold Intraday
-* FTMO Challenge
-* The5ers Challenge
-* Swing Trading
-
----
-
-## Rule Engine
+## Portfolio and Analytics
 
 Implemented:
 
-* `backend/app/services/rule_engine.py`
-* Test endpoint
-* Real trade evaluation endpoint
-* Trade Score Card in UI
+- Portfolio overview and allocation.
+- Risk/performance calculations.
+- Multi-asset category aggregation.
+- Shared chart infrastructure.
+- User-scoped portfolio data.
 
-Current rules v1:
+## Settings
 
-* Minimum RR
-* Allowed session
-* Maximum trades per day
-* High impact news placeholder
-* Risk per trade placeholder
+Implemented foundation:
 
-Important philosophy:
+- Profile name.
+- Base currency.
+- Theme mode.
+- Security/account settings integrated with authenticated user state.
 
-Trade Score is not Profit.
+## Trading Plan and Rule Engine
 
-A losing trade can have high score if execution was correct.
+Implemented foundation:
 
-A winning trade can have low score if rules were violated.
+- Multiple trading plans.
+- Trading plan history.
+- Rule evaluation.
+- Trade Score philosophy: process quality is distinct from profit.
+
+## Psychology, Reports and Home
+
+Existing workspaces remain part of the protected product foundation and must continue to operate under the authenticated layout.

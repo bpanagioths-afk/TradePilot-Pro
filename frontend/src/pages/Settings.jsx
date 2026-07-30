@@ -7,11 +7,10 @@ import {
     Chip,
     CircularProgress,
     Divider,
-    FormControlLabel,
     Grid,
+    MenuItem,
     Paper,
     Stack,
-    Switch,
     TextField,
     Typography,
 } from "@mui/material";
@@ -26,6 +25,31 @@ import {
     getStoredUser,
     loadCurrentUser,
 } from "../services/authService";
+
+import {
+    loadSettings,
+    updateSettings,
+} from "../services/settingsService";
+
+const TIMEZONE_OPTIONS =
+    typeof Intl.supportedValuesOf === "function"
+        ? Intl.supportedValuesOf("timeZone")
+        : [
+              "UTC",
+              "Europe/Athens",
+              "Europe/London",
+              "Europe/Paris",
+              "Europe/Berlin",
+              "Europe/Rome",
+              "America/New_York",
+              "America/Chicago",
+              "America/Denver",
+              "America/Los_Angeles",
+              "Asia/Dubai",
+              "Asia/Tokyo",
+              "Asia/Shanghai",
+              "Australia/Sydney",
+          ];
 
 function formatDate(value) {
     if (!value) {
@@ -49,6 +73,15 @@ export default function Settings() {
     const [user, setUser] = useState(() => getStoredUser());
     const [profileLoading, setProfileLoading] = useState(true);
     const [profileError, setProfileError] = useState("");
+    const [settings, setSettings] = useState({
+        timezone: "Europe/Athens",
+        time_format: "24h",
+        date_format: "DD/MM/YYYY",
+    });
+    const [settingsLoading, setSettingsLoading] = useState(true);
+    const [settingsSaving, setSettingsSaving] = useState(false);
+    const [settingsError, setSettingsError] = useState("");
+    const [settingsSuccess, setSettingsSuccess] = useState("");
 
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -91,6 +124,38 @@ export default function Settings() {
         };
     }, []);
 
+    useEffect(() => {
+        let isMounted = true;
+
+        async function fetchSettings() {
+            try {
+                const settingsData = await loadSettings();
+
+                if (isMounted) {
+                    setSettings(settingsData);
+                    setSettingsError("");
+                }
+            } catch (error) {
+                if (isMounted) {
+                    setSettingsError(
+                        error.response?.data?.detail ||
+                        "Δεν ήταν δυνατή η φόρτωση των ρυθμίσεων."
+                    );
+                }
+            } finally {
+                if (isMounted) {
+                    setSettingsLoading(false);
+                }
+            }
+        }
+
+        fetchSettings();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     const roleLabel = useMemo(() => {
         if (!user) {
             return "—";
@@ -108,6 +173,40 @@ export default function Settings() {
         user?.license_key ||
         user?.subscription_key ||
         "Not configured";
+
+    function handleSettingsChange(event) {
+        const { name, value } = event.target;
+
+        setSettings((currentSettings) => ({
+            ...currentSettings,
+            [name]: value,
+        }));
+
+        setSettingsError("");
+        setSettingsSuccess("");
+    }
+
+    async function handleSaveSettings(event) {
+        event.preventDefault();
+
+        setSettingsSaving(true);
+        setSettingsError("");
+        setSettingsSuccess("");
+
+        try {
+            const updatedSettings = await updateSettings(settings);
+
+            setSettings(updatedSettings);
+            setSettingsSuccess("Οι ρυθμίσεις αποθηκεύτηκαν με επιτυχία.");
+        } catch (error) {
+            setSettingsError(
+                error.response?.data?.detail ||
+                "Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων."
+            );
+        } finally {
+            setSettingsSaving(false);
+        }
+    }
 
     async function handleChangePassword(event) {
         event.preventDefault();
@@ -337,25 +436,107 @@ export default function Settings() {
                     General
                 </Typography>
 
-                <Stack spacing={2}>
-                    <TextField
-                       label="Trader Name"
-                       value={user?.username || ""}
-                       fullWidth
-                       slotProps={{ htmlInput: { readOnly: true } }}
-                    />
+                {settingsError && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {settingsError}
+                    </Alert>
+                )}
 
-                    <TextField
-                        label="Base Currency"
-                        defaultValue="EUR"
-                        fullWidth
-                    />
+                {settingsSuccess && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                        {settingsSuccess}
+                    </Alert>
+                )}
 
-                    <FormControlLabel
-                        control={<Switch defaultChecked />}
-                        label="Dark Theme"
-                    />
-                </Stack>
+                {settingsLoading ? (
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ alignItems: "center" }}
+                    >
+                        <CircularProgress size={22} />
+                        <Typography color="text.secondary">
+                            Loading settings...
+                        </Typography>
+                    </Stack>
+                ) : (
+                    <Box component="form" onSubmit={handleSaveSettings}>
+                        <Stack spacing={2}>
+                            <TextField
+                                select
+                                label="Timezone"
+                                name="timezone"
+                                value={settings.timezone || "Europe/Athens"}
+                                onChange={handleSettingsChange}
+                                fullWidth
+                            >
+                                {TIMEZONE_OPTIONS.map((timezone) => (
+                                    <MenuItem
+                                        key={timezone}
+                                        value={timezone}
+                                    >
+                                        {timezone}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
+                            <TextField
+                                select
+                                label="Time Format"
+                                name="time_format"
+                                value={settings.time_format || "24h"}
+                                onChange={handleSettingsChange}
+                                fullWidth
+                            >
+                                <MenuItem value="24h">
+                                    24-hour
+                                </MenuItem>
+                                <MenuItem value="12h">
+                                    12-hour
+                                </MenuItem>
+                            </TextField>
+
+                            <TextField
+                                select
+                                label="Date Format"
+                                name="date_format"
+                                value={settings.date_format || "DD/MM/YYYY"}
+                                onChange={handleSettingsChange}
+                                fullWidth
+                            >
+                                <MenuItem value="DD/MM/YYYY">
+                                    DD/MM/YYYY
+                                </MenuItem>
+                                <MenuItem value="MM/DD/YYYY">
+                                    MM/DD/YYYY
+                                </MenuItem>
+                                <MenuItem value="YYYY-MM-DD">
+                                    YYYY-MM-DD
+                                </MenuItem>
+                            </TextField>
+
+                            <Box>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    startIcon={
+                                        settingsSaving ? (
+                                            <CircularProgress
+                                                size={18}
+                                                color="inherit"
+                                            />
+                                        ) : (
+                                            <SaveIcon />
+                                        )
+                                    }
+                                    disabled={settingsSaving}
+                                >
+                                    Save Settings
+                                </Button>
+                            </Box>
+                        </Stack>
+                    </Box>
+                )}
             </Paper>
 
             <MT5AccountsManager />
@@ -374,14 +555,6 @@ export default function Settings() {
                         Import Backup
                     </Button>
 
-                    <Divider />
-
-                    <Button
-                        variant="contained"
-                        startIcon={<SaveIcon />}
-                    >
-                        Save Settings
-                    </Button>
                 </Stack>
             </Paper>
         </Box>

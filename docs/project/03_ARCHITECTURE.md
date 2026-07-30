@@ -1,66 +1,72 @@
-# 03 - Architecture Standards
+# 03 — Architecture Standards
 
-## Current Backend Architecture Standard
-
-All new backend modules must follow:
+## Backend Flow
 
 ```text
 Model
 ↓
 Schema
 ↓
+Repository
+↓
 Service
 ↓
-Router
+Router / Feature API
 ↓
-React API
+Frontend Service/API
 ↓
 React UI
 ```
 
-Rules:
-
-* Routers stay thin
-* Business logic goes into services
-* Pydantic schemas are used for request / response
-* Database sessions use `Depends(get_db)` in routers
-* External system IDs are never primary keys
-* Historical data is protected
-
----
-
-## Current Frontend Architecture Standard
-
-New frontend modules should prefer small reusable components.
-
-Target guideline:
+## Multi-User Security Flow
 
 ```text
-React component size: ideally below 200-250 lines
+HTTP Request
+↓
+Bearer Token
+↓
+JWT Validation
+↓
+Current User Dependency
+↓
+Role / Active-State Validation
+↓
+User-Scoped Service and Repository Query
+↓
+Response
 ```
 
-When a component grows too much, extract:
+Rules:
 
-* Card components
-* Dialog components
-* Toolbar components
-* Helper functions
-* API layer
+- Routers stay thin.
+- Business logic belongs in services.
+- Database access belongs in repositories where the feature architecture provides one.
+- Authentication, authorization and ownership are enforced in the backend.
+- Frontend route guards are navigation controls, not the security boundary.
+- Every user-owned query must include the authenticated user's ownership scope.
+- Never accept a client-supplied `user_id` as proof of ownership.
+- Pydantic schemas define request and response contracts.
+- External IDs such as MT5 tickets are never database primary keys.
+- Historical trading data remains protected.
 
----
-
-## Official UI Framework Layering
-
-Το frontend πλέον ακολουθεί:
+## Frontend Architecture
 
 ```text
 Material UI
 ↓
 TradePilot UI Framework
 ↓
-Application Modules
+Shared Components
+↓
+Feature Pages
 ```
 
-Το Material UI θεωρείται rendering layer.
+Additional Version 1.0 rules:
 
-Όλα τα modules χρησιμοποιούν πρώτα TradePilot reusable components.
+- API authentication behavior is centralized in the frontend API layer.
+- Authentication storage and helpers are centralized in `services/authService.js`.
+- Administrator API calls are centralized in `services/adminService.js`.
+- Public, protected and administrator-only routes remain explicit.
+- Avoid duplicating backend permission rules in page components.
+- Reuse loading, error, notification, password and dialog patterns.
+- Large pages should be decomposed after behavior is stable; do not refactor during release validation without a demonstrated need.

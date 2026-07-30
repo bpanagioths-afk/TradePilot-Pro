@@ -1,35 +1,34 @@
+from dotenv import load_dotenv
+
+load_dotenv()
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routers.auth import router as auth_router
 
-from app.routers.trades import router as trades_router
-from app.routers.dashboard import router as dashboard_router
-from app.routers.mt5 import router as mt5_router
-from app.routers.exports import router as exports_router
-from app.routers.trading_plans import router as trading_plans_router
-from app.routers.rule_engine import router as rule_engine_router
-from app.routers.portfolio import router as portfolio_legacy_router
-
-from app.features.portfolio.api import router as portfolio_router
-from app.features.admin.api import router as admin_router
 from app.core.database import Base, engine
-
-from app.models.trade import Trade
-from app.models.user import User
-from app.models.trading_plan import TradingPlan, TradingPlanHistory
+from app.features.admin.api import router as admin_router
+from app.features.market_alerts.api import router as market_alerts_router
+from app.features.portfolio.api import router as portfolio_router
+from app.features.settings.api import router as settings_router
 from app.models.mt5_account import MT5Account
-
-from app.services.scheduler import (
-    start_scheduler
-)
-
+from app.models.trade import Trade
+from app.models.trading_plan import TradingPlan, TradingPlanHistory
+from app.models.user import User
+from app.routers.auth import router as auth_router
+from app.routers.dashboard import router as dashboard_router
+from app.routers.exports import router as exports_router
+from app.routers.mt5 import router as mt5_router
+from app.routers.portfolio import router as portfolio_legacy_router
+from app.routers.rule_engine import router as rule_engine_router
+from app.routers.trades import router as trades_router
+from app.routers.trading_plans import router as trading_plans_router
+from app.services.scheduler import start_scheduler
 
 
 app = FastAPI(
     title="TradePilot Pro API",
     version="1.0.0",
-    description="Professional Trading Journal Backend"
+    description="Professional Trading Journal Backend",
 )
 
 app.add_middleware(
@@ -50,7 +49,7 @@ Base.metadata.create_all(bind=engine)
 app.mount(
     "/uploads",
     StaticFiles(directory="uploads"),
-    name="uploads"
+    name="uploads",
 )
 
 app.include_router(auth_router)
@@ -69,16 +68,18 @@ app.include_router(
 )
 
 app.include_router(admin_router)
+app.include_router(settings_router)
+app.include_router(market_alerts_router)
+
 
 @app.on_event("startup")
 def startup():
+    # start_scheduler()
+    pass
 
-   # start_scheduler()
-   pass
 
 @app.get("/")
 def home():
-
     return {
-        "status": "ok"
+        "status": "ok",
     }

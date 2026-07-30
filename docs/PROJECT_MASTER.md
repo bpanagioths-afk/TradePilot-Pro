@@ -1,74 +1,85 @@
-# TradePilot Pro - Project Master
+# TradePilot Pro — Project Master
 
-This is the modular index for the TradePilot Pro Project Master documentation.
+## Product State
 
-The original `PROJECT_MASTER.md` has been reorganized into smaller focused files without removing the original meaning.
+TradePilot Pro is a FastAPI + React trading journal and analytics platform. The active Version 1.0 work converts the completed local single-user foundation into an authenticated multi-user platform while preserving the Version 0.9 MT5, portfolio, analytics and UI architecture.
 
-## Reading Order
-
-1. `project/01_Vision.md`
-2. `project/02_Tech_Stack.md`
-3. `project/03_Project_Master_Map.md`
-4. `project/04_Modules/README.md`
-5. `project/05_MT5_Account_Manager/README.md`
-6. `project/06_Frontend/README.md`
-7. `project/07_Backend/Backend_Architecture_Standard.md`
-8. `project/08_Future/README.md`
-9. `project/09_Current_State/README.md`
-
-## Important
-
-The full original file is preserved in:
-
-`project/99_Original/PROJECT_MASTER_ORIGINAL.md`
-
----
-
-## Current Development Status after Sprint 19
-
-Completed through Sprint 19:
-
-- Multi-account MT5 architecture
-- MT5 Account CRUD
-- Account-aware MT5 Sync
-- MT5 Account Manager UI
-- TradePilot Theme
-- TradePilot UI Framework v1
-- Design System foundation
-- Modular documentation architecture
-- Professional MT5 Trading Widget
-- MT5 Account Summary API
-- Live MT5 metrics foundation
-- Sync Engine Foundation
-- Reusable MetricCard component
-- Relative Last Sync display
-- Floating P/L visual feedback
-
-Current professional widget pattern:
+## Active Source of Truth
 
 ```text
-Backend Summary Endpoint
-↓
-Frontend API Function
-↓
-Manager Integration
-↓
-TradePilot Widget Card
-↓
-Reusable Metric Cards
+Repository: bpanagioths-afk/TradePilot-Pro
+Branch: feature/multi-user-rebuild
+Version: 1.0 — Multi-User Foundation
 ```
 
-Next active sprint:
+Use this authority order:
+
+1. Active Git branch source code.
+2. Database schema/migrations.
+3. `project/09_Current_State/Current_Project_Status.md`.
+4. `project/11_ACTIVE_SPRINT.md`.
+5. Active decision registry.
+6. Historical documentation.
+
+## Architecture
 
 ```text
-Sprint 20 - Professional Dashboard Foundation
+React Pages and Components
+        ↓
+Frontend API / Service Layer
+        ↓
+FastAPI Routers / Feature APIs
+        ↓
+Authorization Dependencies
+        ↓
+Service Layer
+        ↓
+Repository Layer
+        ↓
+PostgreSQL / MT5 Provider
 ```
 
-Sprint 20 target candidates:
+Authentication and ownership are cross-cutting backend concerns. The frontend may hide or redirect UI routes, but backend dependencies and scoped queries are the security authority.
 
-- Dashboard grid foundation
-- Widget layout system
-- MT5 Widget placement in dashboard
-- Portfolio Widget placeholder
-- Risk Widget placeholder
-- Command Center home structure
+## Current Product Modules
+
+- Authentication and account recovery.
+- Administrative User Management.
+- Trading Journal and trade ownership.
+- Dashboard and analytics.
+- MT5 account management and synchronization.
+- Portfolio analysis.
+- Trading plans and rule engine.
+- Psychology journal.
+- Reports and exports.
+- Settings and per-user preferences.
+
+## Version 1.0 Multi-User Capabilities
+
+- JWT login.
+- Active/inactive account enforcement.
+- Administrator/user distinction.
+- Administrator user lifecycle tools.
+- Per-user trades, dashboard, portfolio and MT5 data.
+- Profile name, base currency and theme preference fields.
+- Forgot username, forgot password and reset password.
+- Authorization-aware application navigation.
+
+## Protected Foundations
+
+- Backend single business-logic authority.
+- Audit-before-code workflow.
+- Reuse before new implementation.
+- Portfolio reference module.
+- Shared widgets and charts.
+- Multi-asset MT5 movement engine.
+- Explicit terminal connection policy.
+
+## Documentation Entry Points
+
+1. `START_HERE.md`
+2. `PROJECT_BOOTSTRAP.md`
+3. `project/09_Current_State/Current_Project_Status.md`
+4. `project/11_ACTIVE_SPRINT.md`
+5. `SOURCE_CODE_STRUCTURE.md`
+6. `decisions/DECISION_STATUS_REGISTRY.md`

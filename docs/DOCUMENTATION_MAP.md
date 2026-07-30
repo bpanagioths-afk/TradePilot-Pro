@@ -72,3 +72,13 @@ Commit and push
 ↓
 Current status and continuation update
 ```
+
+## Version 1.0 Multi-User Map
+
+| Need | Read |
+|---|---|
+| Current branch state | `project/09_Current_State/Current_Project_Status.md` |
+| Remaining release work | `project/11_ACTIVE_SPRINT.md` |
+| Authentication/admin source paths | `SOURCE_CODE_STRUCTURE.md` |
+| Detailed branch changes | `changelog/13_VERSION_1_MULTI_USER_REBUILD.md` |
+| SaaS boundary and future layers | `project/08_SAAS_ROADMAP.md` |

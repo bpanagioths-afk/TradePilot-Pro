@@ -76,7 +76,7 @@ Current values are determined by:
 
 `Current_Project_Status.md`
 
-Current synchronized target: Version 1.0 / Sprint 31B on `feature/multi-user-rebuild`.
+Current synchronized target: Version 1.0 multi-user integration validation on `feature/multi-user-rebuild`.
 
 Typical startup summary should include:
 
@@ -87,7 +87,7 @@ Typical startup summary should include:
 - Current Package
 - Package Status
 - Locked Scope
-- Next Package
+- Validation State
 
 If the status documents disagree with this file,
 the status documents always win.

@@ -388,3 +388,14 @@ Highlights:
 - No verified delete-user endpoint; deletion remains contract-gated.
 
 See: `docs/changelog/12_SPRINT_31.md`.
+
+## Version 1.0 — Multi-User Rebuild (feature/multi-user-rebuild)
+
+- Added JWT authentication, account recovery and protected routing.
+- Added administrator User Management backend and frontend.
+- Added user lifecycle, profile and preference fields.
+- Added authenticated ownership for trades, dashboard, portfolio and MT5 data.
+- Updated Settings, navigation, MT5 widgets and trade dialogs for authenticated users.
+- Release validation and migration verification remain required before merge.
+
+Detailed entry: `changelog/13_VERSION_1_MULTI_USER_REBUILD.md`.

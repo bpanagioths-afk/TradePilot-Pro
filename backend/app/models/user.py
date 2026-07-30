@@ -84,6 +84,27 @@ class User(Base):
         server_default="dark",
     )
 
+    timezone = Column(
+        String(100),
+        nullable=False,
+        default="Europe/Athens",
+        server_default="Europe/Athens",
+    )
+
+    time_format = Column(
+        String(10),
+        nullable=False,
+        default="24h",
+        server_default="24h",
+    )
+
+    date_format = Column(
+        String(20),
+        nullable=False,
+        default="DD/MM/YYYY",
+        server_default="DD/MM/YYYY",
+    )
+
     last_login_at = Column(
         DateTime(timezone=False),
         nullable=True,

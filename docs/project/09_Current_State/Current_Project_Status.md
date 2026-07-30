@@ -1,126 +1,148 @@
 # Current Project Status
 
-Status synchronized after completion of the Sprint 31A backend package.
+Status synchronized with Git branch `feature/multi-user-rebuild` on 2026-07-27.
 
 ## Release State
 
 ```text
 Product: TradePilot Pro
-Version: 1.0 — In progress
+Version: 1.0 — Multi-User Foundation
 Active Branch: feature/multi-user-rebuild
-Sprint 31A — Backend package completed
-Active Package: Sprint 31B — Administrative Frontend
-Next milestone: Complete and validate the User Management UI
+Branch State: 13 commits ahead of the common base with develop
+Current Package: Multi-user authentication, ownership, administration and recovery
+Implementation State: Present in branch
+Final release validation: Pending local backend/frontend regression run
 ```
 
-## Completed Product Foundation
+## Implemented Multi-User Foundation
 
-### Version 0.9
+### Authentication and Security
 
-- MT5 multi-account management and Live Trading Center.
-- MT5 Synchronization Engine v2 with position aggregation and idempotent upsert.
-- Canonical multi-asset movement model.
-- Shared Portfolio, Analytics, Widget and Chart infrastructure.
-- Explicit MT5 terminal connection policy.
-- Successful backend compile and frontend production build.
+- JWT access-token authentication.
+- Centralized password hashing and token validation in `backend/app/core/security.py`.
+- Current-user and administrator dependencies in `backend/app/core/deps.py`.
+- Login and authenticated-user contracts through `backend/app/routers/auth.py` and `backend/app/schemas/auth.py`.
+- Inactive users are blocked by backend authorization rules.
+- User last-login tracking.
 
-### Version 1.0 — Sprint 31A Backend
+### Account Recovery
 
-- JWT authentication and centralized authorization dependencies verified.
-- Admin-only endpoint protection.
-- Multi-user backend foundation.
-- User lifecycle fields for active state, administrative permissions, update tracking and last login.
-- Administrative User Management backend.
-- Duplicate username and email validation.
-- Password hashing and administrative password reset.
-- Protection against self-deactivation and self-removal of administrator privileges.
+- Forgot-username flow.
+- Forgot-password flow.
+- Reset-password flow.
+- Email delivery abstraction in `backend/app/services/email_service.py`.
+- Public frontend pages for login and account recovery.
 
-Verified administrative endpoints:
+### Administrative User Management
 
-- `GET /admin/users`
-- `POST /admin/users`
-- `PUT /admin/users/{user_id}`
-- `POST /admin/users/{user_id}/reset-password`
+- Admin-only user list, create, update and password-reset operations.
+- Dedicated backend feature package:
+  - `backend/app/features/admin/api.py`
+  - `backend/app/features/admin/repository.py`
+  - `backend/app/features/admin/schemas.py`
+  - `backend/app/features/admin/service.py`
+- Administrative frontend page: `frontend/src/pages/AdminUsers.jsx`.
+- Frontend service: `frontend/src/services/adminService.js`.
+- Route protection through `AdminRoute` and `/admin/users`.
+- Backend protection against self-deactivation and removal of the current administrator's own admin rights.
 
-The admin router is registered in `backend/app/main.py` under `/admin`.
+### User Ownership and Isolation
 
-## Active Package — Sprint 31B
+- Trades are associated with a user through `user_id`.
+- Trade, dashboard and portfolio queries are scoped to the authenticated user.
+- MT5 accounts and synchronization operations are scoped to the authenticated user.
+- User ownership is enforced in backend routers, services and repositories rather than trusted to the frontend.
+- Existing Version 0.9 portfolio and MT5 business logic is reused instead of duplicated.
 
-Target: complete the Administrative Frontend and User Management UI.
+### User Preferences
 
-Required scope:
+The user model now contains:
 
-- User list.
-- Create user.
-- Edit user.
-- Reset password.
-- Activate and deactivate user.
-- Safe delete only after the backend contract exists and is verified.
-- Loading indicators.
-- Error handling.
-- Success notifications.
-- Frontend production build validation.
+- `trader_name`
+- `base_currency`
+- `theme_mode`
+- `is_admin`
+- `is_active`
+- `created_at`
+- `updated_at`
+- `last_login_at`
 
-## Locked Scope
+The Settings page includes the multi-user profile/security integration present in the branch.
 
-The completed Sprint 31A backend is locked unless a verified defect or a missing required contract is demonstrated.
+## Frontend Routing State
 
-Do not change without evidence:
+Public routes:
 
-- Authentication and JWT behavior.
-- Authorization dependencies.
-- Existing admin user endpoints and service rules.
-- Version 0.9 MT5 synchronization and movement contracts.
-- Shared Widget System and Shared Chart Infrastructure.
-- Portfolio reference implementation.
-- Explicit MT5 terminal connection policy.
+- `/login`
+- `/forgot-username`
+- `/forgot-password`
+- `/reset-password`
 
-## Known Contract Gap
+Authenticated application routes remain under the protected layout.
 
-The current verified admin API does not expose a delete-user endpoint. “Safe Delete User” must not be implemented as a frontend-only assumption. The backend contract and business rules must first be audited and approved if deletion remains part of Sprint 31B.
+Administrator-only route:
 
-## Mandatory Decision Framework
+- `/admin/users`
 
-Authority: `docs/decisions/DECISION_STATUS_REGISTRY.md`.
+Unauthenticated users are redirected to `/login`. Authenticated non-admin users are redirected away from the administrator page.
 
-Specially enforced canonical decisions:
+## Locked Architecture
 
-- D-053 — Shared Widget System.
-- D-055 — Multi-Asset MT5 Engine.
-- D-058 — Backend Is the Single Business Logic Authority.
-- D-059 — Portfolio Is the Reference Module.
-- D-061 — Single Entry Point and Startup Verification.
-- D-062 — Audit-First Package Workflow.
-- D-063 — Exact Delivery and Locked Scope.
+- Backend remains the single authority for authentication, authorization, ownership and business rules.
+- Frontend route guards improve navigation but are not a security boundary.
+- Portfolio remains the reference feature module.
+- Existing MT5 synchronization and multi-asset movement contracts remain protected.
+- Shared Widget and Chart infrastructure remains protected.
 
-Legacy workflow decisions that the registry marks as superseded remain historical records and are not separate active rules.
+## Known Validation Requirements
 
-## Validation State
+Before merging or releasing Version 1.0:
 
-Completed and verified before Sprint 31B:
-
-- Sprint 31A admin endpoints tested through Swagger.
-- User list, create, update and password reset passed.
-- Duplicate and permission validation passed.
-- Version 0.9 regression-sensitive contracts remain protected.
-
-Still required for Sprint 31B closure:
-
-- Frontend implementation audit.
-- Frontend production build.
-- End-to-end admin workflow validation.
-- Documentation update.
-- Git diff review, commit and push.
+1. Apply/verify all required database schema changes for user ownership and new user fields.
+2. Run backend compile and API regression tests.
+3. Test login, inactive-user rejection and token expiry behavior.
+4. Test account recovery with the configured email environment.
+5. Test administrator create/edit/reset-password and self-protection rules.
+6. Verify cross-user isolation for trades, dashboard, portfolio and MT5 accounts.
+7. Run the frontend production build.
+8. Review Git diff and remove temporary development artifacts such as `backend/package_2B.patch` if it is not intentionally retained.
+9. Merge the branch only after the complete regression checklist passes.
 
 ## Workspace Ownership
 
 ```text
 Home       → Welcome / Command Center
-Dashboard  → Executive Overview
-MT5        → Live Trading Center
-Portfolio  → Portfolio Analysis
+Dashboard  → User-scoped Executive Overview
+Trades     → User-scoped Trading Journal
+MT5        → User-scoped Trading Connections
+Portfolio  → User-scoped Portfolio Analysis
 Analytics  → Historical Analysis
 Psychology → Trader Journal
 Reports    → Reports & Export
+Settings   → User Profile, Preferences and Security
 Admin      → Administrative User Management
 ```
+
+
+
+## Sprint 32 Status
+
+### Completed
+- Home Command Center redesign completed.
+- Trading Sessions completed.
+- Today's Mission completed.
+- Market Alerts completed.
+- Forex Factory integration operational.
+- Automatic refresh every 5 minutes.
+- Event cleanup logic implemented (older than 2 hours hidden).
+
+### Known Issues (Deferred)
+
+#### BUG-001
+Manual trade + MT5 Sync creates a duplicate trade.
+Status: Deferred to MT5 Sync Sprint.
+
+#### BUG-002
+Portfolio ignores manually created trades and only counts imported MT5 trades.
+Status: Deferred to Portfolio Sprint.
+

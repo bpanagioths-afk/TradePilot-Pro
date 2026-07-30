@@ -478,3 +478,7 @@ Sprint 31A opened Version 1.0 by introducing the verified backend foundation for
 The administrative API now supports listing, creating and updating users and resetting passwords. Service-layer rules reject duplicate usernames and emails and protect the currently authenticated administrator from self-deactivation or self-removal of administrator privileges.
 
 The package preserved the Repository → Service → API → Schemas separation and registered the admin router in the main FastAPI application. The next package, Sprint 31B, is limited to the Administrative Frontend. A delete-user UI must not be created unless a verified backend contract is added through an audited package.
+
+## 2026-07-27 — Version 1.0 Multi-User Rebuild
+
+The branch `feature/multi-user-rebuild` introduced the first complete application-level multi-user foundation: JWT authentication, account recovery, administrator User Management, user status/profile fields and user-scoped trading/MT5 access. The implementation extends the Version 0.9 platform rather than replacing its MT5, Portfolio, Widget or Chart architecture.

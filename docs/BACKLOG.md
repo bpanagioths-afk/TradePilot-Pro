@@ -45,3 +45,19 @@ Next high-priority candidates:
 7. Dashboard grid layout for professional widgets.
 
 Long-term backlog remains unchanged and continues to include AI Coach, Rule Engine expansion, Psychology analytics, Economic Calendar, Prop Firm tools and SaaS subscription architecture.
+
+## Version 1.0 Release Readiness
+
+- Verify database migration for new user fields and ownership columns.
+- Prove cross-user isolation for trades, dashboard, portfolio and MT5.
+- Validate recovery email configuration.
+- Run backend regression and frontend production build.
+- Remove temporary patch artifacts before merge.
+
+## Post-Version 1.0
+
+- Subscription and licensing.
+- Granular RBAC.
+- Tenant/organization model.
+- Audit log and security events.
+- Secure broker credential vault.

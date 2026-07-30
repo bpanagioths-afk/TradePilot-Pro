@@ -278,3 +278,20 @@ Goal
 Transform the MT5 Account Card into a complete trading account widget.
 
 ---
+
+
+
+## MT5 Sync / Portfolio
+
+### BUG-001 - Duplicate after MT5 Sync
+If a trade is entered manually and then MT5 Sync is executed, the same trade is imported again instead of being matched.
+
+Priority: High
+
+---
+
+### BUG-002 - Portfolio ignores manual trades
+Portfolio statistics currently count imported MT5 trades but ignore manually entered trades.
+
+Priority: High
+

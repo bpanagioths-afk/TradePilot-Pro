@@ -76,6 +76,26 @@ class ChangePasswordRequest(BaseModel):
         return value
 
 
+class UserPreferencesUpdateRequest(BaseModel):
+
+    timezone: str = Field(min_length=1, max_length=100)
+    time_format: str = Field(pattern="^(12h|24h)$")
+    date_format: str = Field(
+        pattern="^(DD/MM/YYYY|MM/DD/YYYY|YYYY-MM-DD)$"
+    )
+
+    @field_validator("timezone")
+    @classmethod
+    def strip_timezone(cls, value: str) -> str:
+
+        cleaned_value = value.strip()
+
+        if not cleaned_value:
+            raise ValueError("Timezone must not be empty")
+
+        return cleaned_value
+
+
 class UserResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
@@ -88,10 +108,15 @@ class UserResponse(BaseModel):
     base_currency: str
     theme_mode: str
 
+    timezone: str
+    time_format: str
+    date_format: str
+
     is_admin: bool
     is_active: bool
 
     created_at: datetime | None = None
+
 
 class TokenResponse(BaseModel):
 
