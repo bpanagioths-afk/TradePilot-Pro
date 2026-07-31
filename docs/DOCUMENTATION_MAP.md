@@ -34,15 +34,15 @@
 |---|---|
 | `project/09_Current_State/Current_Project_Status.md` | Current version, branch, completed package and active package |
 | `project/11_ACTIVE_SPRINT.md` | Locked sprint scope and Definition of Done |
-| `project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT32.md` | Sprint 31B continuation prompt |
+| `project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT35.md` | Sprint 35 final-validation continuation prompt |
 | `decisions/DECISION_STATUS_REGISTRY.md` | Authority for active, consolidated and superseded decisions |
 
 ## Current Direction
 
 ```text
-Version 1.0 in progress
-Sprint 31A backend completed
-Sprint 31B Administrative Frontend active
+Version 1.0 in final validation
+Sprint 34 regression recovery completed
+Sprint 35 release-readiness validation active
 ```
 
 ## Folder Map

@@ -16,6 +16,10 @@ Sections:
 * [Sprint 27-28](changelog/09_SPRINT_27_28.md)
 * [Sprint 29](changelog/10_SPRINT_29.md)
 * [Sprint 30](changelog/11_SPRINT_30.md)
+* [Sprint 31](changelog/12_SPRINT_31.md)
+* [Version 1 Multi-User Rebuild](changelog/13_VERSION_1_MULTI_USER_REBUILD.md)
+* [Sprint 33](changelog/14_SPRINT_33.md)
+* [Sprint 34](changelog/15_SPRINT_34.md)
 * [Full Changelog Archive](changelog/99_FULL_CHANGELOG_ARCHIVE.md)
 
 Rule:

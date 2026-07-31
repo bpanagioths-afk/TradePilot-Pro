@@ -482,3 +482,13 @@ The package preserved the Repository → Service → API → Schemas separation 
 ## 2026-07-27 — Version 1.0 Multi-User Rebuild
 
 The branch `feature/multi-user-rebuild` introduced the first complete application-level multi-user foundation: JWT authentication, account recovery, administrator User Management, user status/profile fields and user-scoped trading/MT5 access. The implementation extends the Version 0.9 platform rather than replacing its MT5, Portfolio, Widget or Chart architecture.
+
+---
+
+# Sprint 34 — Regression Recovery
+
+Sprint 34 restored the canonical relationship between the Trading Journal and MT5. Manual journal records can now be connected to the real MT5 position identifier, allowing Sync to update the existing record instead of producing a duplicate. Database partial unique indexes and seven automated repository tests protect that behavior.
+
+The Portfolio investigation confirmed that realized-performance calculations were correct. The missing manual-trade behavior came from the Trade form, which did not expose Open Time and Close Time. Adding those fields allowed a manually entered closed trade to participate in Portfolio statistics without changing the Portfolio architecture.
+
+The Market Alerts investigation proved that the current application correctly preserves Actual values, but the configured free weekly provider payload does not include them. Version 1 retains the free provider and records a commercial-provider evaluation for the future rather than introducing scraping or unsupported workarounds.

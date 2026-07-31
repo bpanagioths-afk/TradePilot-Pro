@@ -1,6 +1,7 @@
-from pydantic import BaseModel
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class TradeCreate(BaseModel):
@@ -36,6 +37,11 @@ class TradeCreate(BaseModel):
     session_name: Optional[str] = None
 
     notes: Optional[str] = None
+
+    mt5_position_id: int = Field(
+        gt=0,
+        description="MT5 position/order ticket",
+    )
 
 
 class TradeResponse(BaseModel):
@@ -93,6 +99,16 @@ class TradeResponse(BaseModel):
     session_name: Optional[str] = None
 
     notes: Optional[str] = None
+
+    mt5_account_id: Optional[int] = None
+
+    mt5_position_id: Optional[int] = None
+
+    mt5_ticket: Optional[int] = None
+
+    imported_from_mt5: bool = False
+
+    is_archived: bool = False
 
     class Config:
         from_attributes = True

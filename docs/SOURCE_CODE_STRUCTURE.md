@@ -121,3 +121,43 @@ The running database must match the branch models, including:
 - MT5 account ownership where required by the branch.
 
 Schema verification and existing-row migration are release prerequisites.
+
+## Sprint 34 Regression Recovery Additions
+
+### Backend
+
+```text
+backend/
+├── app/
+│   ├── models/trade.py
+│   ├── routers/trades.py
+│   ├── schemas/trade.py
+│   └── services/mt5/
+│       ├── repository.py
+│       └── sync_service.py
+├── scripts/
+│   └── diagnose_market_alerts.py
+└── tests/
+    └── test_mt5_repository.py
+```
+
+- `services/mt5/repository.py` owns canonical MT5 position lookup and manual-record reconciliation.
+- `tests/test_mt5_repository.py` protects existing synced reuse, manual ticket linking and new-record behavior.
+- `scripts/diagnose_market_alerts.py` is a diagnostic utility for provider payload and mapping verification, not a production provider.
+
+### Frontend
+
+```text
+frontend/src/
+├── components/
+│   ├── TradeDialog.jsx
+│   └── TradeDetailsDialog.jsx
+├── features/
+│   ├── psychology/psychologyUtils.js
+│   └── trades/tradeOptions.js
+└── pages/Trades.jsx
+```
+
+- `features/trades/tradeOptions.js` is the shared source for Trading System and Psychology labels/options used by trade UI.
+- `TradeDialog.jsx` owns MT5 ticket, Open Time and Close Time entry and client-side validation.
+- `Trades.jsx` owns server save-error presentation while backend validation remains authoritative.

@@ -41,12 +41,47 @@ import {
 import TradeDialog from "../components/TradeDialog";
 import TradeDetailsDialog from "../components/TradeDetailsDialog";
 
-export default function Trades() {
 
+function resolveTradeSaveError(error) {
+    const backendDetail =
+        error?.response?.data?.detail;
+
+    if (
+        error?.response?.status === 409
+        && backendDetail
+    ) {
+        return (
+            "Αυτό το MT5 Εισιτήριο είναι ήδη "
+            + "συνδεδεμένο με άλλο trade."
+        );
+    }
+
+    if (typeof backendDetail === "string") {
+        return backendDetail;
+    }
+
+    if (Array.isArray(backendDetail)) {
+        return backendDetail
+            .map((item) => item?.msg)
+            .filter(Boolean)
+            .join(" ");
+    }
+
+    return (
+        "Δεν ήταν δυνατή η αποθήκευση του trade. "
+        + "Έλεγξε τα στοιχεία και προσπάθησε ξανά."
+    );
+}
+
+
+export default function Trades() {
     const [trades, setTrades] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [selectedTrade, setSelectedTrade] = useState(null);
+
+    const [saveError, setSaveError] = useState("");
+    const [saving, setSaving] = useState(false);
 
     const [search, setSearch] = useState("");
     const [directionFilter, setDirectionFilter] = useState("ALL");
@@ -56,112 +91,178 @@ export default function Trades() {
 
     const exportMenuOpen = Boolean(exportAnchor);
 
+
     const loadTrades = () => {
         getTrades()
-             .then((res) => {
-                  
-                  setTrades(res.data);
-             })
+            .then((res) => {
+                setTrades(res.data);
+            })
             .catch(console.error);
     };
 
-useEffect(() => {
-    loadTrades();
-}, []);
+
+    useEffect(() => {
+        loadTrades();
+    }, []);
+
 
     const filteredTrades = useMemo(() => {
         return trades.filter((trade) => {
-
-            const searchText = search.toLowerCase();
+            const searchText =
+                search.toLowerCase();
 
             const matchesSearch =
-                !search ||
-                String(trade.symbol || "").toLowerCase().includes(searchText) ||
-                String(trade.notes || "").toLowerCase().includes(searchText) ||
-                String(trade.session_name || "").toLowerCase().includes(searchText);
+                !search
+                || String(
+                    trade.symbol || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText)
+                || String(
+                    trade.notes || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText)
+                || String(
+                    trade.session_name || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText);
 
             const matchesDirection =
-                directionFilter === "ALL" ||
-                trade.direction === directionFilter;
+                directionFilter === "ALL"
+                || trade.direction === directionFilter;
 
             const matchesResult =
-                resultFilter === "ALL" ||
-                (resultFilter === "WIN" && trade.is_win === 1) ||
-                (resultFilter === "LOSS" && trade.is_win === 0);
+                resultFilter === "ALL"
+                || (
+                    resultFilter === "WIN"
+                    && trade.is_win === 1
+                )
+                || (
+                    resultFilter === "LOSS"
+                    && trade.is_win === 0
+                );
 
-            return matchesSearch && matchesDirection && matchesResult;
+            return (
+                matchesSearch
+                && matchesDirection
+                && matchesResult
+            );
         });
-    }, [trades, search, directionFilter, resultFilter]);
+    }, [
+        trades,
+        search,
+        directionFilter,
+        resultFilter
+    ]);
 
-     const openExportMenu = (event) => {
-        setExportAnchor(event.currentTarget); 
-     };
+
+    const openExportMenu = (event) => {
+        setExportAnchor(
+            event.currentTarget
+        );
+    };
+
 
     const closeExportMenu = () => {
         setExportAnchor(null);
     };
+
+
     const openNewTrade = () => {
         setSelectedTrade(null);
+        setSaveError("");
         setDialogOpen(true);
     };
 
+
     const openEditTrade = (trade) => {
         setSelectedTrade(trade);
+        setSaveError("");
         setDialogOpen(true);
     };
+
 
     const openDetails = (trade) => {
         setSelectedTrade(trade);
         setDetailsOpen(true);
     };
 
+
     const closeDialog = () => {
+        if (saving) {
+            return;
+        }
+
         setDialogOpen(false);
         setSelectedTrade(null);
+        setSaveError("");
     };
+
 
     const closeDetails = () => {
         setDetailsOpen(false);
         setSelectedTrade(null);
     };
 
-    const uploadScreenshot = (tradeId, screenshotFile) => {
+
+    const uploadScreenshot = (
+        tradeId,
+        screenshotFile
+    ) => {
         if (!screenshotFile) {
             return Promise.resolve();
         }
 
-        const formData = new FormData();
+        const formData =
+            new FormData();
 
-        formData.append("file", screenshotFile);
+        formData.append(
+            "file",
+            screenshotFile
+        );
 
-        return uploadTradeScreenshot(tradeId, formData);
+        return uploadTradeScreenshot(
+            tradeId,
+            formData
+        );
     };
 
-    const saveTrade = (payload, screenshotFile) => {
-        if (selectedTrade) {
-            updateTrade(selectedTrade.id, payload)
-                .then((res) => {
-                    return uploadScreenshot(res.data.id, screenshotFile);
-                })
-                .then(() => {
-                    closeDialog();
-                    loadTrades();
-                })
-                .catch(console.error);
 
-            return;
+    const saveTrade = async (
+        payload,
+        screenshotFile
+    ) => {
+        setSaving(true);
+        setSaveError("");
+
+        try {
+            const response = selectedTrade
+                ? await updateTrade(
+                    selectedTrade.id,
+                    payload
+                )
+                : await createTrade(payload);
+
+            await uploadScreenshot(
+                response.data.id,
+                screenshotFile
+            );
+
+            closeDialog();
+            loadTrades();
+        } catch (error) {
+            console.error(error);
+
+            setSaveError(
+                resolveTradeSaveError(error)
+            );
+        } finally {
+            setSaving(false);
         }
-
-        createTrade(payload)
-            .then((res) => {
-                return uploadScreenshot(res.data.id, screenshotFile);
-            })
-            .then(() => {
-                closeDialog();
-                loadTrades();
-            })
-            .catch(console.error);
     };
+
 
     const deleteTrade = (id) => {
         deleteTradeApi(id)
@@ -171,11 +272,13 @@ useEffect(() => {
             .catch(console.error);
     };
 
+
     const clearFilters = () => {
         setSearch("");
         setDirectionFilter("ALL");
         setResultFilter("ALL");
     };
+
 
     const columns = [
         {
@@ -200,26 +303,49 @@ useEffect(() => {
                             : <TrendingDownIcon />
                     }
                     label={params.value}
-                    color={params.value === "BUY" ? "success" : "error"}
+                    color={
+                        params.value === "BUY"
+                            ? "success"
+                            : "error"
+                    }
                     size="small"
                 />
             )
         },
-        { field: "entry_price", headerName: "Entry", width: 110 },
-        { field: "exit_price", headerName: "Exit", width: 110 },
-        { field: "lot_size", headerName: "Lot", width: 90 },
+        {
+            field: "entry_price",
+            headerName: "Entry",
+            width: 110
+        },
+        {
+            field: "exit_price",
+            headerName: "Exit",
+            width: 110
+        },
+        {
+            field: "lot_size",
+            headerName: "Lot",
+            width: 90
+        },
         {
             field: "profit_money",
             headerName: "Profit €",
             width: 130,
             renderCell: (params) => {
-                const value = params.value || 0;
-                const positive = value >= 0;
+                const value =
+                    params.value || 0;
+
+                const positive =
+                    value >= 0;
 
                 return (
                     <Typography
                         fontWeight="bold"
-                        color={positive ? "success.main" : "error.main"}
+                        color={
+                            positive
+                                ? "success.main"
+                                : "error.main"
+                        }
                     >
                         {positive ? "+" : ""}
                         {value} €
@@ -227,39 +353,45 @@ useEffect(() => {
                 );
             }
         },
- {
-    field: "movement_value",
-    headerName: "Movement",
-    width: 150,
-    renderCell: (params) => {
-        const value =
-            params.row.movement_value ??
-            params.row.profit_pips ??
-            0;
+        {
+            field: "movement_value",
+            headerName: "Movement",
+            width: 150,
+            renderCell: (params) => {
+                const value =
+                    params.row.movement_value
+                    ?? params.row.profit_pips
+                    ?? 0;
 
-        const unit =
-            params.row.movement_unit ??
-            "pips";
+                const unit =
+                    params.row.movement_unit
+                    ?? "pips";
 
-        const positive = Number(value) >= 0;
+                const positive =
+                    Number(value) >= 0;
 
-        return (
-            <Typography
-                fontWeight="bold"
-                color={positive ? "success.main" : "error.main"}
-            >
-                {positive ? "+" : ""}
-                {value} {unit}
-            </Typography>
-        );
-    }
-},
+                return (
+                    <Typography
+                        fontWeight="bold"
+                        color={
+                            positive
+                                ? "success.main"
+                                : "error.main"
+                        }
+                    >
+                        {positive ? "+" : ""}
+                        {value} {unit}
+                    </Typography>
+                );
+            }
+        },
         {
             field: "risk_reward",
             headerName: "RR",
             width: 110,
             renderCell: (params) => {
-                const value = params.value || 0;
+                const value =
+                    params.value || 0;
 
                 let color = "error";
 
@@ -284,33 +416,60 @@ useEffect(() => {
             width: 110,
             renderCell: (params) => (
                 <Chip
-                    label={params.value === 1 ? "WIN" : "LOSS"}
-                    color={params.value === 1 ? "success" : "error"}
+                    label={
+                        params.value === 1
+                            ? "WIN"
+                            : "LOSS"
+                    }
+                    color={
+                        params.value === 1
+                            ? "success"
+                            : "error"
+                    }
                     size="small"
                 />
             )
         },
-        { field: "session_name", headerName: "Session", width: 130 },
-        { field: "notes", headerName: "Notes", width: 220 },
+        {
+            field: "session_name",
+            headerName: "Session",
+            width: 130
+        },
+        {
+            field: "notes",
+            headerName: "Notes",
+            width: 220
+        },
         {
             field: "actions",
             headerName: "Actions",
             width: 310,
             sortable: false,
             renderCell: (params) => (
-                <Stack direction="row" spacing={1}>
+                <Stack
+                    direction="row"
+                    spacing={1}
+                >
                     <Button
                         size="small"
-                        startIcon={<VisibilityIcon />}
-                        onClick={() => openDetails(params.row)}
+                        startIcon={
+                            <VisibilityIcon />
+                        }
+                        onClick={() =>
+                            openDetails(params.row)
+                        }
                     >
                         View
                     </Button>
 
                     <Button
                         size="small"
-                        startIcon={<EditIcon />}
-                        onClick={() => openEditTrade(params.row)}
+                        startIcon={
+                            <EditIcon />
+                        }
+                        onClick={() =>
+                            openEditTrade(params.row)
+                        }
                     >
                         Edit
                     </Button>
@@ -318,8 +477,12 @@ useEffect(() => {
                     <Button
                         size="small"
                         color="error"
-                        startIcon={<DeleteIcon />}
-                        onClick={() => deleteTrade(params.row.id)}
+                        startIcon={
+                            <DeleteIcon />
+                        }
+                        onClick={() =>
+                            deleteTrade(params.row.id)
+                        }
                     >
                         Delete
                     </Button>
@@ -328,102 +491,128 @@ useEffect(() => {
         }
     ];
 
+
     return (
         <Box>
-              <Stack
-                  direction="row" 
-                  sx={{
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      mb: 3
-                  }}
-              >
+            <Stack
+                direction="row"
+                sx={{
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 3
+                }}
+            >
                 <Typography variant="h4">
                     Trades
                 </Typography>
 
-	<Stack direction="row" spacing={2}>
-            <Button
-                variant="outlined"
-                startIcon={<DownloadIcon />}
-                onClick={openExportMenu}
+                <Stack
+                    direction="row"
+                    spacing={2}
+                >
+                    <Button
+                        variant="outlined"
+                        startIcon={
+                            <DownloadIcon />
+                        }
+                        onClick={openExportMenu}
+                    >
+                        Export
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        startIcon={
+                            <RefreshIcon />
+                        }
+                        onClick={loadTrades}
+                    >
+                        Refresh
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        startIcon={
+                            <AddIcon />
+                        }
+                        onClick={openNewTrade}
+                    >
+                        New Trade
+                    </Button>
+                </Stack>
+            </Stack>
+
+            <Menu
+                anchorEl={exportAnchor}
+                open={exportMenuOpen}
+                onClose={closeExportMenu}
             >
-                Export
-            </Button>
+                <MenuItem
+                    onClick={closeExportMenu}
+                >
+                    <ListItemIcon>
+                        <PictureAsPdfIcon
+                            fontSize="small"
+                        />
+                    </ListItemIcon>
 
-            <Button
-                variant="outlined"
-                startIcon={<RefreshIcon />}
-                onClick={loadTrades}
-            >
-                Refresh
-            </Button>
+                    <ListItemText>
+                        Export PDF
+                    </ListItemText>
+                </MenuItem>
 
-            <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={openNewTrade}
-            >
-                New Trade
-            </Button>
-        </Stack>
+                <MenuItem
+                    onClick={closeExportMenu}
+                >
+                    <ListItemIcon>
+                        <TableChartIcon
+                            fontSize="small"
+                        />
+                    </ListItemIcon>
 
-</Stack>
+                    <ListItemText>
+                        Export Excel
+                    </ListItemText>
+                </MenuItem>
 
-<Menu    
-    anchorEl={exportAnchor}
-    open={exportMenuOpen}
-    onClose={closeExportMenu}
->
-    <MenuItem onClick={closeExportMenu}>
-        <ListItemIcon>
-            <PictureAsPdfIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>
-            Export PDF
-        </ListItemText>
-    </MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        window.open(
+                            "http://127.0.0.1:8000/exports/trades/csv",
+                            "_blank"
+                        );
 
-    <MenuItem onClick={closeExportMenu}>
-        <ListItemIcon>
-            <TableChartIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>
-            Export Excel
-        </ListItemText>
-    </MenuItem>
+                        closeExportMenu();
+                    }}
+                >
+                    <ListItemIcon>
+                        <DescriptionIcon
+                            fontSize="small"
+                        />
+                    </ListItemIcon>
 
-    <MenuItem
-        onClick={() => {
-            window.open(
-                "http://127.0.0.1:8000/exports/trades/csv",
-                "_blank"
-            );
-            closeExportMenu();
-        }}
-    >
-        <ListItemIcon>
-            <DescriptionIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>
-            Export CSV
-        </ListItemText>
-    </MenuItem>
+                    <ListItemText>
+                        Export CSV
+                    </ListItemText>
+                </MenuItem>
 
-    <MenuItem
-        onClick={() => {
-            window.print();
-            closeExportMenu();
-        }}
-    >
-        <ListItemIcon>
-            <PrintIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>
-            Print
-        </ListItemText>
-    </MenuItem>
-</Menu>
+                <MenuItem
+                    onClick={() => {
+                        window.print();
+                        closeExportMenu();
+                    }}
+                >
+                    <ListItemIcon>
+                        <PrintIcon
+                            fontSize="small"
+                        />
+                    </ListItemIcon>
+
+                    <ListItemText>
+                        Print
+                    </ListItemText>
+                </MenuItem>
+            </Menu>
 
             <Paper sx={{ p: 2, mb: 2 }}>
                 <Stack
@@ -434,9 +623,15 @@ useEffect(() => {
                     spacing={2}
                 >
                     <TextField
-                        label="Search pair, notes, session"
+                        label={
+                            "Search pair, notes, session"
+                        }
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(event) =>
+                            setSearch(
+                                event.target.value
+                            )
+                        }
                         fullWidth
                     />
 
@@ -444,29 +639,55 @@ useEffect(() => {
                         select
                         label="Direction"
                         value={directionFilter}
-                        onChange={(e) => setDirectionFilter(e.target.value)}
+                        onChange={(event) =>
+                            setDirectionFilter(
+                                event.target.value
+                            )
+                        }
                         sx={{ minWidth: 160 }}
                     >
-                        <MenuItem value="ALL">All</MenuItem>
-                        <MenuItem value="BUY">BUY</MenuItem>
-                        <MenuItem value="SELL">SELL</MenuItem>
+                        <MenuItem value="ALL">
+                            All
+                        </MenuItem>
+
+                        <MenuItem value="BUY">
+                            BUY
+                        </MenuItem>
+
+                        <MenuItem value="SELL">
+                            SELL
+                        </MenuItem>
                     </TextField>
 
                     <TextField
                         select
                         label="Result"
                         value={resultFilter}
-                        onChange={(e) => setResultFilter(e.target.value)}
+                        onChange={(event) =>
+                            setResultFilter(
+                                event.target.value
+                            )
+                        }
                         sx={{ minWidth: 160 }}
                     >
-                        <MenuItem value="ALL">All</MenuItem>
-                        <MenuItem value="WIN">Win</MenuItem>
-                        <MenuItem value="LOSS">Loss</MenuItem>
+                        <MenuItem value="ALL">
+                            All
+                        </MenuItem>
+
+                        <MenuItem value="WIN">
+                            Win
+                        </MenuItem>
+
+                        <MenuItem value="LOSS">
+                            Loss
+                        </MenuItem>
                     </TextField>
 
                     <Button
                         variant="outlined"
-                        startIcon={<ClearIcon />}
+                        startIcon={
+                            <ClearIcon />
+                        }
                         onClick={clearFilters}
                     >
                         Clear
@@ -474,11 +695,20 @@ useEffect(() => {
                 </Stack>
             </Paper>
 
-            <Paper sx={{ height: 650, p: 2 }}>
+            <Paper
+                sx={{
+                    height: 650,
+                    p: 2
+                }}
+            >
                 <DataGrid
                     rows={filteredTrades}
                     columns={columns}
-                    pageSizeOptions={[10, 25, 50]}
+                    pageSizeOptions={[
+                        10,
+                        25,
+                        50
+                    ]}
                     initialState={{
                         pagination: {
                             paginationModel: {
@@ -495,6 +725,8 @@ useEffect(() => {
                 onClose={closeDialog}
                 onSave={saveTrade}
                 trade={selectedTrade}
+                saveError={saveError}
+                saving={saving}
             />
 
             <TradeDetailsDialog

@@ -117,3 +117,7 @@ Sprint 30 - Home Command Center Upgrade
 ```
 
 This roadmap may change based on product needs, but all future modules should follow the Widget Infrastructure and Feature Module direction introduced in Sprint 20.
+
+## Commercial Economic Calendar Provider
+
+Evaluate a licensed or commercially suitable Economic Calendar API that supplies Actual, Forecast and Previous values. A delayed Actual feed is acceptable for TradePilot Pro journal and reporting workflows. The solution must have documented API terms and must not depend on website scraping.

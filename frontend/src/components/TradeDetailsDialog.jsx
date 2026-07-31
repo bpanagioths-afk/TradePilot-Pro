@@ -23,29 +23,13 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import { evaluateTrade } from "../services/ruleEngineService";
 import TradeScoreCard from "./TradeScoreCard";
 
+import {
+    psychologyStateLabels,
+    tradingSystemLabels
+} from "../features/trades/tradeOptions";
 
 const API_BASE_URL = "http://127.0.0.1:8000";
 
-const psychologyMap = {
-    1: "Ήρεμος",
-    2: "Σίγουρος",
-    3: "Συγκεντρωμένος",
-    4: "Αγχωμένος",
-    5: "FOMO",
-    6: "Revenge Trading",
-    7: "Κουρασμένος",
-    8: "Βιαστικός"
-};
-
-const systemMap = {
-    1: "SMC",
-    2: "Price Trap",
-    3: "ICT",
-    4: "Liquidity Grab",
-    5: "Breakout",
-    6: "Trend Following",
-    7: "Scalping"
-};
 
 function InfoBox({ label, value }) {
     return (
@@ -218,14 +202,24 @@ export default function TradeDetailsDialog({
                         <Grid size={{ xs: 12, md: 6 }}>
                             <InfoBox
                                 label="Trading System"
-                                value={systemMap[trade.trading_system_id] || "-"}
+                                value={
+    tradingSystemLabels[
+        trade.trading_system_id
+    ]
+    || "-"
+}
                             />
                         </Grid>
 
                         <Grid size={{ xs: 12, md: 6 }}>
                             <InfoBox
                                 label="Psychology"
-                                value={psychologyMap[trade.psychology_state_id] || "-"}
+                                value={
+    psychologyStateLabels[
+        trade.psychology_state_id
+    ]
+    || "-"
+}
                             />
                         </Grid>
                     </Grid>

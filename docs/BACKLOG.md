@@ -61,3 +61,11 @@ Long-term backlog remains unchanged and continues to include AI Coach, Rule Engi
 - Tenant/organization model.
 - Audit log and security events.
 - Secure broker credential vault.
+
+## Economic Calendar Provider Evaluation after Sprint 34
+
+- Keep the current free Forex Factory weekly JSON feed for Version 1.
+- Evaluate a licensed, freemium or low-cost Economic Calendar API before commercial release.
+- Required fields: Actual, Forecast, Previous, Revision, impact, currency, event time and timezone.
+- Delayed Actual values (for example 10–15 minutes) are acceptable for journal/reporting use if licensing permits commercial use.
+- Do not use website scraping as the production solution.

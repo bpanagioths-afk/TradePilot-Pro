@@ -170,3 +170,20 @@ Important current files:
 - `project/11_ACTIVE_SPRINT.md` — integration-validation package.
 - `SOURCE_CODE_STRUCTURE.md` — authentication, admin and ownership source map.
 - `project/08_SAAS_ROADMAP.md` — current multi-user foundation and future commercial layers.
+
+## Sprint 34 Documentation Update
+
+Added or synchronized documentation for:
+
+- MT5 manual-ticket reconciliation and duplicate prevention.
+- PostgreSQL partial unique indexes for canonical MT5 trade identity.
+- Seven automated MT5 repository regression tests.
+- Manual Open Time and Close Time workflow for Portfolio eligibility.
+- Market Alerts provider diagnostic and confirmed Actual-value limitation.
+- Commercial Economic Calendar provider evaluation backlog.
+- Sprint 35 final Version 1 validation prompt.
+
+New important files:
+
+- `docs/changelog/15_SPRINT_34.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT35.md`

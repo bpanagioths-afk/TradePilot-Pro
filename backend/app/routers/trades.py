@@ -1,20 +1,21 @@
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
-from sqlalchemy.orm import Session
 import os
 import shutil
 from uuid import uuid4
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from sqlalchemy.orm import Session
 
 from app.core.deps import get_current_user, get_db
 from app.models.trade import Trade
 from app.models.user import User
 from app.schemas.trade import TradeCreate
 from app.services.mt5.movement import calculate_movement
-
 from app.utils.trade_stats import (
     calculate_duration,
     calculate_pips,
     calculate_rr,
 )
+
 
 router = APIRouter(
     prefix="/trades",
@@ -102,12 +103,51 @@ def apply_trade_calculations(trade_obj):
         trade_obj.duration_minutes = None
 
 
+def _validate_manual_mt5_position_id(
+    db: Session,
+    *,
+    user_id: int,
+    mt5_position_id: int | None,
+    excluded_trade_id: int | None = None,
+) -> None:
+    if mt5_position_id is None:
+        return
+
+    query = (
+        db.query(Trade)
+        .filter(
+            Trade.user_id == user_id,
+            Trade.mt5_position_id == mt5_position_id,
+        )
+    )
+
+    if excluded_trade_id is not None:
+        query = query.filter(
+            Trade.id != excluded_trade_id,
+        )
+
+    if query.first() is not None:
+        raise HTTPException(
+            status_code=409,
+            detail=(
+                "This MT5 ticket is already connected "
+                "to another trade."
+            ),
+        )
+
+
 @router.post("/")
 def create_trade(
     trade: TradeCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    _validate_manual_mt5_position_id(
+        db=db,
+        user_id=current_user.id,
+        mt5_position_id=trade.mt5_position_id,
+    )
+
     new_trade = Trade(
         user_id=current_user.id,
         symbol=trade.symbol,
@@ -126,6 +166,9 @@ def create_trade(
         tradingview_link=trade.tradingview_link,
         screenshot_path=trade.screenshot_path,
         notes=trade.notes,
+        mt5_position_id=trade.mt5_position_id,
+        imported_from_mt5=False,
+        is_archived=False,
     )
 
     apply_trade_calculations(new_trade)
@@ -196,6 +239,13 @@ def update_trade(
             detail="Trade not found",
         )
 
+    _validate_manual_mt5_position_id(
+        db=db,
+        user_id=current_user.id,
+        mt5_position_id=trade_data.mt5_position_id,
+        excluded_trade_id=trade.id,
+    )
+
     trade.symbol = trade_data.symbol
     trade.direction = trade_data.direction
     trade.entry_price = trade_data.entry_price
@@ -212,6 +262,7 @@ def update_trade(
     trade.tradingview_link = trade_data.tradingview_link
     trade.screenshot_path = trade_data.screenshot_path
     trade.notes = trade_data.notes
+    trade.mt5_position_id = trade_data.mt5_position_id
 
     apply_trade_calculations(trade)
 

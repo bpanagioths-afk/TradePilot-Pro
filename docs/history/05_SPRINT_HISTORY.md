@@ -281,3 +281,30 @@ Protected component rule was introduced after global widget changes caused unwan
 - Corrected Reports against real movement-breakdown contracts.
 - Prevented automatic MT5 terminal startup.
 - Completed Version 0.9.
+
+---
+
+# Sprint 34 — Regression Recovery
+
+## MT5 Trade Identity
+
+- Added manual-to-MT5 reconciliation through the canonical MT5 position identifier.
+- Added user-visible MT5 ticket entry to the journal workflow.
+- Added API conflict handling and frontend feedback.
+- Added partial unique PostgreSQL indexes.
+- Added seven passing automated repository regression tests.
+
+## Portfolio Manual Trade Workflow
+
+- Confirmed Portfolio correctly uses closed trades for realized performance.
+- Added Open Time and Close Time to manual trade creation/editing.
+- Verified a closed manual trade appears in Portfolio.
+- Avoided unnecessary Portfolio engine/repository changes.
+
+## Market Alerts
+
+- Audited frontend, backend mapping, provider and refresh/cache behavior.
+- Diagnostic feed contained 92 events and zero Actual values.
+- Controlled mapping test preserved Actual/Forecast/Previous.
+- Classified the issue as a free-provider limitation.
+- Deferred provider replacement to commercial-release planning.

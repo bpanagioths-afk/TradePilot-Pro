@@ -5,9 +5,11 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
+    text,
 )
 
 from app.core.database import Base
@@ -124,4 +126,28 @@ class Trade(Base):
     is_archived = Column(
         Boolean,
         default=False,
+    )
+
+    __table_args__ = (
+        Index(
+            "uq_trades_user_account_position",
+            "user_id",
+            "mt5_account_id",
+            "mt5_position_id",
+            unique=True,
+            postgresql_where=text(
+                "mt5_account_id IS NOT NULL "
+                "AND mt5_position_id IS NOT NULL"
+            ),
+        ),
+        Index(
+            "uq_trades_user_manual_position",
+            "user_id",
+            "mt5_position_id",
+            unique=True,
+            postgresql_where=text(
+                "mt5_account_id IS NULL "
+                "AND mt5_position_id IS NOT NULL"
+            ),
+        ),
     )

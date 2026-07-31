@@ -416,11 +416,24 @@ def sync(
                 ] = validation_result.errors
                 continue
 
+            entry_price = calculate_entry_price(
+                position,
+            )
+
+            entry_volume = calculate_entry_volume(
+                position,
+            )
+
             trade, is_new = get_or_create_trade(
                 db=db,
                 user_id=user_id,
                 account_id=account_id,
                 position_id=position.position_id,
+                symbol=position.symbol,
+                direction=position.direction,
+                entry_price=entry_price,
+                lot_size=entry_volume,
+                open_time=position.open_time,
             )
 
             _apply_position_to_trade(
