@@ -27,30 +27,9 @@ import {
     ChartTooltip
 } from "../components/charts";
 
-const psychologyMap = {
-    1: "Ήρεμος",
-    2: "Σίγουρος",
-    3: "Συγκεντρωμένος",
-    4: "Αγχωμένος",
-    5: "FOMO",
-    6: "Revenge",
-    7: "Κουρασμένος",
-    8: "Βιαστικός"
-};
-
-function normalizePsychology(rows) {
-    return rows.map((row) => {
-        const movement = row.movement_breakdown?.[0];
-
-        return {
-            ...row,
-            name: psychologyMap[row.psychology_state_id] || "Άγνωστο",
-            value: movement?.total ?? 0,
-            average: movement?.average ?? 0,
-            unit: movement?.unit ?? "pips"
-        };
-    });
-}
+import {
+    normalizePsychologyRows
+} from "../features/psychology/psychologyUtils";
 
 export default function Psychology() {
     const theme = useTheme();
@@ -60,7 +39,7 @@ export default function Psychology() {
         api
             .get("/dashboard/psychology")
             .then((res) => {
-                setData(normalizePsychology(res.data));
+                setData(normalizePsychologyRows(res.data));
             })
             .catch(console.error);
     }, []);

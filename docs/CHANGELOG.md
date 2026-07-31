@@ -399,3 +399,5 @@ See: `docs/changelog/12_SPRINT_31.md`.
 - Release validation and migration verification remain required before merge.
 
 Detailed entry: `changelog/13_VERSION_1_MULTI_USER_REBUILD.md`.
+
+- 14_SPRINT_33.md — Dashboard Completion

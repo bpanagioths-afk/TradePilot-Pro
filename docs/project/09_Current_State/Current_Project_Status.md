@@ -146,3 +146,7 @@ Status: Deferred to MT5 Sync Sprint.
 Portfolio ignores manually created trades and only counts imported MT5 trades.
 Status: Deferred to Portfolio Sprint.
 
+
+
+## Sprint 33
+Dashboard completed. Remaining focus: BUG-001, BUG-002, BUG-003.
