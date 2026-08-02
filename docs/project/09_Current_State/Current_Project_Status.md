@@ -1,6 +1,6 @@
 # Current Project Status
 
-Status synchronized with branch `feature/multi-user-rebuild` after Sprint 35 on 2026-08-02.
+Status synchronized with branch `feature/multi-user-rebuild` after Sprint 36 on 2026-08-02.
 
 ## Release State
 
@@ -8,143 +8,166 @@ Status synchronized with branch `feature/multi-user-rebuild` after Sprint 35 on 
 Product: TradePilot Pro
 Version: 1.0 — Multi-User Foundation
 Active Branch: feature/multi-user-rebuild
-Current State: Sprint 35 functional hardening completed
-Next Package: Final compile/build/test, documentation review and user-approved closing commit
-Merge State: Pending final Git diff review and explicit user approval
+Current State: Sprint 36 implementation completed; final validation and closing Git review pending
+Next Package: Final compile/build/smoke test, Git diff review and user-approved closing commit
+Merge State: Pending explicit user approval
 ```
 
-## Implemented Version 1 Foundation
+## Sprint 36 Delivered
 
-### Authentication and Public Entry
+### Safe Backup Export
 
-- JWT authentication and centralized authenticated Axios behavior.
-- Login, registration, logout, recovery and password-reset flows.
-- Shared public authentication layout.
-- Protected and administrator route composition.
-- Inactive-user protection.
-- Administrator User Management and self-protection.
+- Authenticated `GET /settings/backup`.
+- Versioned backup contract with schema version `1.0`.
+- Export is scoped to the authenticated user.
+- Export includes:
+  - account settings,
+  - trades,
+  - Trading Plans.
+- Export preserves MT5 trade identity fields used for idempotent Sync:
+  - `mt5_ticket`,
+  - `mt5_position_id`.
+- Export excludes:
+  - password hashes,
+  - authentication tokens,
+  - administrator permissions,
+  - activation state,
+  - database primary keys and user IDs,
+  - MT5 connection credentials,
+  - uploaded screenshot files.
 
-### Ownership and Isolation
+### Backup Preview and Merge Import
 
-Backend-enforced authenticated ownership now covers:
+- Authenticated `POST /settings/backup/preview`.
+- Authenticated `POST /settings/backup/import`.
+- Only `merge` mode is enabled.
+- `replace` remains disabled because it is destructive and requires a separate confirmed policy.
+- Import runs through one transaction and rolls back on failure.
+- Trade duplicate detection uses:
+  - `user_id + mt5_position_id`,
+  - fallback `mt5_ticket`,
+  - manual-trade identity fields when MT5 identity is absent.
+- Trading Plans merge by normalized plan name.
+- Account identity from the backup never changes the authenticated account username or email.
+- Import can update portable account preferences.
+- Import UI provides:
+  - JSON file selection,
+  - mandatory Preview,
+  - Merge confirmation,
+  - section results,
+  - downloadable JSON import report.
 
-- Trades
-- Dashboard
-- Portfolio
-- MT5 accounts and synchronization
-- Trading Plans
-- Rule Engine evaluation
-- CSV, PDF and Excel trade exports
+### Multiple Trading Plans
 
-### Trading Journal and MT5
+- Trading Plan UI supports:
+  - Load Plan,
+  - New Plan,
+  - Save,
+  - Save As,
+  - Set Default.
+- Multiple plans are stored through the existing Trading Plan API and model.
+- Only one default plan is maintained per authenticated user.
+- The Rule Engine continues to use the authenticated user's default plan.
 
-- Manual and MT5 trades follow the canonical Trade lifecycle.
-- Manual MT5 position/ticket reconciliation prevents duplicate trades.
-- PostgreSQL partial unique indexes protect canonical identity.
-- Repeated MT5 Sync is idempotent.
-- Manual Notes are preserved during Sync.
-- MT5 synchronization status is appended without duplicate lines.
-- Open/closed synchronization status replaces only the prior MT5 status line.
+### Progressive Refactoring
 
-### Trading Plan
-
-- Markets, Sessions and News Rules are controlled and persisted.
-- Trading Constitution supports add, edit, delete and reorder.
-- Trading Plan CRUD is scoped to the current user.
-- Client payloads cannot assign another `user_id`.
-- One default plan is maintained per user.
-- Rule Engine uses the authenticated user's default plan.
-
-### Rule Engine and Trade Score
-
-- Rule Engine evaluates only the authenticated user's trade.
-- Trades-per-day count is user-scoped and based on the trade date.
-- Session aliases are normalized, including `Asia Session`.
-- Trade Score has structured violations, warnings and successes.
-- Risk per Trade remains a documented placeholder pending a future position-size/account-balance module.
-
-### Reports and Exports
-
-- Reports Summary is readable and uses the existing canonical data contracts.
-- CSV, PDF and Excel exports are authenticated and user-scoped.
-- Frontend downloads use JWT-authenticated blob requests.
-- `openpyxl==3.1.5` is the Excel dependency.
-
-### Safety and UX
-
-- Trade deletion requires explicit confirmation.
-- Confirmation has cancellation, loading and error states.
-- Login/Register presentation is aligned through a shared auth layout.
-
-### Local Startup
-
-The Windows local launcher is implemented:
+The large Trading Plan page was split into focused components:
 
 ```text
-Start TradePilot Pro.vbs
-        ↓
-start_tradepilot.ps1
-        ↓
-Backend + Frontend readiness checks
-        ↓
-One browser page
+frontend/src/features/trading-plan/components/
+    TradingPlanToolbar.jsx
+    TradingPlanSaveAsDialog.jsx
+    MarketsCard.jsx
+    RiskRulesCard.jsx
+    TradingFrequencyCard.jsx
+    SessionsCard.jsx
+    NewsRulesCard.jsx
+    ConstitutionCard.jsx
 ```
 
-Runtime logs are written under `runtime_logs/` and are local artifacts.
-
-## Sprint 35 Validation Evidence
-
-- Starting branch synchronized with origin.
-- Starting working tree clean.
-- Backend compile passed.
-- MT5 repository tests passed: `Ran 7 tests — OK`.
-- Frontend production build passed.
-- Authentication and registration validated.
-- Administrator User Management validated.
-- Cross-user trade isolation validated.
-- MT5 repeated Sync validated without duplicates.
-- Manual Trade create/edit validated.
-- Safe Trade Delete validated.
-- Dashboard, Portfolio, Analytics, Psychology and Reports validated.
-- Trading Plan persistence validated.
-- User-specific Rule Engine evaluation corrected.
-- Session normalization validated with stored value `Asia Session`.
-- Manual Notes preservation validated.
-- CSV/PDF/Excel downloads validated.
-- One-click launcher validated from stopped backend/frontend state.
-
-A final compile/build/test must be run after the documentation files are copied into the working tree.
-
-## Current Known Limitations / Deferred Work
-
-- Settings Backup/Restore remains incomplete.
-- Rule Engine Risk per Trade calculation remains pending.
-- Current free Economic Calendar provider does not supply Actual values.
-- Licensed/commercial Economic Calendar provider evaluation remains future work.
-- Billing, subscriptions, licensing and advanced RBAC remain outside Version 1.
-- Cloud-hosted MT5 execution and credential-vault redesign remain future work.
-
-## Workspace Ownership
+Backup logic was split from the general Settings service:
 
 ```text
-Home         → Welcome / Command Center
-Dashboard    → User-scoped Executive Overview
-Trades       → User-scoped Trading Journal
-MT5          → User-scoped Trading Connections
-Portfolio    → User-scoped realized Portfolio Analysis
-Analytics    → Historical Analysis
-Psychology   → Trader Journal
-Reports      → Reports and user-scoped exports
-Trading Plan → User-scoped rules and constitution
-Settings     → Profile, Preferences and Security
-Admin        → Administrative User Management
+backend/app/features/settings/
+    service.py
+    backup/
+        export_service.py
+        preview_service.py
+        trade_identity.py
+        import_engine.py
+        import_service.py
+    importers/
+        account_settings_importer.py
+        trades_importer.py
+        trading_plans_importer.py
 ```
 
-## Required Closing Steps
+The new decision `D-063 — Progressive Refactoring Policy` records the requirement to refactor files that accumulate multiple responsibilities or materially exceed the preferred reviewable size.
 
-1. Apply the Sprint 35 Documentation Package.
-2. Run final backend compile and tests.
-3. Run final frontend production build.
-4. Review `git status`, full file list and diff statistics.
-5. Confirm that `runtime_logs/` is not included.
-6. Commit only after explicit user approval.
+### Trading Sessions Market Hours
+
+- Fixed London/New York overlap showing Open during the weekend.
+- Added shared:
+  - `frontend/src/utils/marketHours.js`
+- Trading Sessions now use one Forex weekly market gate.
+- Weekly status follows New York time and adjusts automatically for daylight-saving changes.
+- Economic-calendar events remain visible when the Forex market is closed.
+
+## Validation Completed During Sprint 36
+
+- Repeated backend `python -m compileall app`.
+- Repeated frontend `npm run build`.
+- Backup JSON downloaded successfully.
+- Export contract and sensitive-data exclusions checked.
+- Trading Plan Load/New/Save/Save As/Set Default tested.
+- Trading Plan refactor packages built successfully.
+- Backup Preview and Merge Import UI built successfully.
+- Trading Sessions weekend status corrected and built successfully.
+
+## Required Final Closing Validation
+
+### Backend
+
+```powershell
+cd C:\Users\USER\TradingJournal\backend
+python -m compileall app
+python -m unittest discover -s tests -p "test_*.py" -v
+```
+
+### Frontend
+
+```powershell
+cd C:\Users\USER\TradingJournal\frontend
+npm run build
+```
+
+### Smoke Test
+
+- Export Backup.
+- Preview Merge.
+- Merge Import.
+- Download Import Report.
+- Trading Plan Load/New/Save/Save As/Set Default.
+- Trading Constitution add/edit/delete/reorder.
+- Trading Sessions closed during the weekend.
+
+### Git Review
+
+```powershell
+git status -sb
+git diff --stat
+git diff --name-only
+git ls-files --others --exclude-standard
+```
+
+Commit and push only after explicit user approval.
+
+## Known Limitations / Deferred Work
+
+- Destructive Backup Replace is not enabled.
+- Backup does not yet include MT5 account connection credentials.
+- Backup does not yet include uploaded screenshot binaries.
+- Psychology definitions, Trading System definitions and Market Alerts require separate ownership/portability audits before inclusion.
+- Market-holiday closures are not yet implemented in `marketHours.js`.
+- Rule Engine Risk per Trade calculation remains pending a verified account-balance and position-risk source.
+- Billing, subscriptions, licensing, advanced RBAC and cloud-hosted MT5 execution remain future work.

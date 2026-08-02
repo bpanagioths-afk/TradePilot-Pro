@@ -8,27 +8,22 @@ import {
     Alert,
     Box,
     Button,
-    Checkbox,
     CircularProgress,
-    Divider,
-    FormControlLabel,
-    IconButton,
-    Paper,
     Snackbar,
     Stack,
-    TextField,
-    Tooltip,
     Typography
 } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import DeleteIcon from "@mui/icons-material/Delete";
-import GavelRoundedIcon from "@mui/icons-material/GavelRounded";
 import SaveIcon from "@mui/icons-material/Save";
 
-import NumericField from "../components/NumericField";
+import TradingPlanSaveAsDialog from "../features/trading-plan/components/TradingPlanSaveAsDialog";
+import TradingPlanToolbar from "../features/trading-plan/components/TradingPlanToolbar";
+import MarketsCard from "../features/trading-plan/components/MarketsCard";
+import RiskRulesCard from "../features/trading-plan/components/RiskRulesCard";
+import TradingFrequencyCard from "../features/trading-plan/components/TradingFrequencyCard";
+import SessionsCard from "../features/trading-plan/components/SessionsCard";
+import NewsRulesCard from "../features/trading-plan/components/NewsRulesCard";
+import ConstitutionCard from "../features/trading-plan/components/ConstitutionCard";
 
 import {
     createTradingPlan,
@@ -110,6 +105,9 @@ function resolveErrorMessage(error) {
 
 
 export default function TradingPlan() {
+    const [plans, setPlans] =
+        useState([]);
+
     const [planId, setPlanId] =
         useState(null);
 
@@ -138,36 +136,80 @@ export default function TradingPlan() {
     const [error, setError] =
         useState("");
 
+    const [
+        saveAsDialogOpen,
+        setSaveAsDialogOpen
+    ] = useState(false);
 
-    useEffect(() => {
+    const [
+        saveAsName,
+        setSaveAsName
+    ] = useState("");
+
+    const [
+        saveAsError,
+        setSaveAsError
+    ] = useState("");
+
+    const loadPlanIntoEditor = (
+        selectedPlan
+    ) => {
+        if (!selectedPlan) {
+            setPlanId(null);
+            setPlan(initialPlan);
+
+            setConstitutionRules(
+                buildDefaultRules(
+                    initialPlan
+                )
+            );
+
+            return;
+        }
+
+        const normalizedPlan = {
+            ...initialPlan,
+            ...selectedPlan
+        };
+
+        setPlanId(selectedPlan.id);
+        setPlan(normalizedPlan);
+
+        setConstitutionRules(
+            parseConstitution(
+                selectedPlan.constitution,
+                normalizedPlan
+            )
+        );
+
+        setError("");
+        setSaved(false);
+    };
+
+        useEffect(() => {
         getTradingPlans()
             .then((response) => {
-                const existingPlan =
-                    response.data?.[0];
-
-                if (!existingPlan) {
-                    setPlan(initialPlan);
-                    setConstitutionRules(
-                        buildDefaultRules(
-                            initialPlan
-                        )
-                    );
-                    return;
-                }
-
-                const normalizedPlan = {
-                    ...initialPlan,
-                    ...existingPlan
-                };
-
-                setPlanId(existingPlan.id);
-                setPlan(normalizedPlan);
-
-                setConstitutionRules(
-                    parseConstitution(
-                        existingPlan.constitution,
-                        normalizedPlan
+                const loadedPlans =
+                    Array.isArray(
+                        response.data
                     )
+                        ? response.data
+                        : [];
+
+                setPlans(loadedPlans);
+
+                const defaultPlan =
+                    loadedPlans.find(
+                        (item) =>
+                            Boolean(
+                                item.is_default
+                            )
+                    );
+
+                loadPlanIntoEditor(
+                    defaultPlan
+                    || loadedPlans[0]
+                    || null
                 );
             })
             .catch((requestError) => {
@@ -175,7 +217,7 @@ export default function TradingPlan() {
 
                 setError(
                     "Δεν ήταν δυνατή η φόρτωση "
-                    + "του Trading Plan."
+                    + "των Trading Plans."
                 );
             })
             .finally(() => {
@@ -207,6 +249,24 @@ export default function TradingPlan() {
         }));
     };
 
+
+    const handlePlanSelection = (
+        event
+    ) => {
+        const selectedPlanId =
+            Number(event.target.value);
+
+        const selectedPlan =
+            plans.find(
+                (item) =>
+                    item.id
+                    === selectedPlanId
+            );
+
+        loadPlanIntoEditor(
+            selectedPlan || null
+        );
+    };
 
     const handleCheckbox = (
         field,
@@ -307,6 +367,223 @@ export default function TradingPlan() {
     };
 
 
+    const startNewPlan = () => {
+        const newPlan = {
+            ...initialPlan,
+            is_default:
+                plans.length === 0
+        };
+
+        setPlanId(null);
+        setPlan(newPlan);
+
+        setConstitutionRules(
+            buildDefaultRules(newPlan)
+        );
+
+        setNewRule("");
+        setError("");
+        setSaved(false);
+    };
+
+
+    const openSaveAsDialog = () => {
+        setSaveAsName(
+            plan.name || ""
+        );
+
+        setSaveAsError("");
+        setSaveAsDialogOpen(true);
+    };
+
+
+    const closeSaveAsDialog = () => {
+        if (saving) {
+            return;
+        }
+
+        setSaveAsDialogOpen(false);
+        setSaveAsError("");
+    };
+
+
+    const saveTradingPlanAs =
+        async () => {
+            const cleanedName =
+                saveAsName.trim();
+
+            if (!cleanedName) {
+                setSaveAsError(
+                    "Γράψε όνομα για το νέο Trading Plan."
+                );
+                return;
+            }
+
+            const nameAlreadyExists =
+                plans.some(
+                    (storedPlan) =>
+                        String(
+                            storedPlan.name || ""
+                        )
+                            .trim()
+                            .toLowerCase()
+                        === cleanedName
+                            .toLowerCase()
+                );
+
+            if (nameAlreadyExists) {
+                setSaveAsError(
+                    "Υπάρχει ήδη Trading Plan με αυτό το όνομα."
+                );
+                return;
+            }
+
+            setSaving(true);
+            setError("");
+            setSaveAsError("");
+
+            const payload = {
+                ...plan,
+                name: cleanedName,
+                is_default:
+                    plans.length === 0,
+                constitution:
+                    constitutionText
+            };
+
+            delete payload.id;
+            delete payload.user_id;
+            delete payload.created_at;
+            delete payload.updated_at;
+
+            try {
+                const response =
+                    await createTradingPlan(
+                        payload
+                    );
+
+                const createdPlan =
+                    response.data;
+
+                setPlans(
+                    (currentPlans) => [
+                        createdPlan,
+                        ...currentPlans.map(
+                            (storedPlan) => ({
+                                ...storedPlan,
+                                is_default:
+                                    createdPlan
+                                        .is_default
+                                        ? false
+                                        : storedPlan
+                                            .is_default
+                            })
+                        )
+                    ]
+                );
+
+                loadPlanIntoEditor(
+                    createdPlan
+                );
+
+                setSaveAsDialogOpen(false);
+                setSaveAsName("");
+                setSaved(true);
+            } catch (requestError) {
+                console.error(requestError);
+
+                setSaveAsError(
+                    resolveErrorMessage(
+                        requestError
+                    )
+                );
+            } finally {
+                setSaving(false);
+            }
+        };
+
+
+    const handlePrimarySave = () => {
+        if (planId) {
+            saveTradingPlan();
+            return;
+        }
+
+        openSaveAsDialog();
+    };
+
+
+    const setCurrentPlanAsDefault =
+        async () => {
+            if (!planId || plan.is_default) {
+                return;
+            }
+
+            setSaving(true);
+            setError("");
+
+            const payload = {
+                ...plan,
+                is_default: true,
+                constitution:
+                    constitutionText
+            };
+
+            delete payload.id;
+            delete payload.user_id;
+            delete payload.created_at;
+            delete payload.updated_at;
+
+            try {
+                const response =
+                    await updateTradingPlan(
+                        planId,
+                        payload
+                    );
+
+                const updatedPlan =
+                    response.data || {
+                        ...plan,
+                        is_default: true
+                    };
+
+                setPlan((currentPlan) => ({
+                    ...currentPlan,
+                    ...updatedPlan,
+                    is_default: true
+                }));
+
+                setPlans(
+                    (currentPlans) =>
+                        currentPlans.map(
+                            (storedPlan) => ({
+                                ...storedPlan,
+                                ...(storedPlan.id
+                                    === planId
+                                    ? updatedPlan
+                                    : {}),
+                                is_default:
+                                    storedPlan.id
+                                    === planId
+                            })
+                        )
+                );
+
+                setSaved(true);
+            } catch (requestError) {
+                console.error(requestError);
+
+                setError(
+                    resolveErrorMessage(
+                        requestError
+                    )
+                );
+            } finally {
+                setSaving(false);
+            }
+        };
+
+
     const saveTradingPlan =
         async () => {
             setSaving(true);
@@ -317,6 +594,11 @@ export default function TradingPlan() {
                 constitution:
                     constitutionText
             };
+
+            delete payload.id;
+            delete payload.user_id;
+            delete payload.created_at;
+            delete payload.updated_at;
 
             try {
                 const response = planId
@@ -343,6 +625,42 @@ export default function TradingPlan() {
                     constitution:
                         constitutionText
                 }));
+
+                setPlans(
+                    (currentPlans) => {
+                        const savedPlanId =
+                            savedPlan.id;
+
+                        if (!savedPlanId) {
+                            return currentPlans;
+                        }
+
+                        const planExists =
+                            currentPlans.some(
+                                (item) =>
+                                    item.id
+                                    === savedPlanId
+                            );
+
+                        if (!planExists) {
+                            return [
+                                savedPlan,
+                                ...currentPlans
+                            ];
+                        }
+
+                        return currentPlans.map(
+                            (item) =>
+                                item.id
+                                === savedPlanId
+                                    ? {
+                                          ...item,
+                                          ...savedPlan
+                                      }
+                                    : item
+                        );
+                    }
+                );
 
                 setSaved(true);
             } catch (requestError) {
@@ -392,6 +710,18 @@ export default function TradingPlan() {
                 πειθαρχίας και διαχείρισης
                 ρίσκου.
             </Typography>
+            <TradingPlanToolbar
+                plans={plans}
+                planId={planId}
+                isDefault={plan.is_default}
+                saving={saving}
+                onPlanSelection={handlePlanSelection}
+                onNewPlan={startNewPlan}
+                onSave={handlePrimarySave}
+                onSaveAs={openSaveAsDialog}
+                onSetDefault={setCurrentPlanAsDefault}
+            />
+
 
             {error && (
                 <Alert
@@ -416,642 +746,53 @@ export default function TradingPlan() {
                 }}
             >
                 <Stack spacing={3}>
-                    <Paper sx={{ p: 3 }}>
-                        <Typography
-                            variant="h6"
-                            mb={2}
-                        >
-                            Markets
-                        </Typography>
+                    <MarketsCard
+                        plan={plan}
+                        onCheckboxChange={
+                            handleCheckbox
+                        }
+                    />
 
-                        <Stack>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.allow_forex
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "allow_forex",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="Forex"
-                            />
+                    <RiskRulesCard
+                        plan={plan}
+                        onChange={handleChange}
+                    />
 
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.allow_metals
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "allow_metals",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="Gold / Metals"
-                            />
-
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.allow_crypto
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "allow_crypto",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="Crypto"
-                            />
-
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.allow_indices
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "allow_indices",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="Indices"
-                            />
-                        </Stack>
-                    </Paper>
-
-                    <Paper sx={{ p: 3 }}>
-                        <Typography
-                            variant="h6"
-                            mb={2}
-                        >
-                            Risk Rules
-                        </Typography>
-
-                        <Stack spacing={2}>
-                            <NumericField
-                                label={
-                                    "Risk per Trade (%)"
-                                }
-                                value={
-                                    plan.risk_per_trade
-                                }
-                                onChange={
-                                    (value) =>
-                                        handleChange(
-                                            "risk_per_trade",
-                                            value
-                                        )
-                                }
-                            />
-
-                            <NumericField
-                                label={
-                                    "Maximum Daily Loss (%)"
-                                }
-                                value={
-                                    plan.maximum_daily_loss
-                                }
-                                onChange={
-                                    (value) =>
-                                        handleChange(
-                                            "maximum_daily_loss",
-                                            value
-                                        )
-                                }
-                            />
-
-                            <NumericField
-                                label={
-                                    "Maximum Weekly Loss (%)"
-                                }
-                                value={
-                                    plan.maximum_weekly_loss
-                                }
-                                onChange={
-                                    (value) =>
-                                        handleChange(
-                                            "maximum_weekly_loss",
-                                            value
-                                        )
-                                }
-                            />
-
-                            <NumericField
-                                label={
-                                    "Minimum Risk Reward"
-                                }
-                                value={
-                                    plan.minimum_rr
-                                }
-                                onChange={
-                                    (value) =>
-                                        handleChange(
-                                            "minimum_rr",
-                                            value
-                                        )
-                                }
-                            />
-                        </Stack>
-                    </Paper>
-
-                    <Paper sx={{ p: 3 }}>
-                        <Typography
-                            variant="h6"
-                            mb={2}
-                        >
-                            Trading Frequency
-                        </Typography>
-
-                        <Stack spacing={2}>
-                            <NumericField
-                                label={
-                                    "Maximum Trades per Day"
-                                }
-                                value={
-                                    plan.maximum_trades_day
-                                }
-                                onChange={
-                                    (value) =>
-                                        handleChange(
-                                            "maximum_trades_day",
-                                            value
-                                        )
-                                }
-                            />
-
-                            <NumericField
-                                label={
-                                    "Maximum Trades per Week"
-                                }
-                                value={
-                                    plan.maximum_trades_week
-                                }
-                                onChange={
-                                    (value) =>
-                                        handleChange(
-                                            "maximum_trades_week",
-                                            value
-                                        )
-                                }
-                            />
-                        </Stack>
-                    </Paper>
+                    <TradingFrequencyCard
+                        plan={plan}
+                        onChange={handleChange}
+                    />
                 </Stack>
 
                 <Stack spacing={3}>
-                    <Paper sx={{ p: 3 }}>
-                        <Typography
-                            variant="h6"
-                            mb={2}
-                        >
-                            Sessions
-                        </Typography>
+                    <SessionsCard
+                        plan={plan}
+                        onCheckboxChange={
+                            handleCheckbox
+                        }
+                    />
 
-                        <Stack>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.session_asia
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "session_asia",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="Asia"
-                            />
+                    <NewsRulesCard
+                        plan={plan}
+                        onCheckboxChange={
+                            handleCheckbox
+                        }
+                    />
 
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.session_london
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "session_london",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="London"
-                            />
-
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.session_newyork
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "session_newyork",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label="New York"
-                            />
-
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.session_overlap
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "session_overlap",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label={
-                                    "London / New York Overlap"
-                                }
-                            />
-                        </Stack>
-                    </Paper>
-
-                    <Paper sx={{ p: 3 }}>
-                        <Typography
-                            variant="h6"
-                            mb={2}
-                        >
-                            News Rules
-                        </Typography>
-
-                        <Stack>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.avoid_news_before
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "avoid_news_before",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label={
-                                    "Avoid trading 30 minutes before HIGH impact news"
-                                }
-                            />
-
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={
-                                            Boolean(
-                                                plan.avoid_news_after
-                                            )
-                                        }
-                                        onChange={
-                                            (event) =>
-                                                handleCheckbox(
-                                                    "avoid_news_after",
-                                                    event
-                                                        .target
-                                                        .checked
-                                                )
-                                        }
-                                    />
-                                }
-                                label={
-                                    "Avoid trading 15 minutes after HIGH impact news"
-                                }
-                            />
-                        </Stack>
-                    </Paper>
-
-                    <Paper sx={{ p: 3 }}>
-                        <Stack
-                            direction={{
-                                xs: "column",
-                                sm: "row"
-                            }}
-                            spacing={2}
-                            sx={{
-                                justifyContent:"space-between",
-                                alignItems: {
-                                   xs: "flex-start",
-                                   sm: "center"
-                                }
-                            }}
-                        >
-                            <Box>
-                                <Stack
-                                    direction="row"
-                                    spacing={1}
-                                    sx={{   
-                                       alignItems: "center"
-                                    }}
-                                >
-                                    <GavelRoundedIcon
-                                        color="primary"
-                                    />
-
-                                    <Typography
-                                        variant="h6"
-                                    >
-                                        Trading Constitution
-                                    </Typography>
-                                </Stack>
-
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{ mt: 0.75 }}
-                                >
-                                    Πρόσθεσε, άλλαξε,
-                                    διέγραψε ή μετακίνησε
-                                    τους προσωπικούς σου
-                                    κανόνες.
-                                </Typography>
-                            </Box>
-
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                onClick={
-                                    rebuildDefaultRules
-                                }
-                            >
-                                Ενημέρωση από το πλάνο
-                            </Button>
-                        </Stack>
-
-                        <Divider sx={{ my: 2.5 }} />
-
-                        <Stack spacing={1.5}>
-                            {constitutionRules.map(
-                                (rule, index) => (
-                                    <Paper
-                                        key={`rule-${index}`}
-                                        variant="outlined"
-                                        sx={{
-                                            p: 1.5,
-                                            borderRadius: 2
-                                        }}
-                                    >
-                                        <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            sx={{
-                                              alignItems:"center"
-                                            }}
-                                        >
-                                            <Typography
-                                                color="primary.main"
-                                                fontWeight={800}
-                                                sx={{
-                                                    minWidth: 28
-                                                }}
-                                            >
-                                                {index + 1}.
-                                            </Typography>
-
-                                            <TextField
-                                                value={rule}
-                                                onChange={
-                                                    (event) =>
-                                                        updateRule(
-                                                            index,
-                                                            event
-                                                                .target
-                                                                .value
-                                                        )
-                                                }
-                                                size="small"
-                                                fullWidth
-                                            />
-
-                                            <Stack
-                                                direction="row"
-                                                spacing={0.25}
-                                            >
-                                                <Tooltip title="Μετακίνηση πάνω">
-                                                    <span>
-                                                        <IconButton
-                                                            size="small"
-                                                            disabled={
-                                                                index
-                                                                === 0
-                                                            }
-                                                            onClick={() =>
-                                                                moveRule(
-                                                                    index,
-                                                                    -1
-                                                                )
-                                                            }
-                                                        >
-                                                            <ArrowUpwardIcon
-                                                                fontSize="small"
-                                                            />
-                                                        </IconButton>
-                                                    </span>
-                                                </Tooltip>
-
-                                                <Tooltip title="Μετακίνηση κάτω">
-                                                    <span>
-                                                        <IconButton
-                                                            size="small"
-                                                            disabled={
-                                                                index
-                                                                === constitutionRules.length
-                                                                - 1
-                                                            }
-                                                            onClick={() =>
-                                                                moveRule(
-                                                                    index,
-                                                                    1
-                                                                )
-                                                            }
-                                                        >
-                                                            <ArrowDownwardIcon
-                                                                fontSize="small"
-                                                            />
-                                                        </IconButton>
-                                                    </span>
-                                                </Tooltip>
-
-                                                <Tooltip title="Διαγραφή κανόνα">
-                                                    <IconButton
-                                                        size="small"
-                                                        color="error"
-                                                        onClick={() =>
-                                                            deleteRule(
-                                                                index
-                                                            )
-                                                        }
-                                                    >
-                                                        <DeleteIcon
-                                                            fontSize="small"
-                                                        />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Stack>
-                                        </Stack>
-                                    </Paper>
-                                )
-                            )}
-
-                            {constitutionRules.length
-                                === 0 && (
-                                <Alert severity="info">
-                                    Δεν υπάρχουν κανόνες
-                                    στο Trading Constitution.
-                                </Alert>
-                            )}
-                        </Stack>
-
-                        <Stack
-                            direction={{
-                                xs: "column",
-                                sm: "row"
-                            }}
-                            spacing={1.5}
-                            sx={{ mt: 2.5 }}
-                        >
-                            <TextField
-                                label="Νέος κανόνας"
-                                placeholder={
-                                    "π.χ. Stop after two consecutive losses"
-                                }
-                                value={newRule}
-                                onChange={
-                                    (event) =>
-                                        setNewRule(
-                                            event.target.value
-                                        )
-                                }
-                                onKeyDown={
-                                    (event) => {
-                                        if (
-                                            event.key
-                                            === "Enter"
-                                        ) {
-                                            event
-                                                .preventDefault();
-
-                                            addRule();
-                                        }
-                                    }
-                                }
-                                fullWidth
-                            />
-
-                            <Button
-                                variant="outlined"
-                                startIcon={<AddIcon />}
-                                onClick={addRule}
-                                disabled={
-                                    !newRule.trim()
-                                }
-                                sx={{
-                                    minWidth: 150
-                                }}
-                            >
-                                Add Rule
-                            </Button>
-                        </Stack>
-
-                        <Divider sx={{ my: 3 }} />
-
-                        <Button
-                            variant="contained"
-                            onClick={
-                                saveTradingPlan
-                            }
-                            startIcon={
-                                saving
-                                    ? (
-                                        <CircularProgress
-                                            size={18}
-                                            color="inherit"
-                                        />
-                                    )
-                                    : <SaveIcon />
-                            }
-                            disabled={saving}
-                            size="large"
-                        >
-                            {saving
-                                ? "Saving..."
-                                : "Save Trading Plan"}
-                        </Button>
-                    </Paper>
+                    <ConstitutionCard
+                        rules={constitutionRules}
+                        newRule={newRule}
+                        onNewRuleChange={
+                            setNewRule
+                        }
+                        onUpdateRule={updateRule}
+                        onAddRule={addRule}
+                        onDeleteRule={deleteRule}
+                        onMoveRule={moveRule}
+                        onRebuildDefaultRules={
+                            rebuildDefaultRules
+                        }
+                    />
                 </Stack>
             </Box>
 
@@ -1071,6 +812,19 @@ export default function TradingPlan() {
                     Trading Plan Saved
                 </Alert>
             </Snackbar>
+           <TradingPlanSaveAsDialog
+    open={saveAsDialogOpen}
+    name={saveAsName}
+    error={saveAsError}
+    saving={saving}
+    onNameChange={(value) => {
+        setSaveAsName(value);
+        setSaveAsError("");
+    }}
+    onClose={closeSaveAsDialog}
+    onSave={saveTradingPlanAs}
+/>
+
         </Box>
     );
 }

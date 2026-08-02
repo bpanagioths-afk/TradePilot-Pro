@@ -16,3 +16,42 @@ export async function updateSettings(settingsData) {
 
     return response.data;
 }
+
+
+export async function exportSettingsBackup() {
+    const response = await api.get(
+        "/settings/backup"
+    );
+
+    return response.data;
+}
+
+
+export async function previewSettingsBackup(
+    backupData
+) {
+    const response = await api.post(
+        "/settings/backup/preview",
+        {
+            mode: "merge",
+            backup: backupData,
+        }
+    );
+
+    return response.data;
+}
+
+
+export async function importSettingsBackup(
+    backupData
+) {
+    const response = await api.post(
+        "/settings/backup/import",
+        {
+            mode: "merge",
+            backup: backupData,
+        }
+    );
+
+    return response.data;
+}

@@ -11,6 +11,7 @@ import {
 import PublicIcon from "@mui/icons-material/Public";
 
 import { loadSettings } from "../../services/settingsService";
+import { isForexMarketOpen } from "../../utils/marketHours";
 
 const DEFAULT_DISPLAY_TIME_ZONE = "Europe/Athens";
 
@@ -75,7 +76,17 @@ function minutesFromMidnight(hour, minute = 0) {
 }
 
 function getSessionStatus(session, now) {
-    const local = getTimeParts(now, session.timeZone);
+    if (!isForexMarketOpen(now)) {
+        return {
+            label: "Closed",
+            color: "default"
+        };
+    }
+
+    const local = getTimeParts(
+        now,
+        session.timeZone
+    );
 
     if (isWeekend(local.weekday)) {
         return {
@@ -207,6 +218,9 @@ function getDisplayHours(session, now, displayTimeZone) {
 }
 
 function getOverlap(now, displayTimeZone) {
+    const marketIsOpen =
+        isForexMarketOpen(now);
+
     const london = SESSION_DEFINITIONS.find(
         (session) => session.id === "london"
     );
@@ -254,8 +268,11 @@ function getOverlap(now, displayTimeZone) {
     );
 
     const isActive =
-        now.getTime() >= overlapStart.getTime() &&
-        now.getTime() < overlapEnd.getTime();
+        marketIsOpen
+        && now.getTime()
+            >= overlapStart.getTime()
+        && now.getTime()
+            < overlapEnd.getTime();
 
     const minutesUntilStart = Math.floor(
         (overlapStart.getTime() - now.getTime()) / 60000
@@ -272,14 +289,18 @@ function getOverlap(now, displayTimeZone) {
             color: "primary"
         };
     } else if (
-        minutesUntilStart > 0 &&
-        minutesUntilStart <= 60
+        marketIsOpen
+        && minutesUntilStart > 0
+        && minutesUntilStart <= 60
     ) {
         status = {
             label: "Opening soon",
             color: "warning"
         };
-    } else if (minutesUntilStart > 60) {
+    } else if (
+        marketIsOpen
+        && minutesUntilStart > 60
+    ) {
         status = {
             label: "Later today",
             color: "info"
@@ -506,7 +527,7 @@ export default function TradingSessions() {
                     mt: 1.5
                 }}
             >
-                Οι ώρες εμφανίζονται αυτόματα στη ζώνη ώρας {displayTimeZone} και προσαρμόζονται στις αλλαγές θερινής ώρας.
+                Οι ώρες εμφανίζονται αυτόματα στη ζώνη ώρας {displayTimeZone}, προσαρμόζονται στη θερινή ώρα και κλείνουν βάσει του εβδομαδιαίου ωραρίου Forex.
             </Typography>
         </Paper>
     );

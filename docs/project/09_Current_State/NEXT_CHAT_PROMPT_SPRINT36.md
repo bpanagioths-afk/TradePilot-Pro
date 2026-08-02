@@ -1,88 +1,49 @@
 # TradePilot Pro — Sprint 36
 
-## Υποχρεωτική διαδικασία πριν γραφτεί οποιοσδήποτε κώδικας
+Το Sprint 35 έχει ήδη ολοκληρωθεί, γίνει commit και push.
+
+## Επιβεβαιωμένη αφετηρία
+
+```text
+Branch: feature/multi-user-rebuild
+Sprint 35 closing commit:
+9ab0c0d25b0f6be3bb26912d53ab598ffd50f99f
+
+Commit:
+Sprint 35: Complete multi-user hardening and Version 1 release preparation
+```
+
+Το local `HEAD` και το `origin/feature/multi-user-rebuild` επιβεβαιώθηκαν στο ίδιο commit.
+
+**Μην ξανανοίξεις το Sprint 35** και μην το χαρακτηρίσεις ως εκκρεμές, εκτός αν το πραγματικό Git δείξει διαφορετική κατάσταση.
+
+## Υποχρεωτική αρχική διαδικασία
 
 1. Διάβασε ολόκληρο το `PROJECT_BOOTSTRAP.md`.
-2. Διάβασε ολόκληρο το Documentation Pack από τον φάκελο `docs`.
-3. Επιβεβαίωσε το ενεργό branch και το πραγματικό `git status`.
-4. Διάβασε τον πραγματικό κώδικα πριν προτείνεις αλλαγή.
-5. Κάνε πλήρες audit του Sprint 36 scope.
-6. Τήρησε αυστηρά τη D-062 και όλες τις νεότερες ενεργές αποφάσεις.
+2. Διάβασε ολόκληρο το Documentation Pack.
+3. Διάβασε τον πραγματικό κώδικα του branch.
+4. Επιβεβαίωσε μία φορά:
 
-## Κανόνες
+```powershell
+git branch --show-current
+git status -sb
+git log -1 --oneline
+```
+
+5. Αν το branch είναι καθαρό και το τελευταίο commit είναι το `9ab0c0d`, ξεκίνα αμέσως το Sprint 36 audit.
+6. Μην ζητήσεις ξανά πλήρες Sprint 35 validation.
+7. Μην ζητήσεις `docs.zip`, αφού το Documentation Pack βρίσκεται στο repository.
+
+## Υποχρεωτικοί κανόνες
 
 - Μην κάνεις υποθέσεις.
 - Μην προτείνεις λύση πριν διαβάσεις τον πραγματικό κώδικα.
 - Μην δημιουργήσεις duplicate APIs, services, repositories ή components.
 - Επέκτεινε μόνο υπάρχουσα υλοποίηση.
 - Μην αλλάξεις αρχιτεκτονική χωρίς τεκμηριωμένο λόγο.
-- Κάθε πρόταση αλλαγής πρέπει να αναφέρει σε ποιο υπάρχον αρχείο βασίζεται.
-- Αν κάτι δεν επιβεβαιώνεται από κώδικα ή Documentation Pack, δήλωσέ το καθαρά.
-- Όταν ο χρήστης απαντά «οκ έτοιμο», συνέχισε αμέσως στο επόμενο βήμα.
-
-## Επιβεβαιωμένη κατάσταση μετά το Sprint 35
-
-- Multi-user authentication, registration and administrator workflows λειτουργούν.
-- Trades, Dashboard, Portfolio, MT5, Trading Plans, Rule Engine and exports είναι user-scoped.
-- Safe Trade Delete confirmation έχει υλοποιηθεί.
-- CSV, PDF and Excel exports χρησιμοποιούν authenticated blob downloads.
-- MT5 Sync διατηρεί τα χειροκίνητα Notes.
-- Trading Plan Sessions, News Rules and Constitution είναι editable και αποθηκεύονται.
-- Rule Engine χρησιμοποιεί το default Trading Plan του ενεργού χρήστη.
-- Session aliases όπως `Asia Session` κανονικοποιούνται.
-- Trade Score UI έχει ανασχεδιαστεί.
-- One-click Windows launcher λειτουργεί μέσω:
-  - `Start TradePilot Pro.vbs`
-  - `start_tradepilot.ps1`
-
-## Sprint 36 — Προτεινόμενο αρχικό scope
-
-Πριν οριστικοποιηθεί το scope, κάνε audit του Documentation Pack και του πραγματικού branch.
-
-Οι γνωστές εκκρεμότητες είναι:
-
-1. **Settings Backup & Restore**
-   - Το υπάρχον Settings UI περιέχει ανενεργή περιοχή Backup & Export.
-   - Μην τη συνδέσεις με μη ασφαλές global export.
-   - Audit πρώτα των user-owned models και των credentials που πρέπει να εξαιρεθούν.
-   - Define ασφαλές backup contract πριν υλοποιηθεί import.
-   - Επιβεβαίωσε αν import θα επιτρέπεται μόνο σε κενό account ή αν χρειάζεται άλλο documented policy.
-
-2. **Rule Engine Risk per Trade**
-   - Το Trade Score εμφανίζει σκόπιμα:
-     `Risk per trade check is pending position size module`.
-   - Μην αφαιρέσεις το warning χωρίς απόφαση.
-   - Audit account balance/equity source, stop-loss monetary risk, lot size and symbol metadata before implementation.
-
-3. **Final Version 1 release preparation**
-   - Review final database ownership constraints.
-   - Review launcher runtime-log ignore policy.
-   - Review full diff and generated/local artifacts.
-   - Decide merge/release/tag procedure only after validation.
-
-## Υποχρεωτικό validation στην αρχή
-
-### Backend
-
-```powershell
-python -m compileall app
-python -m unittest discover -s tests -p "test_*.py" -v
-```
-
-### Frontend
-
-```powershell
-npm run build
-```
-
-### Git
-
-```powershell
-git status -sb
-git diff --stat
-git diff --name-only
-git ls-files --others --exclude-standard
-```
+- Κάθε αλλαγή πρέπει να αναφέρει το υπάρχον αρχείο στο οποίο βασίζεται.
+- Αν κάτι δεν επιβεβαιώνεται, πες το καθαρά.
+- Όταν ο χρήστης απαντά `οκ έτοιμο`, συνέχισε αμέσως χωρίς περίληψη.
 
 ## Τρόπος εργασίας
 
@@ -90,26 +51,89 @@ git ls-files --others --exclude-standard
 
 ```text
 Audit
-Root cause
+Root Cause
 Plan
 One small package
-Compile
+Compile / Build
 Test
 Next package
 ```
 
-Όχι πολλές άσχετες αλλαγές μαζί.
+Λιγότερη θεωρία. Καμία επανάληψη ήδη επιβεβαιωμένων στοιχείων.
 
-## Documentation
+## Επιβεβαιωμένη κατάσταση μετά το Sprint 35
 
-Το Documentation Pack βρίσκεται μέσα στο repository.
+- Login, Register, recovery και administrator workflows λειτουργούν.
+- Trades, Dashboard, Portfolio, MT5, Trading Plans, Rule Engine και exports είναι user-scoped.
+- Safe Trade Delete confirmation λειτουργεί.
+- CSV, PDF και Excel exports είναι authenticated.
+- MT5 Sync διατηρεί τα χειροκίνητα Notes.
+- Trading Plan Markets, Sessions, News Rules και Constitution αποθηκεύονται.
+- Rule Engine χρησιμοποιεί το default Trading Plan του ενεργού χρήστη.
+- Session aliases όπως `Asia Session` κανονικοποιούνται.
+- Trade Score UI έχει ολοκληρωθεί.
+- One-click launcher λειτουργεί.
+- Backend compile/tests και frontend build πέρασαν πριν το closing commit.
 
-Μην ζητήσεις νέο Documentation Pack αν υπάρχει ήδη στο branch.
+## Sprint 36 αρχικό scope
 
-Στο τέλος του Sprint:
+### Package A — Settings Backup and Restore
+
+Πρώτα audit:
+
+- `frontend/src/pages/Settings.jsx`
+- υπάρχον export infrastructure,
+- user-owned backend models,
+- credentials/secrets που πρέπει να εξαιρεθούν,
+- restore conflicts και duplicate policy.
+
+Μην υλοποιήσεις restore πριν οριστεί και εγκριθεί ασφαλές contract.
+
+### Package B — Rule Engine Risk per Trade
+
+Το warning:
+
+```text
+Risk per trade check is pending position size module
+```
+
+παραμένει σκόπιμα.
+
+Πριν από κώδικα, audit:
+
+- account balance/equity,
+- lot size,
+- stop loss,
+- symbol metadata,
+- account currency,
+- manual trades χωρίς πλήρη metadata.
+
+### Package C — Version 1 Release Preparation
+
+- database ownership constraints,
+- launcher runtime logs και ignore policy,
+- local/generated artifacts,
+- merge/release/tag plan.
+
+## Έναρξη
+
+Αφού επιβεβαιώσεις το καθαρό branch και το commit `9ab0c0d`, ξεκίνα αμέσως το audit του **Settings Backup and Restore**.
+
+Δώσε:
+
+1. audit,
+2. επιβεβαιωμένο root cause/current state,
+3. μικρό σχέδιο,
+4. πρώτο package.
+
+Μην επαναλάβεις τους κανόνες και μην ζητήσεις αρχεία που υπάρχουν στο repository.
+
+## Τέλος Sprint 36
 
 - ενημέρωσε όλα τα επηρεαζόμενα `.md`,
 - ενημέρωσε `Current_Project_Status.md`,
 - ενημέρωσε `11_ACTIVE_SPRINT.md`,
 - δημιούργησε `NEXT_CHAT_PROMPT_SPRINT37.md`,
-- και μόνο τότε κλείσε το Sprint με user-approved Git commit.
+- κάνε τελικό compile/tests/build,
+- έλεγξε το Git diff με τον χρήστη,
+- commit μόνο μετά από ρητή έγκριση.

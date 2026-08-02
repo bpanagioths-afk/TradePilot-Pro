@@ -1,12 +1,10 @@
-# Active Sprint — Sprint 35: Version 1 Final Validation
+# Active Sprint — Sprint 36: Backup, Multi-Plan and Progressive Refactoring
 
 ## Status
 
-Functional implementation completed on 2026-08-02.
+Implementation completed on 2026-08-02.
 
-Documentation synchronization is in progress.
-
-The Sprint is not closed until final compile/build/test, Git diff review and explicit user-approved commit.
+The Sprint is not closed until final compile, tests, production build, smoke validation, Git diff review and explicit user-approved commit.
 
 ## Active Branch
 
@@ -14,110 +12,89 @@ The Sprint is not closed until final compile/build/test, Git diff review and exp
 
 ## Objective
 
-Validate the complete Version 1 branch, correct reproducible release blockers and incomplete Version 1 workflows, synchronize documentation and prepare one user-approved closing commit.
+Deliver safe authenticated Backup Export and Merge Import, extend the existing Trading Plan implementation to multiple named plans, correct Trading Sessions weekly market status and reduce large-file responsibilities without creating duplicate APIs, services or components.
 
 ## Completed Packages
 
-### Authentication
+### Backup Export
 
-- Login redesign.
-- Register workflow.
-- Shared `AuthLayout`.
-- Public/protected/admin route validation.
-- Administrator lifecycle revalidation.
+- Versioned user-scoped backup contract.
+- Safe export endpoint.
+- Sensitive authentication and MT5 connection data excluded.
+- MT5 trade identity fields retained for duplicate prevention.
 
-### Trade Safety
+### Import Preview and Merge
 
-- Reusable `ConfirmDialog`.
-- Safe Trade deletion confirmation.
-- Cancellation, loading and error states.
+- Read-only preview endpoint.
+- Generic Backup Import Engine.
+- Section importers:
+  - Account Settings,
+  - Trades,
+  - Trading Plans.
+- Transactional Merge endpoint.
+- Duplicate and conflict counts.
+- Frontend file selection, Preview, Merge and downloadable report.
+- Replace mode intentionally disabled.
 
-### Reports
+### Multiple Trading Plans
 
-- Readable Summary presentation.
-- React prop-warning cleanup.
+- Load Plan.
+- New Plan.
+- Save.
+- Save As.
+- Set Default.
+- One default plan per authenticated user.
+- Existing backend Trading Plan API reused.
 
-### Trading Plan
+### Frontend Refactoring
 
-- Controlled Markets, Sessions and News Rules.
-- Trading Constitution editor.
-- Rule add/edit/delete/reorder.
-- State persistence.
+- Trading Plan toolbar extracted.
+- Save As dialog extracted.
+- Markets, Risk Rules, Trading Frequency, Sessions and News Rules extracted.
+- Trading Constitution extracted.
+- No behavior change intended during refactor.
 
-### Exports
+### Backend Refactoring
 
-- Authenticated user-scoped CSV.
-- Authenticated user-scoped PDF.
-- Authenticated user-scoped Excel.
-- `openpyxl==3.1.5`.
-- JWT-authenticated frontend blob downloads.
+- Backup export, preview, identity, engine and import responsibilities separated.
+- `settings/service.py` reduced to user Settings orchestration and stable re-exports.
+- Importers contain section-specific preview and merge behavior.
 
-### MT5 Notes
+### Trading Sessions
 
-- Manual Notes preserved.
-- MT5 status appended.
-- Repeated Sync does not duplicate status.
-- Open status is replaced by closed status.
+- Weekend overlap bug fixed.
+- Shared Forex weekly market-hours helper created.
+- Trading Sessions use the shared market gate.
 
-### Ownership and Rule Engine
+### Documentation Decision
 
-- Trading Plan CRUD scoped to current user.
-- Rule Engine trade and plan scoped to current user.
-- Default Trading Plan maintained per user.
-- Session aliases normalized.
-- Real per-day user trade count used.
-
-### Trade Score
-
-- Readable compliance summary.
-- Structured violations, warnings and successes.
-- Risk per Trade placeholder warning intentionally retained.
-
-### Local Launcher
-
-- Hidden Windows launcher.
-- Backend and frontend readiness checks.
-- One browser page.
-- Local runtime logs.
-
-## Validation Completed
-
-- Backend compile.
-- Seven MT5 repository tests.
-- Frontend production build.
-- Authentication and registration.
-- Administrator User Management.
-- Multi-user Trades isolation.
-- MT5 Sync and repeated Sync.
-- Trade create/edit/delete.
-- Dashboard and Portfolio correctness.
-- Analytics, Psychology and Reports smoke tests.
-- Trading Plan persistence.
-- Export downloads.
-- Notes preservation.
-- Rule Engine ownership and session normalization.
-- One-click launcher.
+- `D-063 — Progressive Refactoring Policy`.
 
 ## Remaining Closing Checklist
 
-- [ ] Copy/apply all Sprint 35 documentation files.
+- [ ] Apply this Sprint 36 documentation package.
 - [ ] Run `python -m compileall app`.
 - [ ] Run `python -m unittest discover -s tests -p "test_*.py" -v`.
 - [ ] Run `npm run build`.
-- [ ] Review `git status --short`.
+- [ ] Smoke-test Backup Export.
+- [ ] Smoke-test Preview Merge and Merge Import.
+- [ ] Smoke-test Import Report download.
+- [ ] Smoke-test Trading Plans and Trading Constitution.
+- [ ] Confirm Trading Sessions weekend status.
+- [ ] Review `git status -sb`.
 - [ ] Review `git diff --stat`.
 - [ ] Review `git diff --name-only`.
 - [ ] Review untracked files.
-- [ ] Confirm `runtime_logs/` is excluded.
+- [ ] Confirm local/generated artifacts are excluded.
 - [ ] User approves exact commit message.
-- [ ] Create the single Sprint 35 closing commit.
+- [ ] Create the single Sprint 36 closing commit.
 - [ ] Push only after user confirmation.
 
-## Deferred to Sprint 36 / Future Version
+## Deferred to Sprint 37 / Future
 
-- Settings Backup and Restore.
-- Full Risk per Trade calculation.
-- Commercial Economic Calendar provider evaluation.
-- Billing, subscription and licensing layers.
-- Advanced RBAC and tenant hierarchy.
-- Cloud-hosted MT5 execution.
+- Backup Replace policy and destructive confirmation flow.
+- Additional portable Backup sections after ownership audits.
+- Market-holiday calendar support.
+- Rule Engine Risk per Trade calculation.
+- Further reduction of remaining large orchestration pages.
+- Final Version 1 merge/release/tag procedure.

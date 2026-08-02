@@ -1,6 +1,17 @@
 from sqlalchemy.orm import Session
 
-from app.features.settings.schemas import UserSettingsUpdateRequest
+from app.features.settings.backup.export_service import (
+    build_user_backup,
+)
+from app.features.settings.backup.import_service import (
+    import_user_backup,
+)
+from app.features.settings.backup.preview_service import (
+    preview_user_backup_import,
+)
+from app.features.settings.schemas import (
+    UserSettingsUpdateRequest,
+)
 from app.models.user import User
 
 
@@ -28,3 +39,12 @@ def update_user_settings(
     db.refresh(current_user)
 
     return current_user
+
+
+__all__ = [
+    "build_user_backup",
+    "get_user_settings",
+    "import_user_backup",
+    "preview_user_backup_import",
+    "update_user_settings",
+]
