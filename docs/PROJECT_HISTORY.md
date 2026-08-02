@@ -492,3 +492,21 @@ Sprint 34 restored the canonical relationship between the Trading Journal and MT
 The Portfolio investigation confirmed that realized-performance calculations were correct. The missing manual-trade behavior came from the Trade form, which did not expose Open Time and Close Time. Adding those fields allowed a manually entered closed trade to participate in Portfolio statistics without changing the Portfolio architecture.
 
 The Market Alerts investigation proved that the current application correctly preserves Actual values, but the configured free weekly provider payload does not include them. Version 1 retains the free provider and records a commercial-provider evaluation for the future rather than introducing scraping or unsupported workarounds.
+
+---
+
+# Sprint 35 — Version 1 Final Validation and Release Hardening
+
+Sprint 35 completed the main Version 1 hardening pass after Sprint 34 regression recovery.
+
+The public authentication experience was completed with a shared authentication layout and registration page. Trade deletion gained an explicit reusable confirmation workflow. Reports Summary and Trade Score were redesigned for readability without creating new business-data authorities.
+
+Trading Plan moved from a partially static interface to a functional user-owned workspace. Markets, Sessions and News Rules are controlled and persisted, while Trading Constitution supports rule creation, editing, deletion and reordering.
+
+The export subsystem was corrected as a multi-user security issue. CSV and PDF changed from global unauthenticated exports to authenticated user-scoped exports, and Excel support was added through `openpyxl`. Frontend downloads now use the shared authenticated Axios client.
+
+MT5 synchronization now preserves manual journal Notes and manages only its own open/closed status line. Trading Plan CRUD and Rule Engine evaluation are scoped to the authenticated user. Session normalization resolves stored UI values such as `Asia Session` to canonical Rule Engine sessions.
+
+Sprint 35 also added a one-click Windows launcher that starts the local backend and frontend in hidden processes, waits for readiness and opens one browser page.
+
+Known deferred work remains explicit: Settings Backup/Restore and the full Risk per Trade calculation.

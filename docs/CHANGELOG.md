@@ -20,6 +20,7 @@ Sections:
 * [Version 1 Multi-User Rebuild](changelog/13_VERSION_1_MULTI_USER_REBUILD.md)
 * [Sprint 33](changelog/14_SPRINT_33.md)
 * [Sprint 34](changelog/15_SPRINT_34.md)
+* [Sprint 35](changelog/16_SPRINT_35.md)
 * [Full Changelog Archive](changelog/99_FULL_CHANGELOG_ARCHIVE.md)
 
 Rule:

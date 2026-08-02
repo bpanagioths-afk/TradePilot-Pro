@@ -13,15 +13,19 @@ import {
 
 import MainLayout from "./layouts/MainLayout";
 import { WidgetLoading } from "./components/widgets";
+
 import {
     getStoredUser,
     isAuthenticated
 } from "./services/authService";
 
+
 const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
 const ForgotUsername = lazy(() => import("./pages/ForgotUsername"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Home = lazy(() => import("./pages/Home"));
 const Trades = lazy(() => import("./pages/Trades"));
@@ -33,6 +37,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const TradingPlan = lazy(() => import("./pages/TradingPlan"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers"));
+
 
 function ProtectedRoute({ children }) {
     const location = useLocation();
@@ -50,23 +55,36 @@ function ProtectedRoute({ children }) {
     return children;
 }
 
+
 function AdminRoute({ children }) {
     const user = getStoredUser();
 
     if (!user?.is_admin) {
-        return <Navigate to="/home" replace />;
+        return (
+            <Navigate
+                to="/home"
+                replace
+            />
+        );
     }
 
     return children;
 }
+
 
 function PublicOnlyRoute({ children }) {
     if (isAuthenticated()) {
-        return <Navigate to="/home" replace />;
+        return (
+            <Navigate
+                to="/home"
+                replace
+            />
+        );
     }
 
     return children;
 }
+
 
 function ProtectedLayout() {
     return (
@@ -75,19 +93,63 @@ function ProtectedLayout() {
                 <Routes>
                     <Route
                         path="/"
-                        element={<Navigate to="/home" replace />}
+                        element={
+                            <Navigate
+                                to="/home"
+                                replace
+                            />
+                        }
                     />
 
-                    <Route path="/home" element={<Home />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/trades" element={<Trades />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/psychology" element={<Psychology />} />
-                    <Route path="/reports" element={<Reports />} />
-                    <Route path="/portfolio" element={<Portfolio />} />
-                    <Route path="/mt5" element={<MT5 />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/trading-plan" element={<TradingPlan />} />
+                    <Route
+                        path="/home"
+                        element={<Home />}
+                    />
+
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
+
+                    <Route
+                        path="/trades"
+                        element={<Trades />}
+                    />
+
+                    <Route
+                        path="/analytics"
+                        element={<Analytics />}
+                    />
+
+                    <Route
+                        path="/psychology"
+                        element={<Psychology />}
+                    />
+
+                    <Route
+                        path="/reports"
+                        element={<Reports />}
+                    />
+
+                    <Route
+                        path="/portfolio"
+                        element={<Portfolio />}
+                    />
+
+                    <Route
+                        path="/mt5"
+                        element={<MT5 />}
+                    />
+
+                    <Route
+                        path="/settings"
+                        element={<Settings />}
+                    />
+
+                    <Route
+                        path="/trading-plan"
+                        element={<TradingPlan />}
+                    />
 
                     <Route
                         path="/admin/users"
@@ -100,13 +162,19 @@ function ProtectedLayout() {
 
                     <Route
                         path="*"
-                        element={<Navigate to="/home" replace />}
+                        element={
+                            <Navigate
+                                to="/home"
+                                replace
+                            />
+                        }
                     />
                 </Routes>
             </MainLayout>
         </ProtectedRoute>
     );
 }
+
 
 function AppRoutes() {
     return (
@@ -117,6 +185,15 @@ function AppRoutes() {
                     element={
                         <PublicOnlyRoute>
                             <Login />
+                        </PublicOnlyRoute>
+                    }
+                />
+
+                <Route
+                    path="/register"
+                    element={
+                        <PublicOnlyRoute>
+                            <Register />
                         </PublicOnlyRoute>
                     }
                 />
@@ -153,6 +230,7 @@ function AppRoutes() {
     );
 }
 
+
 function App() {
     return (
         <BrowserRouter>
@@ -160,5 +238,6 @@ function App() {
         </BrowserRouter>
     );
 }
+
 
 export default App;

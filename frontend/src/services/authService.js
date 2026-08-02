@@ -1,28 +1,66 @@
 import api from "../api/api";
 
+
 const ACCESS_TOKEN_KEY = "access_token";
 const USER_KEY = "auth_user";
 
-export async function login(usernameOrEmail, password) {
-    const response = await api.post("/auth/login", {
-        username_or_email: usernameOrEmail,
-        password
-    });
 
-    const { access_token: accessToken, user } = response.data;
+export async function register({
+    username,
+    email,
+    password
+}) {
+    const response = await api.post(
+        "/auth/register",
+        {
+            username,
+            email,
+            password
+        }
+    );
+
+    return response.data;
+}
+
+
+export async function login(
+    usernameOrEmail,
+    password
+) {
+    const response = await api.post(
+        "/auth/login",
+        {
+            username_or_email: usernameOrEmail,
+            password
+        }
+    );
+
+    const {
+        access_token: accessToken,
+        user
+    } = response.data;
 
     if (!accessToken) {
-        throw new Error("Το backend δεν επέστρεψε access token.");
+        throw new Error(
+            "Το backend δεν επέστρεψε access token."
+        );
     }
 
-    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+    localStorage.setItem(
+        ACCESS_TOKEN_KEY,
+        accessToken
+    );
 
     if (user) {
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        localStorage.setItem(
+            USER_KEY,
+            JSON.stringify(user)
+        );
     }
 
     return response.data;
 }
+
 
 export async function loadCurrentUser() {
     const response = await api.get("/auth/me");
@@ -35,21 +73,26 @@ export async function loadCurrentUser() {
     return response.data;
 }
 
+
 export function logout() {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
 }
 
+
 export function getAccessToken() {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
 }
+
 
 export function isAuthenticated() {
     return Boolean(getAccessToken());
 }
 
+
 export function getStoredUser() {
-    const storedUser = localStorage.getItem(USER_KEY);
+    const storedUser =
+        localStorage.getItem(USER_KEY);
 
     if (!storedUser) {
         return null;
@@ -63,6 +106,7 @@ export function getStoredUser() {
     }
 }
 
+
 export async function forgotUsername(email) {
     const response = await api.post(
         "/auth/forgot-username",
@@ -72,16 +116,20 @@ export async function forgotUsername(email) {
     return response.data;
 }
 
-export async function forgotPassword(usernameOrEmail) {
+
+export async function forgotPassword(
+    usernameOrEmail
+) {
     const response = await api.post(
         "/auth/forgot-password",
         {
-            username_or_email: usernameOrEmail,
+            username_or_email: usernameOrEmail
         }
     );
 
     return response.data;
 }
+
 
 export async function resetPassword(
     token,
@@ -91,12 +139,13 @@ export async function resetPassword(
         "/auth/reset-password",
         {
             token,
-            new_password: newPassword,
+            new_password: newPassword
         }
     );
 
     return response.data;
 }
+
 
 export async function changePassword(
     currentPassword,
@@ -108,7 +157,8 @@ export async function changePassword(
         {
             current_password: currentPassword,
             new_password: newPassword,
-            confirm_new_password: confirmNewPassword,
+            confirm_new_password:
+                confirmNewPassword
         }
     );
 

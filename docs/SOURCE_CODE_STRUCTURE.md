@@ -161,3 +161,66 @@ frontend/src/
 - `features/trades/tradeOptions.js` is the shared source for Trading System and Psychology labels/options used by trade UI.
 - `TradeDialog.jsx` owns MT5 ticket, Open Time and Close Time entry and client-side validation.
 - `Trades.jsx` owns server save-error presentation while backend validation remains authoritative.
+
+## Sprint 35 Release-Hardening Additions
+
+### Root Launcher
+
+```text
+TradePilot-Pro/
+├── Start TradePilot Pro.vbs
+├── start_tradepilot.ps1
+└── runtime_logs/              # generated locally; do not commit
+```
+
+- `Start TradePilot Pro.vbs` starts the PowerShell launcher without a visible console.
+- `start_tradepilot.ps1` starts backend/frontend, waits for readiness and opens one browser page.
+- `runtime_logs/` contains generated process logs and is not source architecture.
+
+### Backend
+
+```text
+backend/app/
+├── routers/
+│   ├── exports.py
+│   ├── rule_engine.py
+│   └── trading_plans.py
+├── schemas/
+│   └── trading_plan.py
+└── services/
+    ├── rule_engine.py
+    └── mt5/
+        └── sync_service.py
+```
+
+Ownership rules:
+
+- `routers/exports.py` owns authenticated user-scoped trade exports.
+- `routers/trading_plans.py` owns current-user Trading Plan CRUD and default-plan behavior.
+- `routers/rule_engine.py` owns authenticated trade evaluation and current-user plan selection.
+- `services/rule_engine.py` owns rule evaluation and canonical session normalization.
+- `services/mt5/sync_service.py` owns MT5 lifecycle updates and must preserve user-authored journal metadata.
+
+### Frontend
+
+```text
+frontend/src/
+├── components/
+│   ├── auth/
+│   │   └── AuthLayout.jsx
+│   ├── common/
+│   │   └── ConfirmDialog.jsx
+│   └── TradeScoreCard.jsx
+├── pages/
+│   ├── Register.jsx
+│   ├── Reports.jsx
+│   ├── Trades.jsx
+│   └── TradingPlan.jsx
+└── services/
+    └── tradeService.js
+```
+
+- `AuthLayout.jsx` is the shared public authentication layout.
+- `ConfirmDialog.jsx` is the reusable dangerous-action confirmation component.
+- `tradeService.js` owns authenticated trade-export blob downloads.
+- `TradingPlan.jsx` remains the frontend owner of Trading Plan editing; backend ownership remains authoritative.

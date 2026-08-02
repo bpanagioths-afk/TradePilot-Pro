@@ -87,6 +87,34 @@ def _apply_movement_to_trade(
     trade.tick_size = movement.tick_size
     trade.profit_pips = movement.legacy_profit_pips
 
+MT5_SYNC_NOTES = {
+    "Synced from MT5 - open position",
+    "Synced from MT5 - closed position",
+}
+
+
+def _merge_sync_note(
+    existing_notes: str | None,
+    sync_note: str,
+) -> str:
+    preserved_lines = [
+        line.strip()
+        for line in str(
+            existing_notes or ""
+        ).splitlines()
+        if (
+            line.strip()
+            and line.strip()
+            not in MT5_SYNC_NOTES
+        )
+    ]
+
+    preserved_lines.append(sync_note)
+
+    return "\n".join(
+        preserved_lines
+    )
+
 
 def _apply_position_to_trade(
     trade,
@@ -154,7 +182,10 @@ def _apply_position_to_trade(
             trade,
         )
 
-        trade.notes = "Synced from MT5 - open position"
+        trade.notes = _merge_sync_note(
+           trade.notes,
+           "Synced from MT5 - open position",
+        )
         return
 
     trade.exit_price = exit_price
@@ -186,7 +217,10 @@ def _apply_position_to_trade(
         else 0
     )
 
-    trade.notes = "Synced from MT5 - closed position"
+    trade.notes = _merge_sync_note(
+      trade.notes,
+      "Synced from MT5 - closed position",
+    )
 
 
 def sync(

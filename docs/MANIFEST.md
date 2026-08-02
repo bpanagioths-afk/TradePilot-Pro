@@ -187,3 +187,28 @@ New important files:
 
 - `docs/changelog/15_SPRINT_34.md`
 - `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT35.md`
+
+## Sprint 35 Documentation Update
+
+Added or synchronized documentation for:
+
+- Login/Register and shared authentication layout.
+- Safe Trade deletion confirmation.
+- Reports Summary readability.
+- Functional Trading Plan and Trading Constitution editor.
+- Authenticated user-scoped CSV, PDF and Excel exports.
+- MT5 manual Notes preservation.
+- Trading Plan and Rule Engine ownership.
+- Session alias normalization.
+- Trade Score redesign.
+- One-click Windows launcher.
+- Deferred Settings Backup/Restore.
+- Deferred Risk per Trade calculation.
+- Sprint 36 continuation prompt.
+
+New important files:
+
+- `docs/changelog/16_SPRINT_35.md`
+- `docs/project/09_Current_State/NEXT_CHAT_PROMPT_SPRINT36.md`
+- `start_tradepilot.ps1`
+- `Start TradePilot Pro.vbs`

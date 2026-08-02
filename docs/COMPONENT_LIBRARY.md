@@ -974,3 +974,73 @@ Administrative User Management workspace. It consumes `adminService.js` and is p
 - `Sidebar.jsx` conditionally exposes administrator navigation.
 - `Topbar.jsx` reflects authenticated-user state and logout behavior.
 - `App.jsx` owns PublicOnlyRoute, ProtectedRoute and AdminRoute composition.
+
+---
+
+# Sprint 35 Component Additions
+
+## `AuthLayout`
+
+Path: `frontend/src/components/auth/AuthLayout.jsx`
+
+Purpose:
+
+Shared presentation layout for public authentication pages such as Login and Register.
+
+Rules:
+
+- Presentation only.
+- No authentication business logic.
+- Public authentication forms continue to use `authService.js`.
+- Must support Material UI theme behavior.
+
+## `ConfirmDialog`
+
+Path: `frontend/src/components/common/ConfirmDialog.jsx`
+
+Current verified use:
+
+- Trade deletion.
+
+Responsibilities:
+
+- Title and warning message.
+- Optional detail rows.
+- Cancel action.
+- Explicit destructive confirmation.
+- Loading state.
+- Visible request error.
+
+Rules:
+
+- Use for destructive or irreversible actions.
+- The component must not call feature APIs directly.
+- Feature pages own the actual action and pass callbacks.
+
+## `TradeScoreCard`
+
+Path: `frontend/src/components/TradeScoreCard.jsx`
+
+Sprint 35 update:
+
+- Structured compliance score.
+- PASSED/FAILED status.
+- Readable violations, warnings and successes.
+- Long rule messages use alert rows instead of compressed chips.
+- Receives prepared Rule Engine data; it does not calculate rules.
+
+## Trading Constitution Editor
+
+Location: `frontend/src/pages/TradingPlan.jsx`
+
+This is feature-specific UI, not a new global framework component.
+
+Capabilities:
+
+- Add rule.
+- Edit rule.
+- Delete rule.
+- Reorder rule.
+- Persist rules through the existing multiline `constitution` field.
+
+The backend Trading Plan remains the authoritative persistence and ownership layer.

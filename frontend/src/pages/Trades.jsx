@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+    useEffect,
+    useMemo,
+    useState
+} from "react";
 
 import {
     Box,
@@ -35,11 +39,20 @@ import {
     createTrade,
     updateTrade,
     deleteTrade as deleteTradeApi,
-    uploadTradeScreenshot
+    uploadTradeScreenshot,
+    downloadTradesCsv,
+    downloadTradesPdf,
+    downloadTradesExcel
 } from "../services/tradeService";
 
-import TradeDialog from "../components/TradeDialog";
-import TradeDetailsDialog from "../components/TradeDetailsDialog";
+import TradeDialog from
+    "../components/TradeDialog";
+
+import TradeDetailsDialog from
+    "../components/TradeDetailsDialog";
+
+import ConfirmDialog from
+    "../components/common/ConfirmDialog";
 
 
 function resolveTradeSaveError(error) {
@@ -74,22 +87,101 @@ function resolveTradeSaveError(error) {
 }
 
 
+function resolveTradeDeleteError(error) {
+    const backendDetail =
+        error?.response?.data?.detail;
+
+    if (typeof backendDetail === "string") {
+        return backendDetail;
+    }
+
+    if (Array.isArray(backendDetail)) {
+        return backendDetail
+            .map((item) => item?.msg)
+            .filter(Boolean)
+            .join(" ");
+    }
+
+    return (
+        "Δεν ήταν δυνατή η διαγραφή του trade. "
+        + "Προσπάθησε ξανά."
+    );
+}
+
+
+function formatTradeDate(value) {
+    if (!value) {
+        return "—";
+    }
+
+    const parsedDate = new Date(value);
+
+    if (
+        Number.isNaN(
+            parsedDate.getTime()
+        )
+    ) {
+        return String(value);
+    }
+
+    return parsedDate.toLocaleString(
+        "el-GR"
+    );
+}
+
+
 export default function Trades() {
-    const [trades, setTrades] = useState([]);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [detailsOpen, setDetailsOpen] = useState(false);
-    const [selectedTrade, setSelectedTrade] = useState(null);
+    const [trades, setTrades] =
+        useState([]);
 
-    const [saveError, setSaveError] = useState("");
-    const [saving, setSaving] = useState(false);
+    const [dialogOpen, setDialogOpen] =
+        useState(false);
 
-    const [search, setSearch] = useState("");
-    const [directionFilter, setDirectionFilter] = useState("ALL");
-    const [resultFilter, setResultFilter] = useState("ALL");
+    const [detailsOpen, setDetailsOpen] =
+        useState(false);
 
-    const [exportAnchor, setExportAnchor] = useState(null);
+    const [
+        selectedTrade,
+        setSelectedTrade
+    ] = useState(null);
 
-    const exportMenuOpen = Boolean(exportAnchor);
+    const [
+        tradePendingDelete,
+        setTradePendingDelete
+    ] = useState(null);
+
+    const [deleteLoading, setDeleteLoading] =
+        useState(false);
+
+    const [deleteError, setDeleteError] =
+        useState("");
+
+    const [saveError, setSaveError] =
+        useState("");
+
+    const [saving, setSaving] =
+        useState(false);
+
+    const [search, setSearch] =
+        useState("");
+
+    const [
+        directionFilter,
+        setDirectionFilter
+    ] = useState("ALL");
+
+    const [
+        resultFilter,
+        setResultFilter
+    ] = useState("ALL");
+
+    const [
+        exportAnchor,
+        setExportAnchor
+    ] = useState(null);
+
+    const exportMenuOpen =
+        Boolean(exportAnchor);
 
 
     const loadTrades = () => {
@@ -106,56 +198,60 @@ export default function Trades() {
     }, []);
 
 
-    const filteredTrades = useMemo(() => {
-        return trades.filter((trade) => {
-            const searchText =
-                search.toLowerCase();
+    const filteredTrades =
+        useMemo(() => {
+            return trades.filter(
+                (trade) => {
+                    const searchText =
+                        search.toLowerCase();
 
-            const matchesSearch =
-                !search
-                || String(
-                    trade.symbol || ""
-                )
-                    .toLowerCase()
-                    .includes(searchText)
-                || String(
-                    trade.notes || ""
-                )
-                    .toLowerCase()
-                    .includes(searchText)
-                || String(
-                    trade.session_name || ""
-                )
-                    .toLowerCase()
-                    .includes(searchText);
+                    const matchesSearch =
+                        !search
+                        || String(
+                            trade.symbol || ""
+                        )
+                            .toLowerCase()
+                            .includes(searchText)
+                        || String(
+                            trade.notes || ""
+                        )
+                            .toLowerCase()
+                            .includes(searchText)
+                        || String(
+                            trade.session_name || ""
+                        )
+                            .toLowerCase()
+                            .includes(searchText);
 
-            const matchesDirection =
-                directionFilter === "ALL"
-                || trade.direction === directionFilter;
+                    const matchesDirection =
+                        directionFilter === "ALL"
+                        || trade.direction
+                            === directionFilter;
 
-            const matchesResult =
-                resultFilter === "ALL"
-                || (
-                    resultFilter === "WIN"
-                    && trade.is_win === 1
-                )
-                || (
-                    resultFilter === "LOSS"
-                    && trade.is_win === 0
-                );
+                    const matchesResult =
+                        resultFilter === "ALL"
+                        || (
+                            resultFilter === "WIN"
+                            && trade.is_win === 1
+                        )
+                        || (
+                            resultFilter === "LOSS"
+                            && trade.is_win === 0
+                        );
 
-            return (
-                matchesSearch
-                && matchesDirection
-                && matchesResult
+                    return (
+                        matchesSearch
+                        && matchesDirection
+                        && matchesResult
+                    );
+                }
             );
-        });
-    }, [
-        trades,
-        search,
-        directionFilter,
-        resultFilter
-    ]);
+        }, [
+            trades,
+            search,
+            directionFilter,
+            resultFilter
+        ]);
 
 
     const openExportMenu = (event) => {
@@ -169,6 +265,17 @@ export default function Trades() {
         setExportAnchor(null);
     };
 
+    const handleExport = async (
+        exportFunction
+    ) => {
+        try {
+            await exportFunction();
+        } catch (error) {
+            console.error(error);
+        } finally {
+            closeExportMenu();
+        }
+    };
 
     const openNewTrade = () => {
         setSelectedTrade(null);
@@ -204,6 +311,22 @@ export default function Trades() {
     const closeDetails = () => {
         setDetailsOpen(false);
         setSelectedTrade(null);
+    };
+
+
+    const openDeleteDialog = (trade) => {
+        setTradePendingDelete(trade);
+        setDeleteError("");
+    };
+
+
+    const closeDeleteDialog = () => {
+        if (deleteLoading) {
+            return;
+        }
+
+        setTradePendingDelete(null);
+        setDeleteError("");
     };
 
 
@@ -243,14 +366,19 @@ export default function Trades() {
                     selectedTrade.id,
                     payload
                 )
-                : await createTrade(payload);
+                : await createTrade(
+                    payload
+                );
 
             await uploadScreenshot(
                 response.data.id,
                 screenshotFile
             );
 
-            closeDialog();
+            setDialogOpen(false);
+            setSelectedTrade(null);
+            setSaveError("");
+
             loadTrades();
         } catch (error) {
             console.error(error);
@@ -264,13 +392,37 @@ export default function Trades() {
     };
 
 
-    const deleteTrade = (id) => {
-        deleteTradeApi(id)
-            .then(() => {
+    const confirmDeleteTrade =
+        async () => {
+            if (
+                !tradePendingDelete
+                || deleteLoading
+            ) {
+                return;
+            }
+
+            setDeleteLoading(true);
+            setDeleteError("");
+
+            try {
+                await deleteTradeApi(
+                    tradePendingDelete.id
+                );
+
+                setTradePendingDelete(null);
                 loadTrades();
-            })
-            .catch(console.error);
-    };
+            } catch (error) {
+                console.error(error);
+
+                setDeleteError(
+                    resolveTradeDeleteError(
+                        error
+                    )
+                );
+            } finally {
+                setDeleteLoading(false);
+            }
+        };
 
 
     const clearFilters = () => {
@@ -359,12 +511,15 @@ export default function Trades() {
             width: 150,
             renderCell: (params) => {
                 const value =
-                    params.row.movement_value
-                    ?? params.row.profit_pips
+                    params.row
+                        .movement_value
+                    ?? params.row
+                        .profit_pips
                     ?? 0;
 
                 const unit =
-                    params.row.movement_unit
+                    params.row
+                        .movement_unit
                     ?? "pips";
 
                 const positive =
@@ -456,7 +611,9 @@ export default function Trades() {
                             <VisibilityIcon />
                         }
                         onClick={() =>
-                            openDetails(params.row)
+                            openDetails(
+                                params.row
+                            )
                         }
                     >
                         View
@@ -468,7 +625,9 @@ export default function Trades() {
                             <EditIcon />
                         }
                         onClick={() =>
-                            openEditTrade(params.row)
+                            openEditTrade(
+                                params.row
+                            )
                         }
                     >
                         Edit
@@ -481,7 +640,9 @@ export default function Trades() {
                             <DeleteIcon />
                         }
                         onClick={() =>
-                            deleteTrade(params.row.id)
+                            openDeleteDialog(
+                                params.row
+                            )
                         }
                     >
                         Delete
@@ -492,12 +653,49 @@ export default function Trades() {
     ];
 
 
+    const deleteDialogDetails =
+        tradePendingDelete
+            ? [
+                {
+                    label: "Pair",
+                    value:
+                        tradePendingDelete
+                            .symbol
+                        || "—"
+                },
+                {
+                    label: "Direction",
+                    value:
+                        tradePendingDelete
+                            .direction
+                        || "—"
+                },
+                {
+                    label: "Open Time",
+                    value:
+                        formatTradeDate(
+                            tradePendingDelete
+                                .open_time
+                        )
+                },
+                {
+                    label: "MT5 Εισιτήριο",
+                    value:
+                        tradePendingDelete
+                            .mt5_position_id
+                        || "—"
+                }
+            ]
+            : [];
+
+
     return (
         <Box>
             <Stack
                 direction="row"
                 sx={{
-                    justifyContent: "space-between",
+                    justifyContent:
+                        "space-between",
                     alignItems: "center",
                     mb: 3
                 }}
@@ -548,8 +746,12 @@ export default function Trades() {
                 onClose={closeExportMenu}
             >
                 <MenuItem
-                    onClick={closeExportMenu}
-                >
+                    onClick={() =>
+                         handleExport(
+                            downloadTradesPdf
+                         )
+                    }
+                > 
                     <ListItemIcon>
                         <PictureAsPdfIcon
                             fontSize="small"
@@ -562,7 +764,11 @@ export default function Trades() {
                 </MenuItem>
 
                 <MenuItem
-                    onClick={closeExportMenu}
+                   onClick={() =>
+                       handleExport(
+                           downloadTradesExcel
+                       )
+                   }
                 >
                     <ListItemIcon>
                         <TableChartIcon
@@ -576,14 +782,11 @@ export default function Trades() {
                 </MenuItem>
 
                 <MenuItem
-                    onClick={() => {
-                        window.open(
-                            "http://127.0.0.1:8000/exports/trades/csv",
-                            "_blank"
-                        );
-
-                        closeExportMenu();
-                    }}
+                   onClick={() =>
+                     handleExport(
+                        downloadTradesCsv
+                     )
+                   }
                 >
                     <ListItemIcon>
                         <DescriptionIcon
@@ -733,6 +936,27 @@ export default function Trades() {
                 open={detailsOpen}
                 onClose={closeDetails}
                 trade={selectedTrade}
+            />
+
+            <ConfirmDialog
+                open={Boolean(
+                    tradePendingDelete
+                )}
+                title="Διαγραφή Trade"
+                message={
+                    "Είσαι σίγουρος ότι θέλεις "
+                    + "να διαγράψεις αυτό το trade;"
+                }
+                details={deleteDialogDetails}
+                confirmLabel="Οριστική διαγραφή"
+                cancelLabel="Ακύρωση"
+                confirmColor="error"
+                loading={deleteLoading}
+                error={deleteError}
+                onClose={closeDeleteDialog}
+                onConfirm={
+                    confirmDeleteTrade
+                }
             />
         </Box>
     );
